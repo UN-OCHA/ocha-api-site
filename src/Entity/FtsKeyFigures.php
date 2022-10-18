@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new Get(
-            uriTemplate: '/fts/{id}'
+            uriTemplate: '/fts/{planId}'
         ),
         new GetCollection(
             uriTemplate: '/fts'
@@ -36,10 +36,6 @@ use Doctrine\ORM\Mapping as ORM;
 class FtsKeyFigures
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column]
     private ?int $planId = null;
 
@@ -72,11 +68,6 @@ class FtsKeyFigures
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
     private ?string $fundingTotal = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getPlanId(): ?int
     {
