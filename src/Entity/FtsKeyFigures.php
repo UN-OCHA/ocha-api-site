@@ -46,7 +46,7 @@ class FtsKeyFigures
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
     private ?\DateTimeInterface $updated = null;
 
     #[ORM\Column]
@@ -206,6 +206,23 @@ class FtsKeyFigures
     public function setFundingTotal(string $fundingTotal): self
     {
         $this->fundingTotal = $fundingTotal;
+
+        return $this;
+    }
+
+    public function fromValues(array $values): self {
+        $this->planId = $values['plan_id'];
+        $this->name = $values['name'];
+        $this->code = $values['code'];
+        $this->year = $values['year'];
+        $this->iso3 = $values['iso3'];
+        $this->country = $values['country'];
+        $this->updated = $values['updated'];
+        $this->originalRequirements = $values['original_requirements'];
+        $this->revisedRequirements = $values['revised_requirements'];
+        $this->totalRequirements = $values['total_requirements'];
+        $this->fundingTotal = $values['funding_total'];
+        $this->unmetRequirements = $values['unmet_requirements'];
 
         return $this;
     }
