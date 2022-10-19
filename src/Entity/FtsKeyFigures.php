@@ -50,6 +50,23 @@ use Doctrine\ORM\Mapping as ORM;
                     'FTS Key Figures',
                 ],
             ]
+            ),
+        new Get(
+            uriTemplate: '/fts/countries',
+            routeName: 'fts_countries',
+            controller: FtsKeyFiguresCountries::class,
+            openapiContext: [
+                'summary' => 'Get a list countries',
+                'description' => 'Get a list of iso3 codes',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of iso3 codes',
+                    ],
+                ],
+            ]
         )
     ]
 )]
