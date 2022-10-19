@@ -10,5 +10,9 @@ api_platform:
         csv:      ['text/csv']
         html:     ['text/html']
     swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
         swagger_ui_extra_configuration:
             defaultModelsExpandDepth: -1
