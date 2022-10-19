@@ -53,7 +53,20 @@ console import:fts 2021
 
 #### API
 
-- `/api/fts`
-- `/api/fts{id}`
+- `/api/fts/years`
+- `/api/fts/countries`
 - `/api/fts/country/{iso3}`
 - `/api/fts/year/{year}`
+
+### ReliefWeb Crisis Figures
+
+#### Import data
+
+```bash
+console import:rw-crisis --all
+```
+
+#### API
+
+- `/api/relief_web_crisis_figures/countries`
+- `/api/relief_web_crisis_figures/country/{iso3}`
