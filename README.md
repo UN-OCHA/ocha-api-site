@@ -40,6 +40,13 @@ console doctrine:database:create
 console doctrine:schema:create
 ```
 
+## Tokens
+
+```bash
+console app:add-user username password info@example.com
+console lexik:jwt:generate-token info@example.com --user-class="App\Entity\User"
+```
+
 ## Sources
 
 ### FTS
