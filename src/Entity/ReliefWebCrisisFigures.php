@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ReliefWebCrisisFiguresRepository;
+use App\State\ReliefWebCrisisFiguresIso3StateProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -20,8 +21,16 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         'groups' => ['rw_key_figures']
     ],
     operations: [
-        new Get(),
-        new GetCollection()
+        new GetCollection(
+            uriTemplate: '/relief_web_crisis_figures/country/{iso3}',
+            provider: ReliefWebCrisisFiguresIso3StateProvider::class,
+            uriVariables: ['iso3']
+        ),
+        new Get(
+            uriTemplate: '/relief_web_crisis_figures/iso3',
+            routeName: 'relief_web_crisis_figures_iso3',
+            controller: ReliefWebCrisisFiguresCountries::class
+        )
     ]
 )]
 
@@ -63,6 +72,9 @@ class ReliefWebCrisisFigures
     #[Groups('rw_key_figures')]
     #[SerializedName('values')]
     private Collection $figureValues;
+
+    #[ORM\Column(length: 3)]
+    private ?string $iso3 = null;
 
     public function __construct()
     {
@@ -184,6 +196,31 @@ class ReliefWebCrisisFigures
                 $figureValue->setParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIso3(): ?string
+    {
+        return $this->iso3;
+    }
+
+    public function setIso3(string $iso3): self
+    {
+        $this->iso3 = $iso3;
+
+        return $this;
+    }
+
+    public function fromValues(array $values): self {
+        $this->date = $values['date'];
+        $this->description = $values['description'];
+        $this->iso3 = $values['iso3'];
+        $this->language = $values['language'];
+        $this->name = $values['name'];
+        $this->value = $values['value'];
+        $this->url = $values['url'];
+        $this->source = $values['source'];
 
         return $this;
     }

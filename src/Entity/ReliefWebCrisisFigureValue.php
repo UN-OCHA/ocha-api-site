@@ -2,24 +2,13 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Action\NotFoundAction;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use App\Repository\ReliefWebCrisisFigureValueRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReliefWebCrisisFigureValueRepository::class)]
-#[ApiResource(
-    operations: [
-        new Get(
-            controller: NotFoundAction::class, 
-            read: false, 
-            output: false
-        ),
-    ]
-)]
+
 
 class ReliefWebCrisisFigureValue
 {
@@ -36,7 +25,7 @@ class ReliefWebCrisisFigureValue
     #[Groups('rw_key_figures')]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: TRUE)]
     #[Groups('rw_key_figures')]
     private ?string $url = null;
 

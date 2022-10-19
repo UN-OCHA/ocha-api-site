@@ -15,14 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: FtsKeyFiguresRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(
-            uriTemplate: '/fts/{planId}',
-            description: 'Get FTS Plan data'
-        ),
-        new GetCollection(
-            uriTemplate: '/fts',
-            description: 'Get FTS Plans'
-        ),
         new GetCollection(
             uriTemplate: '/fts/country/{iso3}',
             provider: FtsKeyFiguresIso3StateProvider::class,

@@ -39,28 +39,31 @@ class ReliefWebCrisisFiguresRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return ReliefWebCrisisFigures[] Returns an array of ReliefWebCrisisFigures objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return ReliefWebCrisisFigures[] Returns an array of FtsKeyFigures objects
+     */
+    public function findByIso3(string $value): array
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.iso3 = :val')
+            ->setParameter('val', $value)
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
-//    public function findOneBySomeField($value): ?ReliefWebCrisisFigures
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return string[] Returns an array of iso3 codes
+     */
+    public function getDistinctIso3(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->orderBy('f.iso3', 'DESC')
+            ->select('DISTINCT(f.iso3) as iso3')        
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
+
 }
