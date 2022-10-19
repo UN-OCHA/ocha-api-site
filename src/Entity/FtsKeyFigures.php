@@ -18,17 +18,43 @@ use Doctrine\ORM\Mapping as ORM;
         new GetCollection(
             uriTemplate: '/fts/country/{iso3}',
             provider: FtsKeyFiguresIso3StateProvider::class,
-            uriVariables: ['iso3']
+            uriVariables: ['iso3'],
+            openapiContext: [
+                'summary' => 'Get a list of FTS data by iso3 code',
+                'description' => 'Get a list of FTS data by iso3 code',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+            ]
         ),
         new GetCollection(
             uriTemplate: '/fts/year/{year}',
             provider: FtsKeyFiguresYearStateProvider::class,
-            uriVariables: ['year']
+            uriVariables: ['year'],
+            openapiContext: [
+                'summary' => 'Get a list of FTS data by year',
+                'description' => 'Get a list of FTS data by year',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+            ]
         ),
         new Get(
             uriTemplate: '/fts/years',
             routeName: 'fts_years',
-            controller: FtsKeyFiguresYears::class
+            controller: FtsKeyFiguresYears::class,
+            openapiContext: [
+                'summary' => 'Get a list years',
+                'description' => 'Get a list of years',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of years',
+                    ],
+                ],
+            ]
         )
     ]
 )]

@@ -24,12 +24,31 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         new GetCollection(
             uriTemplate: '/relief_web_crisis_figures/country/{iso3}',
             provider: ReliefWebCrisisFiguresIso3StateProvider::class,
-            uriVariables: ['iso3']
+            uriVariables: ['iso3'],
+            openapiContext: [
+                'summary' => 'Get ReliefWeb key figures by iso3 code',
+                'description' => 'Get ReliefWeb key figures by iso3 code',
+                'tags' => [
+                    'ReliefWeb Crisis Figures',
+                ],
+            ]
         ),
         new Get(
             uriTemplate: '/relief_web_crisis_figures/iso3',
             routeName: 'relief_web_crisis_figures_iso3',
-            controller: ReliefWebCrisisFiguresCountries::class
+            controller: ReliefWebCrisisFiguresCountries::class,
+            openapiContext: [
+                'summary' => 'Get a list of all iso3 codes',
+                'description' => 'Get a list of all iso3 codes',
+                'tags' => [
+                    'ReliefWeb Crisis Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of iso3 codes',
+                    ],
+                ],
+            ]
         )
     ]
 )]

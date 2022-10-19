@@ -1,0 +1,14 @@
+api_platform:
+    title: 'OCHA API'
+    description: 'The public OCHA API'
+    version: 0.0.1
+    formats:
+        json:     ['application/json']
+        jsonld:   ['application/ld+json']
+        xml:      ['application/xml', 'text/xml']
+        yaml:     ['application/x-yaml']
+        csv:      ['text/csv']
+        html:     ['text/html']
+    swagger:
+        swagger_ui_extra_configuration:
+            defaultModelsExpandDepth: -1
