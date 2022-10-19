@@ -1,5 +1,11 @@
 # OCHA Api
 
+## Resources
+
+- [Export as CSV](https://locastic.com/blog/easy-csv-export-in-api-platform)
+- [Hide entity from docs](https://api-platform.com/docs/core/operations/#expose-a-model-without-any-routes)
+
+
 ## Helpers
 
 ### Entity

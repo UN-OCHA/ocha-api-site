@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\FtsKeyFiguresYears;
 use App\Repository\FtsKeyFiguresRepository;
 use App\State\FtsKeyFiguresYearStateProvider;
 use App\State\FtsKeyFiguresIso3StateProvider;
@@ -15,10 +16,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new Get(
-            uriTemplate: '/fts/{planId}'
+            uriTemplate: '/fts/{planId}',
+            description: 'Get FTS Plan data'
         ),
         new GetCollection(
-            uriTemplate: '/fts'
+            uriTemplate: '/fts',
+            description: 'Get FTS Plans'
         ),
         new GetCollection(
             uriTemplate: '/fts/country/{iso3}',
@@ -29,6 +32,11 @@ use Doctrine\ORM\Mapping as ORM;
             uriTemplate: '/fts/year/{year}',
             provider: FtsKeyFiguresYearStateProvider::class,
             uriVariables: ['year']
+        ),
+        new Get(
+            uriTemplate: '/fts/years',
+            routeName: 'fts_years',
+            controller: FtsKeyFiguresYears::class
         )
     ]
 )]

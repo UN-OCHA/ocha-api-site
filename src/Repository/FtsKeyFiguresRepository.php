@@ -69,4 +69,17 @@ class FtsKeyFiguresRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return int[] Returns an array of years
+     */
+    public function getDistinctYears(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->orderBy('f.year', 'DESC')
+            ->select('DISTINCT(f.year) as year')        
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
+
 }

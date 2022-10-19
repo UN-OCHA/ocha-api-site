@@ -2,14 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use App\Repository\ReliefWebCrisisFigureValueRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReliefWebCrisisFigureValueRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(
+            controller: NotFoundAction::class, 
+            read: false, 
+            output: false
+        ),
+    ]
+)]
+
 class ReliefWebCrisisFigureValue
 {
     #[ORM\Id]
