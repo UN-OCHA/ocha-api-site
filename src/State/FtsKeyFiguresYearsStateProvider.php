@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Controller;
+namespace App\State;
 
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
 use App\Entity\SimpleStringObject;
 use App\Repository\FtsKeyFiguresRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\Routing\Annotation\Route;
 
-#[AsController]
-class FtsKeyFiguresYears extends AbstractController
+class FtsKeyFiguresYearsStateProvider implements ProviderInterface
 {
+
     protected FtsKeyFiguresRepository $repository;
 
     public function __construct(FtsKeyFiguresRepository $repository)
@@ -19,12 +17,12 @@ class FtsKeyFiguresYears extends AbstractController
         $this->repository = $repository;
     }
 
-    #[Route(path: '/api/fts/years', name: 'fts_years')]
-    public function __invoke(): Response
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $years = array_map(function ($year) {
             return new SimpleStringObject($year['year'], $year['year']);
         }, $this->repository->getDistinctYears());
-        return $this->json($years);
+
+        return $years;
     }
 }

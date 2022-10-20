@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ReliefWebCrisisFiguresRepository;
+use App\State\ReliefWebCrisisFiguresCountriesStateProvider;
 use App\State\ReliefWebCrisisFiguresIso3StateProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,11 +17,28 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: ReliefWebCrisisFiguresRepository::class)]
 #[ApiResource(
-    normalizationContext: [
-        'groups' => ['rw_key_figures']
-    ],
     operations: [
         new GetCollection(
+            uriTemplate: '/relief_web_crisis_figures/countries',
+            output: SimpleStringObject::class,
+            provider: ReliefWebCrisisFiguresCountriesStateProvider::class,
+            openapiContext: [
+                'summary' => 'Get a list of all countries',
+                'description' => 'Get a list of all countries',
+                'tags' => [
+                    'ReliefWeb Crisis Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of countries keyed by iso3 code',
+                    ],
+                ],
+            ],
+        ),
+        new GetCollection(
+            normalizationContext: [
+                'groups' => ['rw_key_figures']
+            ],
             uriTemplate: '/relief_web_crisis_figures/country/{iso3}',
             provider: ReliefWebCrisisFiguresIso3StateProvider::class,
             uriVariables: ['iso3'],
@@ -31,25 +48,8 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                 'tags' => [
                     'ReliefWeb Crisis Figures',
                 ],
-            ]
+            ],
         ),
-        new Get(
-            uriTemplate: '/relief_web_crisis_figures/iso3',
-            routeName: 'relief_web_crisis_figures_iso3',
-            controller: ReliefWebCrisisFiguresCountries::class,
-            openapiContext: [
-                'summary' => 'Get a list of all iso3 codes',
-                'description' => 'Get a list of all iso3 codes',
-                'tags' => [
-                    'ReliefWeb Crisis Figures',
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Array of iso3 codes',
-                    ],
-                ],
-            ]
-        )
     ]
 )]
 
@@ -94,6 +94,9 @@ class ReliefWebCrisisFigures
 
     #[ORM\Column(length: 3)]
     private ?string $iso3 = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $country = null;
 
     public function __construct()
     {
@@ -235,11 +238,24 @@ class ReliefWebCrisisFigures
         $this->date = $values['date'];
         $this->description = $values['description'];
         $this->iso3 = $values['iso3'];
+        $this->country = $values['country'];
         $this->language = $values['language'];
         $this->name = $values['name'];
         $this->value = $values['value'];
         $this->url = $values['url'];
         $this->source = $values['source'];
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }
