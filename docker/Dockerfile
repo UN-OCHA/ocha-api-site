@@ -5,6 +5,7 @@ ENV  APP_ENV=PROD \
      COMPOSER_MEMORY_LIMIT=-1
 COPY . /srv/www
 WORKDIR /srv/www
+RUN apk add -U --no-cache php81-sodium
 RUN composer install --prefer-dist --optimize-autoloader
 
 FROM public.ecr.aws/unocha/php-k8s:${TAG:-8.1-stable}
@@ -45,7 +46,7 @@ COPY --from=builder /srv/www/composer.json /srv/www/composer.json
 COPY --from=builder /srv/www/composer.lock /srv/www/composer.lock
 COPY --from=builder /srv/www/docker/manifest.json /srv/www/public/build/manifest.json
 
-RUN  apk add -U --no-cache php81-pgsql php81-pdo_pgsql && \
+RUN  apk add -U --no-cache php81-pgsql php81-pdo_pgsql php81-sodium && \
      rm -rf /var/cache/apk/* && \
      wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=/usr/local/bin && \
      rm -rf /srv/www/html && \
