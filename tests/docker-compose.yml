@@ -1,0 +1,13 @@
+version: "2.2"
+
+networks:
+  default:
+
+services:
+  site:
+    restart: always
+    image: ocha-api-site:local
+    hostname: ocha-api-test
+    container_name: ocha-api-site-test
+    networks:
+      - default
