@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Controller\FtsKeyFiguresYears;
 use App\Repository\FtsKeyFiguresRepository;
+use App\State\FtsKeyFiguresCountriesStateProvider;
 use App\State\FtsKeyFiguresYearStateProvider;
 use App\State\FtsKeyFiguresIso3StateProvider;
+use App\State\FtsKeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -39,10 +40,10 @@ use Doctrine\ORM\Mapping as ORM;
                 ],
             ]
         ),
-        new Get(
+        new GetCollection(
             uriTemplate: '/fts/years',
-            routeName: 'fts_years',
-            controller: FtsKeyFiguresYears::class,
+            output: SimpleStringObject::class,
+            provider: FtsKeyFiguresYearsStateProvider::class,
             openapiContext: [
                 'summary' => 'Get a list years',
                 'description' => 'Get a list of years',
@@ -51,7 +52,24 @@ use Doctrine\ORM\Mapping as ORM;
                 ],
                 'responses' => [
                     '200' => [
-                        'description' => 'Array of years',
+                        'description' => 'Array of years keyed by year',
+                    ],
+                ],
+            ]
+            ),
+        new GetCollection(
+            uriTemplate: '/fts/countries',
+            output: SimpleStringObject::class,
+            provider: FtsKeyFiguresCountriesStateProvider::class,
+            openapiContext: [
+                'summary' => 'Get a list countries',
+                'description' => 'Get a list of iso3 codes',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of countries keyed by iso3 code',
                     ],
                 ],
             ]

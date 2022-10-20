@@ -61,7 +61,7 @@ class ImportRWCrisisFiguresCommand extends Command
 
         if ($input->getOption('all')) {
             $iso3s = $this->getAllIso3Codes();
-            foreach ($iso3s as $iso3) {
+            foreach (array_keys($iso3s) as $iso3) {
                 $this->updateByIso3($iso3);
             }
             return Command::SUCCESS;
@@ -82,12 +82,18 @@ class ImportRWCrisisFiguresCommand extends Command
      * Get all iso3 codes.
      */
     public function getAllIso3Codes() {
-      // https://raw.githubusercontent.com/reliefweb/crisis-app-data/v2/edition/world/main.json
-      $countries = $this->getDataFromApi('main.json');
-      
-      return array_map(function ($country) {
-        return $country['iso3'];
-      }, $countries);
+      static $countries = [];
+
+      if (empty($countries)) {
+        // https://raw.githubusercontent.com/reliefweb/crisis-app-data/v2/edition/world/main.json
+        $raw_countries = $this->getDataFromApi('main.json');
+
+        foreach ($raw_countries as $raw_country) {
+          $countries[$raw_country['iso3']] = $raw_country['name'];
+        }
+      }
+
+      return $countries;
     }
 
   /**
@@ -97,6 +103,8 @@ class ImportRWCrisisFiguresCommand extends Command
    *   The iso3.
    */
   public function updateByIso3(string $iso3) : void {
+    $country = $this->getAllIso3Codes()[$iso3];
+
     $progress = $this->io->createProgressBar();
     $progress->setFormat('with-message');
     $progress->setMessage('Fetching data');
@@ -111,7 +119,8 @@ class ImportRWCrisisFiguresCommand extends Command
 
       $item = [
         'iso3' => $iso3,
-          'date' => new DateTime($figure['date']),
+        'country' => $country,
+        'date' => new DateTime($figure['date']),
           'description' => $figure['description'],
           'language' => $figure['language'],
           'name' => $figure['name'],
@@ -127,7 +136,7 @@ class ImportRWCrisisFiguresCommand extends Command
       else {
           $fts_key_figure = new ReliefWebCrisisFigures();
           $fts_key_figure->fromValues($item);
-  
+
           $this->createKeyFigure($fts_key_figure, $figure['values']);
       }
     }
@@ -154,14 +163,14 @@ class ImportRWCrisisFiguresCommand extends Command
     foreach ($values as $value) {
       try {
         $figure = new ReliefWebCrisisFigureValue();
-  
+
         $figure->setDate(new DateTime($value['date']))
           ->setValue($value['value']);
-  
+
         if (isset($value['url'])) {
           $figure->setUrl($value['url']);
         }
-  
+
         $this->value_repository->save($figure);
         $item->addValue($figure);
       }
