@@ -16,3 +16,11 @@ api_platform:
                 type: header
         swagger_ui_extra_configuration:
             defaultModelsExpandDepth: -1
+    http_cache:
+        invalidation:
+            enabled: true
+    defaults:
+        cache_headers:
+            max_age: 60
+            shared_max_age: 60
+            vary: ['Content-Type', 'Authorization', 'Origin']
