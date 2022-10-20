@@ -1,4 +1,7 @@
 .docksal
 .env
+.git
 .github
+tests
 vendor
+var

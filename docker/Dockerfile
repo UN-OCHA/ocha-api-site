@@ -55,5 +55,3 @@ RUN  apk add -U --no-cache php81-pgsql php81-pdo_pgsql && \
 
 COPY --from=builder /srv/www/docker/etc/nginx/apps/drupal/drupal.conf /etc/nginx/apps/drupal/drupal.conf
 COPY --from=builder /srv/www/docker/etc/nginx/custom/hsts.conf /etc/nginx/custom/hsts.conf
-
-VOLUME [ "/srv/www/var/cache", "/srv/www/var/sessions" ]
