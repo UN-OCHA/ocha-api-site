@@ -1,4 +1,7 @@
 .docksal
 .env
 .github
+public/bundles
+tests
 vendor
+var
