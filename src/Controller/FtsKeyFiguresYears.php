@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\SimpleStringObject;
 use App\Repository\FtsKeyFiguresRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,7 @@ class FtsKeyFiguresYears extends AbstractController
     public function __invoke(): Response
     {
         $years = array_map(function ($year) {
-            return $year['year'];
+            return new SimpleStringObject($year['year'], $year['year']);
         }, $this->repository->getDistinctYears());
         return $this->json($years);
     }

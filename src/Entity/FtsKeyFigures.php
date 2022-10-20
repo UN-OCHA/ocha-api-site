@@ -39,20 +39,15 @@ use Doctrine\ORM\Mapping as ORM;
                 ],
             ]
         ),
-        new Get(
+        new GetCollection(
             uriTemplate: '/fts/years',
-            routeName: 'fts_years',
-            controller: FtsKeyFiguresYears::class,
+            output: SimpleStringObject::class,
+            provider: FtsKeyFiguresYears::class,
             openapiContext: [
                 'summary' => 'Get a list years',
                 'description' => 'Get a list of years',
                 'tags' => [
                     'FTS Key Figures',
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Array of years',
-                    ],
                 ],
             ]
         )
