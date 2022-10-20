@@ -6,7 +6,7 @@ ENV  APP_ENV=PROD \
 COPY . /srv/www
 WORKDIR /srv/www
 RUN apk add -U --no-cache php81-sodium
-RUN composer install --prefer-dist --optimize-autoloader
+RUN composer install --no-scripts --prefer-dist --optimize-autoloader
 
 FROM public.ecr.aws/unocha/php-k8s:${TAG:-8.1-stable}
 
