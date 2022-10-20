@@ -1,4 +1,6 @@
 {
+    "name": "unocha/ocha-api",
+    "description": "OCHA API Server",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
