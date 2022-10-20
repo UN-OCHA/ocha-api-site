@@ -76,7 +76,20 @@ class FtsKeyFiguresRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('f')
             ->orderBy('f.year', 'DESC')
-            ->select('DISTINCT(f.year) as year')        
+            ->select('DISTINCT(f.year) as year')
+            ->getQuery()
+            ->getScalarResult()
+        ;
+    }
+
+    /**
+     * @return string[] Returns an array of iso3
+     */
+    public function getDistinctCountries(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->orderBy('f.iso3', 'ASC')
+            ->select('DISTINCT(f.iso3) as iso3, f.country')
             ->getQuery()
             ->getScalarResult()
         ;

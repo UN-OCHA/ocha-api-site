@@ -56,11 +56,11 @@ class ReliefWebCrisisFiguresRepository extends ServiceEntityRepository
     /**
      * @return string[] Returns an array of iso3 codes
      */
-    public function getDistinctIso3(): array
+    public function getDistinctCountries(): array
     {
         return $this->createQueryBuilder('f')
-            ->orderBy('f.iso3', 'DESC')
-            ->select('DISTINCT(f.iso3) as iso3')        
+            ->orderBy('f.iso3', 'ASC')
+            ->select('DISTINCT(f.iso3) as iso3, f.country')
             ->getQuery()
             ->getScalarResult()
         ;
