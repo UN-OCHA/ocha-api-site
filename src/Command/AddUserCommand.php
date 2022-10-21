@@ -71,13 +71,12 @@ class AddUserCommand extends Command
     {
         $this
             ->setHelp($this->getCommandHelp())
-            // commands can optionally define arguments and/or options (mandatory and optional)
-            // see https://symfony.com/doc/current/components/console/console_arguments.html
             ->addArgument('username', InputArgument::OPTIONAL, 'The username of the new user')
-            ->addArgument('password', InputArgument::OPTIONAL, 'The plain password of the new user')
             ->addArgument('email', InputArgument::OPTIONAL, 'The email of the new user')
             ->addArgument('full-name', InputArgument::OPTIONAL, 'The full name of the new user')
             ->addOption('admin', null, InputOption::VALUE_NONE, 'If set, the user is created as an administrator')
+            ->addOption('fts', null, InputOption::VALUE_NONE, 'If set, grant FTS role')
+            ->addOption('rw-crisis', null, InputOption::VALUE_NONE, 'If set, grant RW Crisis role')
         ;
     }
 
@@ -105,7 +104,7 @@ class AddUserCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (null !== $input->getArgument('username') && null !== $input->getArgument('password') && null !== $input->getArgument('email') && null !== $input->getArgument('full-name')) {
+        if (null !== $input->getArgument('username') && null !== $input->getArgument('email') && null !== $input->getArgument('full-name')) {
             return;
         }
 
@@ -114,7 +113,7 @@ class AddUserCommand extends Command
             'If you prefer to not use this interactive wizard, provide the',
             'arguments required by this command as follows:',
             '',
-            ' $ php bin/console app:add-user username password email@example.com',
+            ' $ php bin/console app:add-user username email@example.com fullname',
             '',
             'Now we\'ll ask you for the value of all the missing command arguments.',
         ]);
@@ -126,15 +125,6 @@ class AddUserCommand extends Command
         } else {
             $username = $this->io->ask('Username', null, [$this->validator, 'validateUsername']);
             $input->setArgument('username', $username);
-        }
-
-        // Ask for the password if it's not defined
-        $password = $input->getArgument('password');
-        if (null !== $password) {
-            $this->io->text(' > <info>Password</info>: '.u('*')->repeat(u($password)->length()));
-        } else {
-            $password = $this->io->askHidden('Password (your type will be hidden)', [$this->validator, 'validatePassword']);
-            $input->setArgument('password', $password);
         }
 
         // Ask for the email if it's not defined
@@ -165,21 +155,38 @@ class AddUserCommand extends Command
         $stopwatch = new Stopwatch();
         $stopwatch->start('add-user-command');
 
+        $plainPassword = bin2hex(random_bytes(32));
         $username = $input->getArgument('username');
-        $plainPassword = $input->getArgument('password');
         $email = $input->getArgument('email');
         $fullName = $input->getArgument('full-name');
+
         $isAdmin = $input->getOption('admin');
+        $isFts = $input->getOption('fts');
+        $isRwCrisis = $input->getOption('rw-crisis');
+
+        $roles = [
+            'ROLE_USER',
+        ];
+
+        if ($isAdmin) {
+            $roles[] = 'ROLE_ADMIN';
+        }
+        if ($isFts) {
+            $roles[] = 'ROLE_FTS';
+        }
+        if ($isRwCrisis) {
+            $roles[] = 'ROLE_RW_CRISIS';
+        }
 
         // make sure to validate the user data is correct
-        $this->validateUserData($username, $plainPassword, $email, $fullName);
+        $this->validateUserData($username, $email, $fullName);
 
         // create the user and hash its password
         $user = new User();
         $user->setFullName($fullName);
         $user->setUsername($username);
         $user->setEmail($email);
-        $user->setRoles([$isAdmin ? 'ROLE_ADMIN' : 'ROLE_USER']);
+        $user->setRoles($roles);
         $user->setToken(bin2hex(random_bytes(16)));
 
         // See https://symfony.com/doc/5.4/security.html#registering-the-user-hashing-passwords
@@ -200,7 +207,7 @@ class AddUserCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function validateUserData($username, $plainPassword, $email, $fullName): void
+    private function validateUserData($username, $email, $fullName): void
     {
         // first check if a user with the same username already exists.
         $existingUser = $this->users->findOneBy(['username' => $username]);
@@ -209,8 +216,7 @@ class AddUserCommand extends Command
             throw new RuntimeException(sprintf('There is already a user registered with the "%s" username.', $username));
         }
 
-        // validate password and email if is not this input means interactive.
-        $this->validator->validatePassword($plainPassword);
+        // validate email and fullname if is not this input means interactive.
         $this->validator->validateEmail($email);
         $this->validator->validateFullName($fullName);
 
@@ -232,24 +238,13 @@ class AddUserCommand extends Command
         return <<<'HELP'
             The <info>%command.name%</info> command creates new users and saves them in the database:
 
-              <info>php %command.full_name%</info> <comment>username password email</comment>
+              <info>php %command.full_name%</info> <comment>username email fullname</comment>
 
             By default the command creates regular users. To create administrator users,
             add the <comment>--admin</comment> option:
 
-              <info>php %command.full_name%</info> username password email <comment>--admin</comment>
+              <info>php %command.full_name%</info> username email fullname<comment>--admin</comment>
 
-            If you omit any of the three required arguments, the command will ask you to
-            provide the missing values:
-
-              # command will ask you for the email
-              <info>php %command.full_name%</info> <comment>username password</comment>
-
-              # command will ask you for the email and password
-              <info>php %command.full_name%</info> <comment>username</comment>
-
-              # command will ask you for all arguments
-              <info>php %command.full_name%</info>
             HELP;
     }
 }

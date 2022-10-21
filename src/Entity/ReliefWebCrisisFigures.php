@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: ReliefWebCrisisFiguresRepository::class)]
 #[ApiResource(
-    security: "is_granted('ROLE_USER')",
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RW_CRISIS')",
     operations: [
         new GetCollection(
             uriTemplate: '/relief_web_crisis_figures/countries',

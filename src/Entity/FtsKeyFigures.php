@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FtsKeyFiguresRepository::class)]
 #[ApiResource(
-    security: "is_granted('ROLE_USER')",
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_FTS')",
     operations: [
         new GetCollection(
             uriTemplate: '/fts/country/{iso3}',

@@ -50,9 +50,12 @@ console doctrine:schema:create
 
 ### API-Key (active)
 
+Admin have access to all resources.
+
 ```bash
-console app:add-user username password info@example.com
-console lexik:jwt:generate-token info@example.com --user-class="App\Entity\User"
+console app:add-user fts fts@example.com fts --fts
+console app:add-user rwcrisis rwcrisis@example.com rwcrisis --rw-crisis
+console app:add-user admin admin@example.com admin --admin
 ```
 
 ### JWT (not enabled)
