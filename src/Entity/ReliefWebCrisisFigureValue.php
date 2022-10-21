@@ -8,8 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReliefWebCrisisFigureValueRepository::class)]
-
-
 class ReliefWebCrisisFigureValue
 {
     #[ORM\Id]
