@@ -69,22 +69,6 @@ script:
   #-  if [[ "$ACTION" == "install" ]]; then yarn install && yarn encore production && git add --all && git diff --staged --exit-code; fi
   - composer validate --strict
 
-  # Get docker information.
-  - docker version
-  - docker-compose version
-
-  # Build local image.
-  - make
-
-  # Create the site container.
-  - docker-compose -p ocha-api-test -f tests/docker-compose.yml up -d
-
-  # Dump some information about the created containers.
-  - docker ps -a
-
-  # Wait a bit for solr and mysql to be ready.
-  - sleep 10
 
   # PHP linting
-  - docker-compose -p ocha-api-test -f tests/docker-compose.yml exec -u appuser -w /srv/www site /bin/sh -c "find -L ./src -iregex '.*\.php$' -print0 | xargs -0 -n 1 -P 4 php -l"
-
+  - find -L ./src -iregex '.*\.php$' -print0 | xargs -0 -n 1 -P 4 php -l
