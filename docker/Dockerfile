@@ -1,6 +1,6 @@
 FROM public.ecr.aws/unocha/unified-builder:${TAG:-8.1-stable} as builder
 ARG  BRANCH_ENVIRONMENT
-ENV  APP_ENV=${NODE_ENV} \
+ENV  APP_ENV=PROD \
      PUBLIC_DIR=/srv/www/public \
      COMPOSER_MEMORY_LIMIT=-1
 COPY . /srv/www
