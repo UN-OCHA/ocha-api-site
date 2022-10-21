@@ -20,7 +20,7 @@ class InternallyDisplacedPersonsCountriesStateProvider implements ProviderInterf
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $countries = array_map(function ($iso3) {
-            return new SimpleStringObject($iso3['iso3'], $iso3['country']);
+            return new SimpleStringObject($iso3['id'], $iso3['country']);
         }, $this->repository->getDistinctCountries());
         
         return $countries;

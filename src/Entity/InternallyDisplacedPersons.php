@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\InternallyDisplacedPersonsRepository;
 use App\State\InternallyDisplacedPersonsCountriesStateProvider;
@@ -17,6 +18,38 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 #[ApiResource(
     security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_IDPS')",
     operations: [
+        new Get(
+            normalizationContext: [
+                'groups' => ['key_figures']
+            ],
+            uriTemplate: '/idps/country/{id}',
+            uriVariables: ['id'],
+            openapiContext: [
+                'summary' => 'Get Internally displaced persons key figures by iso3 code',
+                'description' => 'Get Internally displaced persons key figures by iso3 code',
+                'tags' => [
+                    'Internally displaced persons key figures',
+                ],
+            ],
+        ),
+        new GetCollection(
+            uriTemplate: '/idps/iso3/{iso3}',
+            uriVariables: ['iso3'],
+            output: SimpleStringObject::class,
+            provider: InternallyDisplacedPersonsIso3StateProvider::class,
+            openapiContext: [
+                'summary' => 'Get Internally displaced persons key figures by iso3 code',
+                'description' => 'Get Internally displaced persons key figures by iso3 code',
+                'tags' => [
+                    'Internally displaced persons key figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Internally displaced persons key figures by iso3 code',
+                    ],
+                ],
+            ],
+        ),        
         new GetCollection(
             uriTemplate: '/idps/countries',
             output: SimpleStringObject::class,
@@ -34,39 +67,22 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                 ],
             ],
         ),
-        new GetCollection(
-            normalizationContext: [
-                'groups' => ['key_figures']
-            ],
-            uriTemplate: '/idps/country/{iso3}',
-            provider: InternallyDisplacedPersonsIso3StateProvider::class,
-            uriVariables: ['iso3'],
-            openapiContext: [
-                'summary' => 'Get Internally displaced persons key figures by iso3 code',
-                'description' => 'Get Internally displaced persons key figures by iso3 code',
-                'tags' => [
-                    'Internally displaced persons key figures',
-                ],
-            ],
-        ),
+
     ]
 )]
 class InternallyDisplacedPersons
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 3)]
     #[Groups('key_figures')]
-    private ?string $iso3 = null;
+    #[SerializedName('iso3')]
+    private ?string $id = null;
 
     #[ORM\Column(length: 255)]
     #[Groups('key_figures')]
     private ?string $country = null;
 
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: InternallyDisplacedPersonsValues::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', indexBy: 'id', targetEntity: InternallyDisplacedPersonsValues::class)]
     #[Groups('key_figures')]
     #[SerializedName('values')]
     private Collection $InternallyDisplacedPersonsValues;
@@ -76,19 +92,14 @@ class InternallyDisplacedPersons
         $this->InternallyDisplacedPersonsValues = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function getIso3(): ?string
+    public function setId(string $iso3): self
     {
-        return $this->iso3;
-    }
-
-    public function setIso3(string $iso3): self
-    {
-        $this->iso3 = $iso3;
+        $this->id = $iso3;
 
         return $this;
     }

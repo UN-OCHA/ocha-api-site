@@ -40,12 +40,12 @@ class InternallyDisplacedPersonsRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return InternallyDisplacedPersons[] Returns an array of InternallyDisplacedPersons objects
+     * @return InternallyDisplacedPersons[] Returns an array of FtsKeyFigures objects
      */
     public function findByIso3(string $value): array
     {
         return $this->createQueryBuilder('f')
-            ->andWhere('f.iso3 = :val')
+            ->andWhere('f.id = :val')
             ->setParameter('val', $value)
             ->setMaxResults(100)
             ->getQuery()
@@ -59,8 +59,8 @@ class InternallyDisplacedPersonsRepository extends ServiceEntityRepository
     public function getDistinctCountries(): array
     {
         return $this->createQueryBuilder('f')
-            ->orderBy('f.iso3', 'ASC')
-            ->select('DISTINCT(f.iso3) as iso3, f.country')
+            ->orderBy('f.id', 'ASC')
+            ->select('DISTINCT(f.id) as id, f.country')
             ->getQuery()
             ->getScalarResult()
         ;

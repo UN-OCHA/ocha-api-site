@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Repository\InternallyDisplacedPersonsValuesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,10 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class InternallyDisplacedPersonsValues
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    #[Groups('key_figures')]
-    private ?int $id = null;
+    #[ORM\Column(length: 30)]
+    private ?string $id = null;
 
     #[ORM\Column]
     #[Groups('key_figures')]
@@ -40,7 +37,7 @@ class InternallyDisplacedPersonsValues
     #[ORM\ManyToOne(inversedBy: 'InternallyDisplacedPersonsValues')]
     private ?InternallyDisplacedPersons $parent = null;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
