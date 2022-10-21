@@ -46,7 +46,7 @@ COPY --from=builder /srv/www/composer.json /srv/www/composer.json
 COPY --from=builder /srv/www/composer.lock /srv/www/composer.lock
 COPY --from=builder /srv/www/docker/manifest.json /srv/www/public/build/manifest.json
 
-RUN  apk add -U --no-cache php81-mysql php81-sodium && \
+RUN  apk add -U --no-cache php81-sodium && \
      rm -rf /var/cache/apk/* && \
      wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=/usr/local/bin && \
      rm -rf /srv/www/html && \
