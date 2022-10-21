@@ -38,7 +38,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         ),
         new GetCollection(
             normalizationContext: [
-                'groups' => ['rw_key_figures']
+                'groups' => ['key_figures']
             ],
             uriTemplate: '/relief_web_crisis_figures/country/{iso3}',
             provider: ReliefWebCrisisFiguresIso3StateProvider::class,
@@ -62,34 +62,34 @@ class ReliefWebCrisisFigures
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?int $value = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?string $url = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?string $source = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[ORM\Column(length: 3)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?string $language = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: ReliefWebCrisisFigureValue::class)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     #[SerializedName('values')]
     private Collection $figureValues;
 

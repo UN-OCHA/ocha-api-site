@@ -16,15 +16,15 @@ class ReliefWebCrisisFigureValue
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?int $value = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255, nullable: TRUE)]
-    #[Groups('rw_key_figures')]
+    #[Groups('key_figures')]
     private ?string $url = null;
 
     #[ORM\ManyToOne(inversedBy: 'figureValues')]
