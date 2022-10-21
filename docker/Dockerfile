@@ -7,6 +7,7 @@ COPY . /srv/www
 WORKDIR /srv/www
 RUN apk add -U --no-cache php81-sodium
 RUN composer install --no-scripts --prefer-dist --optimize-autoloader
+RUN bin/console assets:install public
 
 FROM public.ecr.aws/unocha/php-k8s:${TAG:-8.1-stable}
 
