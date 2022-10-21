@@ -1,7 +1,8 @@
 # Variables. Yes.
 DOCKER=docker
 DOCKER_BUILDKIT=0
-TAG=8.0-stable
+TAG=8.1-stable
+NODE_ENV=dev
 
 # The main build recipe.
 build:	clean
