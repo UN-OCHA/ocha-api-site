@@ -77,6 +77,7 @@ class AddUserCommand extends Command
             ->addOption('admin', null, InputOption::VALUE_NONE, 'If set, the user is created as an administrator')
             ->addOption('fts', null, InputOption::VALUE_NONE, 'If set, grant FTS role')
             ->addOption('rw-crisis', null, InputOption::VALUE_NONE, 'If set, grant RW Crisis role')
+            ->addOption('idps', null, InputOption::VALUE_NONE, 'If set, grant IDPS role')
         ;
     }
 
@@ -163,6 +164,7 @@ class AddUserCommand extends Command
         $isAdmin = $input->getOption('admin');
         $isFts = $input->getOption('fts');
         $isRwCrisis = $input->getOption('rw-crisis');
+        $isIdps = $input->getOption('idps');
 
         $roles = [
             'ROLE_USER',
@@ -176,6 +178,9 @@ class AddUserCommand extends Command
         }
         if ($isRwCrisis) {
             $roles[] = 'ROLE_RW_CRISIS';
+        }
+        if ($isIdps) {
+            $roles[] = 'ROLE_IDPS';
         }
 
         // make sure to validate the user data is correct
