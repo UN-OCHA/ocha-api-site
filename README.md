@@ -1,25 +1,20 @@
 # OCHA Api
 
-## Todo
-
-- [Use plain API keys](https://symfony.com/doc/5.2/security/guard_authentication.html) or https://habr.com/ru/post/669590/
-- https://symfony.com/doc/current/security/custom_authenticator.html
-- https://stackoverflow.com/questions/72441939/symfony-6-apikeyauthenticator-with-selfvalidatingpassport-replaces-guard
-
 ## Resources
 
 - [Export as CSV](https://locastic.com/blog/easy-csv-export-in-api-platform)
 - [Hide entity from docs](https://api-platform.com/docs/core/operations/#expose-a-model-without-any-routes)
-
 
 ## Helpers
 
 ### Entity
 
 ```bash
-console make:entity --api-resource
+console make:entity -a InternallyDisplacedPersonsValues
+console make:entity --api-resource InternallyDisplacedPersons
 console make:migration
 console doctrine:migrations:migrate
+console app:add-user idps idps@example.com idps --idps
 ```
 
 ### State provider
@@ -55,6 +50,7 @@ Admin have access to all resources.
 ```bash
 console app:add-user fts fts@example.com fts --fts
 console app:add-user rwcrisis rwcrisis@example.com rwcrisis --rw-crisis
+console app:add-user idps idps@example.com idps --idps
 console app:add-user admin admin@example.com admin --admin
 ```
 
