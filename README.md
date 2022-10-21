@@ -1,5 +1,11 @@
 # OCHA Api
 
+## Todo
+
+- [Use plain API keys](https://symfony.com/doc/5.2/security/guard_authentication.html) or https://habr.com/ru/post/669590/
+- https://symfony.com/doc/current/security/custom_authenticator.html
+- https://stackoverflow.com/questions/72441939/symfony-6-apikeyauthenticator-with-selfvalidatingpassport-replaces-guard
+
 ## Resources
 
 - [Export as CSV](https://locastic.com/blog/easy-csv-export-in-api-platform)
@@ -40,7 +46,18 @@ console doctrine:database:create
 console doctrine:schema:create
 ```
 
-## Tokens
+## Security
+
+### API-Key (active)
+
+```bash
+console app:add-user username password info@example.com
+console lexik:jwt:generate-token info@example.com --user-class="App\Entity\User"
+```
+
+### JWT (not enabled)
+
+Install using `composer require lexik/jwt-authentication-bundle`
 
 ```bash
 console app:add-user username password info@example.com

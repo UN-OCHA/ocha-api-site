@@ -180,6 +180,7 @@ class AddUserCommand extends Command
         $user->setUsername($username);
         $user->setEmail($email);
         $user->setRoles([$isAdmin ? 'ROLE_ADMIN' : 'ROLE_USER']);
+        $user->setToken(bin2hex(random_bytes(16)));
 
         // See https://symfony.com/doc/5.4/security.html#registering-the-user-hashing-passwords
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
@@ -195,6 +196,7 @@ class AddUserCommand extends Command
             $this->io->comment(sprintf('New user database id: %d / Elapsed time: %.2f ms / Consumed memory: %.2f MB', $user->getId(), $event->getDuration(), $event->getMemory() / (1024 ** 2)));
         }
 
+        $this->io->comment(sprintf('New user database id: %d / Token: %s', $user->getId(), $user->getToken()));
         return Command::SUCCESS;
     }
 

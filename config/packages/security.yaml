@@ -5,39 +5,28 @@ security:
     enable_authenticator_manager: true
 
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        jwt:
-            lexik_jwt: ~
-
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: token
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        api:
-            pattern: ^/x-api/
-            provider: jwt
-            jwt: ~
         main:
+            lazy: true
             stateless: true
             provider: app_user_provider
-            json_login:
-                check_path: /authentication_token
-                username_path: email
-                password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-            jwt: ~
+            entry_point: App\Security\AuthenticationEntryPoint
+            access_denied_handler: App\Security\AccessDeniedHandler
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
 
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
         - { path: ^/api$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
