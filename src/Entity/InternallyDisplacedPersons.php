@@ -20,7 +20,8 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
     operations: [
         new Get(
             normalizationContext: [
-                'groups' => ['key_figures']
+                'groups' => ['key_figures'],
+                'skip_null_values' => FALSE,
             ],
             uriTemplate: '/idps/country/{id}',
             uriVariables: ['id'],
@@ -33,6 +34,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             ],
         ),
         new GetCollection(
+            normalizationContext: [
+                'groups' => ['key_figures'],
+                'skip_null_values' => FALSE,
+            ],
             uriTemplate: '/idps/iso3/{iso3}',
             uriVariables: ['iso3'],
             output: SimpleStringObject::class,
@@ -117,11 +122,11 @@ class InternallyDisplacedPersons
     }
 
     /**
-     * @return Collection<int, InternallyDisplacedPersonsValues>
+     * @return array<InternallyDisplacedPersonsValues>
      */
-    public function getInternallyDisplacedPersonsValues(): Collection
+    public function getInternallyDisplacedPersonsValues(): array
     {
-        return $this->InternallyDisplacedPersonsValues;
+        return $this->InternallyDisplacedPersonsValues->getValues();
     }
 
     public function addInternallyDisplacedPersonsValue(InternallyDisplacedPersonsValues $internallyDisplacedPersonsValue): self
