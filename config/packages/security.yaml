@@ -22,14 +22,6 @@ security:
             custom_authenticators:
                 - App\Security\ApiKeyAuthenticator
 
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/api$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/api, roles: ROLE_USER }
-        - { path: ^/, roles: PUBLIC_ACCESS } # Allows accessing assets
-
 when@test:
     security:
         password_hashers:
