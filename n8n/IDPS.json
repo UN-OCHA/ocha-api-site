@@ -64,64 +64,17 @@
     },
     {
       "parameters": {
-        "functionCode": "let output = [];\nlet countries = {};\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.ISO3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty values.\n  if (item.json['Conflict Stock Displacement'] == '' && item.json['Conflict Internal Displacements'] == '' && item.json['Disaster Internal Displacements'] == '' && item.json['Disaster Stock Displacement'] == '') {\n    continue;\n  }\n  \n  if (!countries[item.json.ISO3]) {\n    countries[item.json.ISO3] = {\n      id: item.json.ISO3,\n      country: item.json.Name,\n      values: []\n    }\n  }\n}\n\nfor (const country in countries) {\n    output.push(countries[country]);\n}\n\nreturn output;"
-      },
-      "id": "b787c4c5-9df6-49a1-858c-2aadb11d4caf",
-      "name": "Build output",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [
-        320,
-        120
-      ]
-    },
-    {
-      "parameters": {
         "operation": "upsert",
-        "table": "internally_displaced_persons",
-        "columns": "id,country"
-      },
-      "id": "9d844961-68b8-474b-9cf8-a9c3094265bb",
-      "name": "Insert/Update countries",
-      "type": "n8n-nodes-mysql-extend.mySqlExtend",
-      "typeVersion": 1,
-      "position": [
-        540,
-        120
-      ],
-      "credentials": {
-        "mySqlExtend": {
-          "id": "5",
-          "name": "MySqlExtend account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.ISO3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty values.\n  if (item.json['Conflict Stock Displacement'] == '' && item.json['Conflict Internal Displacements'] == '' && item.json['Disaster Internal Displacements'] == '' && item.json['Disaster Stock Displacement'] == '') {\n    continue;\n  }\n  \n  output.push({\n    id: item.json.ISO3 + '_' + item.json.Year,\n    parent_id: item.json.ISO3,\n    year: item.json.Year,\n    conflict_stock_displacement: item.json['Conflict Stock Displacement'].length == 0 ? null : item.json['Conflict Stock Displacement'],\n    conflict_internal_displacements: item.json['Conflict Internal Displacements'].length == 0 ? null : item.json['Conflict Internal Displacements'],\n    disaster_internal_displacements: item.json['Disaster Internal Displacements'].length == 0 ? null : item.json['Disaster Internal Displacements'],\n    disaster_stock_displacement: item.json['Disaster Stock Displacement'].length == 0 ? null : item.json['Disaster Stock Displacement'],\n  });\n}\n\nreturn output;"
-      },
-      "id": "76eacaf1-faf7-40f7-be77-4720a7d26a12",
-      "name": "Build output1",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [
-        320,
-        340
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "upsert",
-        "table": "internally_displaced_persons_values",
-        "columns": "id,parent_id,year,conflict_stock_displacement,conflict_internal_displacements,disaster_internal_displacements,disaster_stock_displacement"
+        "table": "key_figures",
+        "columns": "id,iso3,country,year,name,value,url,source"
       },
       "id": "a1727ae2-3789-429a-ae97-812fe84277c2",
       "name": "MySqlExtend",
       "type": "n8n-nodes-mysql-extend.mySqlExtend",
       "typeVersion": 1,
       "position": [
-        540,
-        340
+        520,
+        120
       ],
       "credentials": {
         "mySqlExtend": {
@@ -129,6 +82,19 @@
           "name": "MySqlExtend account"
         }
       }
+    },
+    {
+      "parameters": {
+        "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.ISO3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty iso3.\n  if (item.json.ISO3 == '') {\n    continue;\n  }\n\n  if (item.json['Conflict Stock Displacement'] != '') {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Conflict Stock Displacement',\n      value: item.json['Conflict Stock Displacement'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Conflict Internal Displacements'] != '') {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Conflict Internal Displacements',\n      value: item.json['Conflict Internal Displacements'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Disaster Internal Displacements'] != '') {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Disaster Internal Displacements',\n      value: item.json['Disaster Internal Displacements'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Disaster Stock Displacement'] != '') {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Disaster Stock Displacement',\n      value: item.json['Disaster Stock Displacement'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n}\n\nreturn output;"
+      },
+      "id": "76eacaf1-faf7-40f7-be77-4720a7d26a12",
+      "name": "Build records",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        320,
+        120
+      ]
     }
   ],
   "pinData": {
@@ -29663,30 +29629,14 @@
       "main": [
         [
           {
-            "node": "Build output",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Build output1",
+            "node": "Build records",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Build output": {
-      "main": [
-        [
-          {
-            "node": "Insert/Update countries",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build output1": {
+    "Build records": {
       "main": [
         [
           {
