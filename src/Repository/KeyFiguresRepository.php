@@ -39,28 +39,30 @@ class KeyFiguresRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return KeyFigures[] Returns an array of KeyFigures objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('k')
-//            ->andWhere('k.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('k.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return int[] Returns an array of years
+     */
+    public function getDistinctYears(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->orderBy('f.year', 'DESC')
+            ->select('DISTINCT(f.year) as value, f.year as label')
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
 
-//    public function findOneBySomeField($value): ?KeyFigures
-//    {
-//        return $this->createQueryBuilder('k')
-//            ->andWhere('k.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return array Returns an array of iso3
+     */
+    public function getDistinctCountries(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->orderBy('f.iso3', 'ASC')
+            ->select('DISTINCT(f.iso3) as value, f.country as label')
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
 }

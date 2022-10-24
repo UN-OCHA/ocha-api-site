@@ -2,13 +2,77 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Action\NotFoundAction;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\KeyFiguresRepository;
+use App\State\KeyFiguresCountriesStateProvider;
+use App\State\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: KeyFiguresRepository::class)]
-#[ApiResource]
+#[ApiResource(
+//    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')",
+    operations: [
+        new Get(
+            controller: NotFoundAction::class, 
+            read: false, 
+            output: false,
+            host: 'do-not-use',
+        ),
+        new GetCollection(
+            uriTemplate: '/key_figures/years',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresYearsStateProvider::class,
+            openapiContext: [
+                'summary' => 'Get a list years',
+                'description' => 'Get a list of years',
+                'tags' => [
+                    'Key Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of years keyed by year',
+                    ],
+                ],
+            ]
+        ),
+        new GetCollection(
+            uriTemplate: '/key_figures/countries',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresCountriesStateProvider::class,
+            openapiContext: [
+                'summary' => 'Get a list countries',
+                'description' => 'Get a list of iso3 codes',
+                'tags' => [
+                    'Key Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of countries keyed by iso3 code',
+                    ],
+                ],
+            ]
+        ),
+        new GetCollection(
+            uriTemplate: '/key_figures/numbers',
+            openapiContext: [
+                'summary' => 'Get a list of key figures',
+                'description' => 'Get a list of key figures',
+                'tags' => [
+                    'Key Figures',
+                ],
+            ]
+        ),
+    ]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['iso3' => 'exact', 'year' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
 class KeyFigures
 {
     #[ORM\Id]
@@ -41,6 +105,9 @@ class KeyFigures
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(nullable: true)]
+    private array $tags = [];
 
     public function getId(): ?string
     {
@@ -151,6 +218,34 @@ class KeyFigures
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    public function setTags(?array $tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function fromValues(array $values): self {
+        $this->id = $values['id'];
+        $this->iso3 = $values['iso3'];
+        $this->country = $values['country'];
+        $this->year = $values['year'];
+        $this->name = $values['name'];
+        $this->value = $values['value'];
+        $this->updated = $values['updated'];
+        $this->url = $values['url'];
+        $this->source = $values['source'];
+        $this->description = $values['description'];
+        $this->tags = $values['tags'];
 
         return $this;
     }

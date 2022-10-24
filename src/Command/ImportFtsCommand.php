@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\FtsKeyFigures;
-use App\Repository\FtsKeyFiguresRepository;
+use App\Entity\KeyFigures;
+use App\Repository\KeyFiguresRepository;
 use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,12 +24,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class ImportFtsCommand extends Command
 {
 
-    protected FtsKeyFiguresRepository $repository;
+    protected KeyFiguresRepository $repository;
     protected HttpClientInterface $httpClient;
     protected RouterInterface $router;
     protected SymfonyStyle $io;
 
-    public function __construct(FtsKeyFiguresRepository $repository, HttpClientInterface $http_client, RouterInterface $router)
+    public function __construct(KeyFiguresRepository $repository, HttpClientInterface $http_client, RouterInterface $router)
     {
         $this->repository = $repository;
         $this->httpClient = $http_client;
@@ -90,47 +90,74 @@ class ImportFtsCommand extends Command
     $progress->setMaxSteps(count($plans));
 
     foreach ($plans as $plan) {
-        $progress->advance();
-        $progress->setMessage('Processing plan ' . $plan['id'] . ' [' . $year . ']');
+      $progress->advance();
+      $progress->setMessage('Processing plan ' . $plan['id'] . ' [' . $year . ']');
 
-        // Skip plans without location.
-        if (!isset($plan['locations'][0])) {
-            continue;
+      // Skip plans without location.
+      if (!isset($plan['locations'][0])) {
+          continue;
+      }
+
+      // Skip plans without iso3.
+      if (!isset($plan['locations'][0]['iso3'])) {
+          continue;
+      }
+
+      $data_plan = $this->getDataFromApi('public/plan/id/' . $plan['id']);
+      $data_flow = $this->getDataFromApi('public/fts/flow', ['planId' => $plan['id']]);
+
+      $figure_types = [
+        'original_requirements' => [
+          'label' => 'Original requirements',
+          'value' => $plan['origRequirements'],
+        ],
+        'revised_requirements' => [
+          'label' => 'Revised requirements',
+          'value' => $plan['revisedRequirements'],
+        ],
+        'total_requirements' => [
+          'label' => 'Total requirements',
+          'value' => $data_plan['revisedRequirements'],
+        ],
+        'funding_total' => [
+          'label' => 'Funding total',
+          'value' => $data_flow['incoming']['fundingTotal'],
+        ],
+      ];
+
+      foreach ($figure_types as $figure_type => $info) {
+        if (!$info['value']) {
+          continue;
         }
-
-        // Skip plans without iso3.
-        if (!isset($plan['locations'][0]['iso3'])) {
-            continue;
-        }
-
-        $data_plan = $this->getDataFromApi('public/plan/id/' . $plan['id']);
-        $data_flow = $this->getDataFromApi('public/fts/flow', ['planId' => $plan['id']]);
-
+        
+        $id = 'fts_' . strtolower($plan['locations'][0]['iso3']) . '_' . $year . '_' . $figure_type;
         $item = [
-            'plan_id' => $plan['id'],
-            'name' => $plan['planVersion']['name'],
-            'code' => $plan['planVersion']['code'],
-            'year' => $year,
-            'iso3' => strtolower($plan['locations'][0]['iso3']),
-            'country' => $plan['locations'][0]['name'],
-            'updated' => new DateTime($plan['updatedAt']),
-            'original_requirements' => $plan['origRequirements'],
-            'revised_requirements' => $plan['revisedRequirements'],
-            'total_requirements' => $data_plan['revisedRequirements'],
-            'funding_total' => $data_flow['incoming']['fundingTotal'],
-            'unmet_requirements' => max(0, $data_plan['revisedRequirements'] - $data_flow['incoming']['fundingTotal']),
+          'id' => $id,
+          'name' => $info['label'],
+          'year' => $year,
+          'iso3' => strtolower($plan['locations'][0]['iso3']),
+          'country' => $plan['locations'][0]['name'],
+          'updated' => new DateTime($plan['updatedAt']),
+          'value' => $info['value'],
+          'source' => 'FTS',
+          'url' => 'https://fts.unocha.org/appeals/' . $plan['id'] . '/summary',
+          'description' => $plan['planVersion']['name'] . ' [' . $plan['planVersion']['code'] . ']',
+          'tags' => [
+            'fts',
+            'financial',
+          ],
         ];
 
-        if ($existing = $this->loadPlanByPlanId($plan['id'])) {
-            $existing->fromValues($item);
-            $this->createPlan($existing);
+        if ($existing = $this->load($id)) {
+          $existing->fromValues($item);
+          $this->save($existing);
         }
         else {
-              $fts_key_figure = new FtsKeyFigures();
-            $fts_key_figure->fromValues($item);
-    
-            $this->createPlan($fts_key_figure);
+          $new = new KeyFigures();
+          $new->fromValues($item);
+          $this->save($new);
         }
+      }
     }
 
     $progress->finish();
@@ -139,14 +166,14 @@ class ImportFtsCommand extends Command
   /**
    * Load plan by PlanId.
    */
-  public function loadPlanByPlanId($plan_id) {
-    return $this->repository->findOneBy(['planId' => $plan_id]);
+  public function load($id) {
+    return $this->repository->findOneBy(['id' => $id]);
   }
 
   /**
    * Create a new plan.
    */
-  public function createPlan(FtsKeyFigures $item) {
+  public function save(KeyFigures $item) {
     $this->repository->save($item, TRUE);
   }
 
