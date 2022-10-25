@@ -146,6 +146,7 @@ class ImportFtsCommand extends Command
             'fts',
             'financial',
           ],
+          'provider' => 'fts',
         ];
 
         if ($existing = $this->load($id)) {

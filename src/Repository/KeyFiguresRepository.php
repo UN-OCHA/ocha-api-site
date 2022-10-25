@@ -40,13 +40,38 @@ class KeyFiguresRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return KeyFigures[]
+     */
+    public function get($provider = NULL): array
+    {
+        $qb = $this->createQueryBuilder('f');
+
+        if (!empty($provider)) {
+            $qb->where($qb->expr()->eq('f.provider', ':provider'))
+                ->setParameter(':provider', $provider);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * @return int[] Returns an array of years
      */
-    public function getDistinctYears(): array
+    public function getDistinctYears($provider = NULL): array
     {
-        return $this->createQueryBuilder('f')
+        $qb = $this->createQueryBuilder('f')
             ->orderBy('f.year', 'DESC')
-            ->select('DISTINCT(f.year) as value, f.year as label')
+            ->select('DISTINCT(f.year) as value, f.year as label');
+
+        if (!empty($provider)) {
+            $qb->where($qb->expr()->eq('f.provider', ':provider'))
+                ->setParameter(':provider', $provider);
+        }
+
+        return $qb
             ->getQuery()
             ->getArrayResult()
         ;
@@ -55,12 +80,18 @@ class KeyFiguresRepository extends ServiceEntityRepository
     /**
      * @return array Returns an array of iso3
      */
-    public function getDistinctCountries(): array
+    public function getDistinctCountries($provider = NULL): array
     {
-        return $this->createQueryBuilder('f')
+        $qb = $this->createQueryBuilder('f')
             ->orderBy('f.iso3', 'ASC')
-            ->select('DISTINCT(f.iso3) as value, f.country as label')
-            ->getQuery()
+            ->select('DISTINCT(f.iso3) as value, f.country as label');
+
+        if (!empty($provider)) {
+            $qb->where($qb->expr()->eq('f.provider', ':provider'))
+                ->setParameter(':provider', $provider);
+        }
+    
+        return $qb->getQuery()
             ->getArrayResult()
         ;
     }

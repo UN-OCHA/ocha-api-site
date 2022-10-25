@@ -133,6 +133,7 @@ class ImportRWCrisisFiguresCommand extends Command
             'tags' => [
               'rw_crisis',
             ],
+            'provider' => 'rw_crisis',
           ];
         }
         catch (\Exception) {

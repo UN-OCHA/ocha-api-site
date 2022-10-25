@@ -20,7 +20,7 @@ final class Version20221024170942 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE key_figures (id VARCHAR(255) NOT NULL, iso3 VARCHAR(3) NOT NULL, country VARCHAR(255) NOT NULL, year VARCHAR(4) NOT NULL, name VARCHAR(255) NOT NULL, value NUMERIC(20, 2) NOT NULL, updated DATETIME DEFAULT NULL, url LONGTEXT DEFAULT NULL, source VARCHAR(255) DEFAULT NULL, description LONGTEXT DEFAULT NULL, tags JSON DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE key_figures (id VARCHAR(255) NOT NULL, iso3 VARCHAR(3) NOT NULL, country VARCHAR(255) NOT NULL, year VARCHAR(4) NOT NULL, name VARCHAR(255) NOT NULL, value NUMERIC(20, 2) NOT NULL, updated DATETIME DEFAULT NULL, url LONGTEXT DEFAULT NULL, source VARCHAR(255) DEFAULT NULL, description LONGTEXT DEFAULT NULL, tags JSON DEFAULT NULL, provider VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
     }
 
     public function down(Schema $schema): void

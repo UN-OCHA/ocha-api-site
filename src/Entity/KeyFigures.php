@@ -14,10 +14,11 @@ use App\State\KeyFiguresCountriesStateProvider;
 use App\State\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: KeyFiguresRepository::class)]
 #[ApiResource(
-//    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')",
+    security: "is_granted('ROLE_ADMIN')",
     operations: [
         new Get(
             controller: NotFoundAction::class, 
@@ -26,6 +27,10 @@ use Doctrine\ORM\Mapping as ORM;
             host: 'do-not-use',
         ),
         new GetCollection(
+            normalizationContext: [
+                'groups' => ['with_meta'],
+                'skip_null_values' => FALSE,
+            ],
             uriTemplate: '/key_figures/years',
             output: SimpleStringObject::class,
             provider: KeyFiguresYearsStateProvider::class,
@@ -60,7 +65,7 @@ use Doctrine\ORM\Mapping as ORM;
             ]
         ),
         new GetCollection(
-            uriTemplate: '/key_figures/numbers',
+            uriTemplate: '/key_figures',
             openapiContext: [
                 'summary' => 'Get a list of key figures',
                 'description' => 'Get a list of key figures',
@@ -77,37 +82,52 @@ class KeyFigures
 {
     #[ORM\Id]
     #[ORM\Column(length: 255)]
+    #[Groups('with_meta')]
     private ?string $id = null;
 
     #[ORM\Column(length: 3)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $iso3 = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $country = null;
 
     #[ORM\Column(length: 4)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $year = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $value = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    #[Groups('without_meta', 'with_meta')]
     private ?\DateTimeInterface $updated = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $url = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $source = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('without_meta', 'with_meta')]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('without_meta', 'with_meta')]
     private array $tags = [];
+
+    #[ORM\Column(length: 255)]
+    #[Groups('with_meta')]
+    private ?string $provider = null;
 
     public function getId(): ?string
     {
@@ -234,6 +254,18 @@ class KeyFigures
         return $this;
     }
 
+    public function getProvider(): ?string
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(string $provider): self
+    {
+        $this->provider = $provider;
+
+        return $this;
+    }
+
     public function fromValues(array $values): self {
         $this->id = $values['id'];
         $this->iso3 = $values['iso3'];
@@ -246,6 +278,7 @@ class KeyFigures
         $this->source = $values['source'];
         $this->description = $values['description'];
         $this->tags = $values['tags'];
+        $this->provider = $values['provider'];
 
         return $this;
     }
