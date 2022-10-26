@@ -1,0 +1,166 @@
+{
+  "name": "IDPS",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8159bfb3-3561-49c6-90f5-626832f24542",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://data.humdata.org/dataset/459fc96c-f196-44c1-a0a5-1b5a7b3592dd/resource/0fb4e415-abdb-481a-a3c6-8821e79919be/download/displacement_data.csv",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "c33ad596-6b64-46c3-9538-9f752ad46380",
+      "name": "Get CSV",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -340,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "headerRow": true,
+          "includeEmptyCells": false
+        }
+      },
+      "id": "648e58a7-ac3a-453d-aa8b-b5a013b39b46",
+      "name": "Spreadsheet File",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        120
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {},
+      "id": "1224676d-e33e-40c3-b6c6-491757280425",
+      "name": "Data",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        100,
+        120
+      ],
+      "notesInFlow": true,
+      "notes": "Do not rename"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": "key_figures",
+        "columns": "id,iso3,country,year,name,value,url,source,tags,provider"
+      },
+      "id": "a1727ae2-3789-429a-ae97-812fe84277c2",
+      "name": "MySqlExtend",
+      "type": "n8n-nodes-mysql-extend.mySqlExtend",
+      "typeVersion": 1,
+      "position": [
+        520,
+        120
+      ],
+      "credentials": {
+        "mySqlExtend": {
+          "id": "5",
+          "name": "MySqlExtend account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.ISO3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty iso3.\n  if (item.json.ISO3 == '') {\n    continue;\n  }\n\n  if (item.json['Conflict Stock Displacement']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Conflict Stock Displacement',\n      value: item.json['Conflict Stock Displacement'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n      tags: '[\"idps\"]',\n      provider: 'idps',\n    });\n  }\n\n  if (item.json['Conflict Internal Displacements']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Conflict Internal Displacements',\n      value: item.json['Conflict Internal Displacements'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n      tags: '[\"idps\"]',\n      provider: 'idps',\n    });\n  }\n\n  if (item.json['Disaster Internal Displacements']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Disaster Internal Displacements',\n      value: item.json['Disaster Internal Displacements'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n      tags: '[\"idps\"]',\n      provider: 'idps',\n    });\n  }\n\n  if (item.json['Disaster Stock Displacement']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year,\n      name: 'Disaster Stock Displacement',\n      value: item.json['Disaster Stock Displacement'],\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n      tags: '[\"idps\"]',\n      provider: 'idps',\n    });\n  }\n}\n\nreturn output;"
+      },
+      "id": "76eacaf1-faf7-40f7-be77-4720a7d26a12",
+      "name": "Build records",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        320,
+        120
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Get CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get CSV": {
+      "main": [
+        [
+          {
+            "node": "Spreadsheet File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spreadsheet File": {
+      "main": [
+        [
+          {
+            "node": "Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data": {
+      "main": [
+        [
+          {
+            "node": "Build records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build records": {
+      "main": [
+        [
+          {
+            "node": "MySqlExtend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 3,
+  "meta": {
+    "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
+  },
+  "tags": []
+}

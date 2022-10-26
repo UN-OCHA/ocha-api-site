@@ -1,0 +1,428 @@
+{
+  "name": "FTS on MySQL",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "let record = {};\n\nrecord.year = item.query.year || 2022;\n\nreturn record;"
+      },
+      "id": "dd62e4f8-aa41-4526-9e1a-b0563ce034dd",
+      "name": "2020",
+      "type": "n8n-nodes-base.functionItem",
+      "typeVersion": 1,
+      "position": [
+        180,
+        60
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "d6e4055c-e1df-4a56-aeab-0b01c96da4f0",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.hpc.tools/v1/public/plan/year/{{$json[\"year\"]}}",
+        "options": {}
+      },
+      "id": "469d5571-1ea3-4748-a14a-0be4c6bf0940",
+      "name": "Get plans by year",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "474e809c-fa95-4b7a-8dd4-04b8cabaab59",
+      "name": "Extract data",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        560,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let record = {};\n\nrecord.Id = item.id;\nrecord.plan_id = item.id;\nrecord.updated = item.updatedAt.replace('T', ' ').replace('Z', '').substr(0, item.updatedAt.indexOf('.'));\nrecord.name = item.planVersion.name;\nrecord.year = item.years[0].year;\nrecord.code = item.planVersion.code;\nrecord.original_requirements = item.origRequirements;\nrecord.revised_requirements = item.revisedRequirements;\nrecord.iso3 = item.locations[0].iso3;\nrecord.country = item.locations[0].name;\n\nreturn record;"
+      },
+      "id": "d86cb73d-8247-4880-bfd9-2a8be427a6fd",
+      "name": "Build base record",
+      "type": "n8n-nodes-base.functionItem",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.hpc.tools/v1/public/plan/id/{{$json[\"plan_id\"]}}",
+        "options": {}
+      },
+      "id": "379371e8-5cd7-490b-8b22-cb3708083623",
+      "name": "Get plan details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1520,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Code here will run once per input item.\n// More info and help: https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.functionitem/\n// Tip: You can use luxon for dates and $jmespath for querying JSON structures\n\nlet record = {};\nconsole.log($node[\"Build base record\"].data.plan_id);\n\nrecord.plan_id = $node[\"Build base record\"].data.plan_id;\nrecord.total_requirements = item.data.revisedRequirements;\n\nreturn record;"
+      },
+      "id": "df09eea0-49ff-4f96-83b3-7f166032287f",
+      "name": "Extract revised requirements",
+      "type": "n8n-nodes-base.functionItem",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.hpc.tools/v1/public/fts/flow?planId={{$json[\"plan_id\"]}}",
+        "options": {}
+      },
+      "id": "0a7987c0-8ff8-4542-aeb4-e9b73aa927d5",
+      "name": "Get flow info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1520,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Code here will run once per input item.\n// More info and help: https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.functionitem/\n// Tip: You can use luxon for dates and $jmespath for querying JSON structures\n\nlet record = {};\n\nrecord.plan_id = $node[\"Build base record\"].data.plan_id;\nrecord.funding_total = item.data.incoming.fundingTotal;\n\nreturn record;"
+      },
+      "id": "8ad94f00-fb79-48f0-a257-5f13db2a9980",
+      "name": "Extract funding total",
+      "type": "n8n-nodes-base.functionItem",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "mergeByFields",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "plan_id",
+              "field2": "plan_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d0a41aa8-0ec3-4440-9972-ed87d39206a8",
+      "name": "Merge 1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        1940,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "mergeByFields",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "plan_id",
+              "field2": "plan_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "101a6dd3-e4bc-455e-a3a2-bba812587273",
+      "name": "Merge 2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        2120,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let output = [];\n\nfor (item of items) {\n  console.log(item.json.locations[0]);\n  if (item.json.locations[0] && item.json.locations[0].iso3 && item.json.locations[0].iso3.length > 0) {\n    output.push(item);\n  }\n}\n\nreturn output;"
+      },
+      "id": "d2841e2a-ed37-4c3a-85ec-757b572b3c52",
+      "name": "We need ISO3",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        780,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "path": "fill",
+        "options": {}
+      },
+      "id": "39a18d9a-c5a7-4537-aebd-ad91dc35e925",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        120
+      ],
+      "webhookId": "841de7ef-211c-4334-ab37-ea6ffb23763d"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "dabc7926-cc79-4d90-a81d-0167747fe61d",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.iso3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty iso3.\n  if (item.json.iso3 == '') {\n    continue;\n  }\n\n  if (item.json['original_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_original_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Original requirements',\n      value: item.json['original_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n\n  if (item.json['revised_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_revised_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Revised requirements',\n      value: item.json['revised_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n \n  if (item.json['total_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_total_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Total requirements',\n      value: item.json['total_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n\n  if (item.json['funding_total'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_funding_total',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Funding total',\n      value: item.json['funding_total'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n \n}\n\nreturn output;"
+      },
+      "id": "70cda90e-fc5e-4752-b6a4-c0619ba111ee",
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": "key_figures",
+        "columns": "id,iso3,country,year,name,value,url,source,updated,description,tags,provider"
+      },
+      "id": "7227557d-6a4d-45a0-b6db-865f7f66eb02",
+      "name": "MySqlExtend1",
+      "type": "n8n-nodes-mysql-extend.mySqlExtend",
+      "typeVersion": 1,
+      "position": [
+        2440,
+        340
+      ],
+      "credentials": {
+        "mySqlExtend": {
+          "id": "5",
+          "name": "MySqlExtend account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "2020": {
+      "main": [
+        [
+          {
+            "node": "Get plans by year",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get plans by year": {
+      "main": [
+        [
+          {
+            "node": "Extract data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract data": {
+      "main": [
+        [
+          {
+            "node": "We need ISO3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build base record": {
+      "main": [
+        [
+          {
+            "node": "Get plan details",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get flow info",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get plan details": {
+      "main": [
+        [
+          {
+            "node": "Extract revised requirements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract revised requirements": {
+      "main": [
+        [
+          {
+            "node": "Merge 1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get flow info": {
+      "main": [
+        [
+          {
+            "node": "Extract funding total",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract funding total": {
+      "main": [
+        [
+          {
+            "node": "Merge 2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge 1": {
+      "main": [
+        [
+          {
+            "node": "Merge 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge 2": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "We need ISO3": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "2020",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Build base record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "MySqlExtend1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySqlExtend1": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": 1,
+  "meta": {
+    "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
+  },
+  "tags": []
+}

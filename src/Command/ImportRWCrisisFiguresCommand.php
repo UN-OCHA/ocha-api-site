@@ -2,10 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\ReliefWebCrisisFigures;
-use App\Entity\ReliefWebCrisisFigureValue;
-use App\Repository\ReliefWebCrisisFiguresRepository;
-use App\Repository\ReliefWebCrisisFigureValueRepository;
+use App\Entity\KeyFigures;
+use App\Repository\KeyFiguresRepository;
 use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -26,16 +24,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class ImportRWCrisisFiguresCommand extends Command
 {
 
-    protected ReliefWebCrisisFiguresRepository $repository;
-    protected ReliefWebCrisisFigureValueRepository $value_repository;
+    protected KeyFiguresRepository $repository;
     protected HttpClientInterface $httpClient;
     protected RouterInterface $router;
     protected SymfonyStyle $io;
 
-    public function __construct(ReliefWebCrisisFiguresRepository $repository, ReliefWebCrisisFigureValueRepository $value_repository, HttpClientInterface $http_client, RouterInterface $router)
+    public function __construct(KeyFiguresRepository $repository, HttpClientInterface $http_client, RouterInterface $router)
     {
         $this->repository = $repository;
-        $this->value_repository = $value_repository;
         $this->httpClient = $http_client;
         $this->router = $router;
         parent::__construct();
@@ -117,27 +113,42 @@ class ImportRWCrisisFiguresCommand extends Command
       $progress->advance();
       $progress->setMessage('Processing ' . $figure['name'] . ' [' . $iso3 . ']');
 
-      $item = [
-        'iso3' => $iso3,
-        'country' => $country,
-        'date' => new DateTime($figure['date']),
-          'description' => $figure['description'],
-          'language' => $figure['language'],
-          'name' => $figure['name'],
-          'value' => $figure['value'],
-          'url' => $figure['url'],
-          'source' => $figure['source'],
-      ];
+      foreach ($figure['values'] as $value) {
+        $year = substr($value['date'], 0, 4);
+        $id = 'rw_crisis_' . strtolower($iso3) . '_' . $year . '_' . $figure['name'];
 
-      if ($existing = $this->loadByIso3AndName($iso3, $figure['name'])) {
-          $existing->fromValues($item);
-          $this->createKeyFigure($existing, $figure['values']);
+        try {
+          $item = [
+            'id' => $id,
+            'iso3' => $iso3,
+            'country' => $country,
+            'year' => $year,
+            'updated' => new DateTime($value['date']),
+            'description' => $figure['description'],
+            'language' => $figure['language'],
+            'name' => $figure['name'],
+            'value' => $value['value'],
+            'url' => $value['url'] ?? '',
+            'source' => $figure['source'],
+            'tags' => [
+              'rw_crisis',
+            ],
+            'provider' => 'rw_crisis',
+          ];
+        }
+        catch (\Exception) {
+          // Ignore invalid dates, 2015-12-32T12:00:00Z
+        }
+      }
+
+      if ($existing = $this->load($id)) {
+        $existing->fromValues($item);
+        $this->save($existing);
       }
       else {
-          $fts_key_figure = new ReliefWebCrisisFigures();
-          $fts_key_figure->fromValues($item);
-
-          $this->createKeyFigure($fts_key_figure, $figure['values']);
+        $new = new KeyFigures();
+        $new->fromValues($item);
+        $this->save($new);
       }
     }
 
@@ -146,39 +157,22 @@ class ImportRWCrisisFiguresCommand extends Command
   }
 
   /**
-   * Load plan by Iso3 and Name.
+   * Load plan by PlanId.
    */
-  public function loadByIso3AndName($iso3, $name) {
-    return $this->repository->findOneBy([
-      'iso3' => $iso3,
-      'name' => $name,
-    ]);
+  public function load($id) {
+    return $this->repository->findOneBy(['id' => $id]);
   }
 
   /**
    * Create a new plan.
    */
-  public function createKeyFigure(ReliefWebCrisisFigures $item, array $values) {
-    $item->getFigureValues()->clear();
-    foreach ($values as $value) {
-      try {
-        $figure = new ReliefWebCrisisFigureValue();
-
-        $figure->setDate(new DateTime($value['date']))
-          ->setValue($value['value']);
-
-        if (isset($value['url'])) {
-          $figure->setUrl($value['url']);
-        }
-
-        $this->value_repository->save($figure);
-        $item->addValue($figure);
-      }
-      catch (\Exception) {
-        // Ignore invalid dates, 2015-12-32T12:00:00Z
-      }
+  public function save(KeyFigures $item) {
+    try {
+      $this->repository->save($item, TRUE);
     }
-    $this->repository->save($item, TRUE);
+    catch (\Exception) {
+      // Ignore invalid dates, 2015-12-32T12:00:00Z
+    }
   }
 
   /**

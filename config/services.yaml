@@ -24,3 +24,6 @@ services:
         decorates: 'api_platform.openapi.factory'
         arguments: [ '@App\OpenApi\OpenApiFactory.inner' ]
         autoconfigure: false
+
+    App\State\KeyFiguresStateProvider:
+        arguments: [ '@api_platform.metadata.resource.metadata_collection_factory', '@doctrine', !tagged_iterator { tag: 'api_platform.doctrine.orm.query_extension.collection', index_by: 'key' } ]

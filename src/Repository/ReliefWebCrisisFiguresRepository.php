@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\ReliefWebCrisisFigures;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<ReliefWebCrisisFigures>
@@ -14,56 +12,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ReliefWebCrisisFigures[]    findAll()
  * @method ReliefWebCrisisFigures[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ReliefWebCrisisFiguresRepository extends ServiceEntityRepository
+class ReliefWebCrisisFiguresRepository extends FtsKeyFiguresRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, ReliefWebCrisisFigures::class);
-    }
-
-    public function save(ReliefWebCrisisFigures $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(ReliefWebCrisisFigures $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    /**
-     * @return ReliefWebCrisisFigures[] Returns an array of FtsKeyFigures objects
-     */
-    public function findByIso3(string $value): array
-    {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.iso3 = :val')
-            ->setParameter('val', $value)
-            ->setMaxResults(100)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return string[] Returns an array of iso3 codes
-     */
-    public function getDistinctCountries(): array
-    {
-        return $this->createQueryBuilder('f')
-            ->orderBy('f.iso3', 'ASC')
-            ->select('DISTINCT(f.iso3) as iso3, f.country')
-            ->getQuery()
-            ->getScalarResult()
-        ;
-    }
-
 }
