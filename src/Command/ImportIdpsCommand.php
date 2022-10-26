@@ -84,6 +84,11 @@ class ImportIdpsCommand extends Command
       ];
 
       foreach ($figure_types as $figure_type => $info) {
+        // Skip empty values.
+        if (empty($info['value'])) {
+          continue;
+        }
+
         $id = 'idps' . strtolower($iso3) . '_' . $year . '_' . $figure_type;
         try {
           $item = [
