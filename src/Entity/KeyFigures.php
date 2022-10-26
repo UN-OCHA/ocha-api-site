@@ -467,10 +467,10 @@ class KeyFigures
         $this->year = $values['year'];
         $this->name = $values['name'];
         $this->value = $values['value'];
-        $this->updated = $values['updated'];
+        $this->updated = $values['updated'] ?? NULL;
         $this->url = $values['url'];
         $this->source = $values['source'];
-        $this->description = $values['description'];
+        $this->description = $values['description'] ?? '';
         $this->tags = $values['tags'];
         $this->provider = $values['provider'];
 
