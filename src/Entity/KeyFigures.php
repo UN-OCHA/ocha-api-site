@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\KeyFiguresRepository;
 use App\State\KeyFiguresCountriesStateProvider;
+use App\State\KeyFiguresStateProvider;
 use App\State\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,15 +19,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: KeyFiguresRepository::class)]
 #[ApiResource(
-    security: "is_granted('ROLE_ADMIN')",
     operations: [
+        // All
         new Get(
+            security: "is_granted('ROLE_ADMIN')",
             controller: NotFoundAction::class, 
             read: false, 
             output: false,
             host: 'do-not-use',
         ),
         new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
             normalizationContext: [
                 'groups' => ['with_meta'],
                 'skip_null_values' => FALSE,
@@ -48,6 +51,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             ]
         ),
         new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
             uriTemplate: '/key_figures/countries',
             output: SimpleStringObject::class,
             provider: KeyFiguresCountriesStateProvider::class,
@@ -65,12 +69,202 @@ use Symfony\Component\Serializer\Annotation\Groups;
             ]
         ),
         new GetCollection(
+            security: "is_granted('ROLE_ADMIN')",
             uriTemplate: '/key_figures',
             openapiContext: [
                 'summary' => 'Get a list of key figures',
                 'description' => 'Get a list of key figures',
                 'tags' => [
                     'Key Figures',
+                ],
+            ]
+        ),
+
+        // FTS
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_FTS')",
+            normalizationContext: [
+                'groups' => ['without_meta'],
+                'skip_null_values' => FALSE,
+            ],
+            uriTemplate: '/fts',
+            provider: KeyFiguresStateProvider::class,
+            extraProperties: [
+                'provider' => 'fts',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list of FTS data by iso3 code',
+                'description' => 'Get a list of FTS data by iso3 code',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+            ]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_FTS')",
+            uriTemplate: '/fts/years',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresYearsStateProvider::class,
+            extraProperties: [
+                'provider' => 'fts',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list years',
+                'description' => 'Get a list of years',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of years keyed by year',
+                    ],
+                ],
+            ]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_FTS')",
+            uriTemplate: '/fts/countries',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresCountriesStateProvider::class,
+            extraProperties: [
+                'provider' => 'fts',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list countries',
+                'description' => 'Get a list of iso3 codes',
+                'tags' => [
+                    'FTS Key Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of countries keyed by iso3 code',
+                    ],
+                ],
+            ]
+        ),
+
+        // IDPs
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_IDPS')",
+            normalizationContext: [
+                'groups' => ['without_meta'],
+                'skip_null_values' => FALSE,
+            ],
+            uriTemplate: '/idps',
+            provider: KeyFiguresStateProvider::class,
+            extraProperties: [
+                'provider' => 'idps',
+            ],
+            openapiContext: [
+                'summary' => 'Get Internally Displaced Persons key figures',
+                'description' => 'Get Internally Displaced Persons key figures',
+                'tags' => [
+                    'Internally displaced persons key figures',
+                ],
+            ]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_IDPS')",
+            uriTemplate: '/idps/years',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresYearsStateProvider::class,
+            extraProperties: [
+                'provider' => 'idps',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list years',
+                'description' => 'Get a list of years',
+                'tags' => [
+                    'Internally displaced persons key figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of years keyed by year',
+                    ],
+                ],
+            ]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_IDPS')",
+            uriTemplate: '/idps/countries',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresCountriesStateProvider::class,
+            extraProperties: [
+                'provider' => 'idps',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list countries',
+                'description' => 'Get a list of iso3 codes',
+                'tags' => [
+                    'Internally displaced persons key figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of countries keyed by iso3 code',
+                    ],
+                ],
+            ]
+        ),
+
+        // ReliefWeb Crisis
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RW_CRISIS')",
+            uriTemplate: '/relief_web_crisis_figures/years',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresYearsStateProvider::class,
+            extraProperties: [
+                'provider' => 'rw_crisis',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list years',
+                'description' => 'Get a list of years',
+                'tags' => [
+                    'ReliefWeb Crisis Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of years keyed by year',
+                    ],
+                ],
+            ]
+            ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RW_CRISIS')",
+            uriTemplate: '/relief_web_crisis_figures/countries',
+            output: SimpleStringObject::class,
+            provider: KeyFiguresCountriesStateProvider::class,
+            extraProperties: [
+                'provider' => 'rw_crisis',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list countries',
+                'description' => 'Get a list of iso3 codes',
+                'tags' => [
+                    'ReliefWeb Crisis Figures',
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'Array of countries keyed by iso3 code',
+                    ],
+                ],
+            ]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RW_CRISIS')",
+            normalizationContext: [
+                'groups' => ['without_meta'],
+                'skip_null_values' => FALSE,
+            ],
+            uriTemplate: '/relief_web_crisis_figures',
+            provider: KeyFiguresStateProvider::class,
+            extraProperties: [
+                'provider' => 'rw_crisis',
+            ],
+            openapiContext: [
+                'summary' => 'Get a list of ReliefWeb crisis figures',
+                'description' => 'Get a list of ReliefWeb crisis figures',
+                'tags' => [
+                    'ReliefWeb Crisis Figures',
                 ],
             ]
         ),
