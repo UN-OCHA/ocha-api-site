@@ -114,6 +114,10 @@ class ImportRWCrisisFiguresCommand extends Command
       $progress->setMessage('Processing ' . $figure['name'] . ' [' . $iso3 . ']');
 
       foreach ($figure['values'] as $value) {
+        if (empty($value['value']) || $value['value'] == 0) {
+          continue;
+        }
+
         $year = substr($value['date'], 0, 4);
         $id = 'rw_crisis_' . strtolower($iso3) . '_' . $year . '_' . $figure['name'];
 
