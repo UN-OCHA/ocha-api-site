@@ -209,7 +209,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         // ReliefWeb Crisis
         new GetCollection(
             security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RW_CRISIS')",
-            uriTemplate: '/relief_web_crisis_figures/years',
+            uriTemplate: '/rw-crisis/years',
             output: SimpleStringObject::class,
             provider: KeyFiguresYearsStateProvider::class,
             extraProperties: [
@@ -230,7 +230,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             ),
         new GetCollection(
             security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RW_CRISIS')",
-            uriTemplate: '/relief_web_crisis_figures/countries',
+            uriTemplate: '/rw-crisis/countries',
             output: SimpleStringObject::class,
             provider: KeyFiguresCountriesStateProvider::class,
             extraProperties: [
@@ -255,7 +255,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 'groups' => ['without_meta'],
                 'skip_null_values' => FALSE,
             ],
-            uriTemplate: '/relief_web_crisis_figures',
+            uriTemplate: '/rw-crisis',
             provider: KeyFiguresStateProvider::class,
             extraProperties: [
                 'provider' => 'rw_crisis',

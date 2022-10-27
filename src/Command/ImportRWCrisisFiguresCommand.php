@@ -117,38 +117,41 @@ class ImportRWCrisisFiguresCommand extends Command
         $year = substr($value['date'], 0, 4);
         $id = 'rw_crisis_' . strtolower($iso3) . '_' . $year . '_' . $figure['name'];
 
+        $date = NULL;
         try {
-          $item = [
-            'id' => $id,
-            'iso3' => $iso3,
-            'country' => $country,
-            'year' => $year,
-            'updated' => new DateTime($value['date']),
-            'description' => $figure['description'],
-            'language' => $figure['language'],
-            'name' => $figure['name'],
-            'value' => $value['value'],
-            'url' => $value['url'] ?? '',
-            'source' => $figure['source'],
-            'tags' => [
-              'rw_crisis',
-            ],
-            'provider' => 'rw_crisis',
-          ];
+          $date = new DateTime($value['date']);
         }
         catch (\Exception) {
           // Ignore invalid dates, 2015-12-32T12:00:00Z
         }
-      }
 
-      if ($existing = $this->load($id)) {
-        $existing->fromValues($item);
-        $this->save($existing);
-      }
-      else {
-        $new = new KeyFigures();
-        $new->fromValues($item);
-        $this->save($new);
+        $item = [
+          'id' => $id,
+          'iso3' => $iso3,
+          'country' => $country,
+          'year' => $year,
+          'updated' => $date,
+          'description' => $figure['description'],
+          'language' => $figure['language'],
+          'name' => $figure['name'],
+          'value' => $value['value'],
+          'url' => $value['url'] ?? '',
+          'source' => $figure['source'],
+          'tags' => [
+            'rw_crisis',
+          ],
+          'provider' => 'rw_crisis',
+        ];
+
+        if ($existing = $this->load($id)) {
+          $existing->fromValues($item);
+          $this->save($existing);
+        }
+        else {
+          $new = new KeyFigures();
+          $new->fromValues($item);
+          $this->save($new);
+        }
       }
     }
 
@@ -167,12 +170,7 @@ class ImportRWCrisisFiguresCommand extends Command
    * Create a new plan.
    */
   public function save(KeyFigures $item) {
-    try {
-      $this->repository->save($item, TRUE);
-    }
-    catch (\Exception) {
-      // Ignore invalid dates, 2015-12-32T12:00:00Z
-    }
+    $this->repository->save($item, TRUE);
   }
 
   /**

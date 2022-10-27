@@ -20,6 +20,7 @@ api_platform:
         invalidation:
             enabled: true
     defaults:
+        pagination_items_per_page: 500
         cache_headers:
             max_age: 60
             shared_max_age: 60

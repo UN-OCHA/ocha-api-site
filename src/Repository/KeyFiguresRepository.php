@@ -83,8 +83,8 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctCountries($provider = NULL): array
     {
         $qb = $this->createQueryBuilder('f')
-            ->orderBy('f.iso3', 'ASC')
-            ->select('DISTINCT(f.iso3) as value, f.country as label');
+            ->orderBy('value', 'ASC')
+            ->select('DISTINCT(LOWER(f.iso3)) as value, f.country as label');
 
         if (!empty($provider)) {
             $qb->where($qb->expr()->eq('f.provider', ':provider'))

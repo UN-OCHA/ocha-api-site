@@ -89,36 +89,31 @@ class ImportIdpsCommand extends Command
           continue;
         }
 
-        $id = 'idps' . strtolower($iso3) . '_' . $year . '_' . $figure_type;
-        try {
-          $item = [
-            'id' => $id,
-            'iso3' => $iso3,
-            'country' => $figure['Name'],
-            'year' => $year,
-            'name' => $info['label'],
-            'value' => $info['value'],
-            'url' => 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',
-            'source' => 'iDMC',
-            'tags' => [
-              'idps',
-            ],
-            'provider' => 'idps',
-          ];
-        }
-        catch (\Exception) {
-          // Ignore invalid dates, 2015-12-32T12:00:00Z
-        }
-      }
+        $id = 'idps_' . strtolower($iso3) . '_' . $year . '_' . $figure_type;
+        $item = [
+          'id' => $id,
+          'iso3' => $iso3,
+          'country' => $figure['Name'],
+          'year' => $year,
+          'name' => $info['label'],
+          'value' => $info['value'],
+          'url' => 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',
+          'source' => 'iDMC',
+          'tags' => [
+            'idps',
+          ],
+          'provider' => 'idps',
+        ];
 
-      if ($existing = $this->load($id)) {
-        $existing->fromValues($item);
-        $this->save($existing);
-      }
-      else {
-        $new = new KeyFigures();
-        $new->fromValues($item);
-        $this->save($new);
+        if ($existing = $this->load($id)) {
+          $existing->fromValues($item);
+          $this->save($existing);
+        }
+        else {
+          $new = new KeyFigures();
+          $new->fromValues($item);
+          $this->save($new);
+        }
       }
     }
 
