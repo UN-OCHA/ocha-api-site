@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use App\Repository\KeyFiguresRepository;
 use App\State\KeyFiguresCountriesStateProvider;
-use App\State\KeyFiguresStateProvider;
+use App\State\KeyFiguresLimitByProviderStateProvider;
 use App\State\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,12 +20,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         // All
-        new Get(
+        new Put(
             security: "is_granted('ROLE_ADMIN')",
-            controller: NotFoundAction::class, 
-            read: false, 
-            output: false,
-            host: 'do-not-use',
+            uriTemplate: '/key_figures/{id}',
+            denormalizationContext: [
+                'groups' => ['write'],
+            ],
+            openapiContext: [
+                'summary' => 'Create or update a key figures',
+                'description' => 'Create or update a key figures',
+                'tags' => [
+                    'Key Figures',
+                ],
+            ]
         ),
         new GetCollection(
             security: "is_granted('ROLE_ADMIN')",
@@ -88,7 +94,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 'skip_null_values' => FALSE,
             ],
             uriTemplate: '/fts',
-            provider: KeyFiguresStateProvider::class,
+            provider: KeyFiguresLimitByProviderStateProvider::class,
             extraProperties: [
                 'provider' => 'fts',
             ],
@@ -151,7 +157,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 'skip_null_values' => FALSE,
             ],
             uriTemplate: '/idps',
-            provider: KeyFiguresStateProvider::class,
+            provider: KeyFiguresLimitByProviderStateProvider::class,
             extraProperties: [
                 'provider' => 'idps',
             ],
@@ -256,7 +262,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 'skip_null_values' => FALSE,
             ],
             uriTemplate: '/rw-crisis',
-            provider: KeyFiguresStateProvider::class,
+            provider: KeyFiguresLimitByProviderStateProvider::class,
             extraProperties: [
                 'provider' => 'rw_crisis',
             ],
@@ -280,52 +286,59 @@ class KeyFigures
     private ?string $id = null;
 
     #[ORM\Column(length: 3)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $iso3 = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $country = null;
 
     #[ORM\Column(length: 4)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $year = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $value = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?\DateTimeInterface $updated = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $url = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $source = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups('without_meta', 'with_meta')]
+    #[Groups('write', 'without_meta', 'with_meta')]
     private array $tags = [];
 
     #[ORM\Column(length: 255)]
-    #[Groups('with_meta')]
+    #[Groups('write', 'with_meta')]
     private ?string $provider = null;
 
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function setId($id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getIso3(): ?string

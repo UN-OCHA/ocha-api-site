@@ -30,7 +30,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @author Kévin Dunglas <kevin@dunglas.fr>
  * @author Samuel ROZE <samuel.roze@gmail.com>
  */
-final class KeyFiguresStateProvider implements ProviderInterface
+final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 {
     use LinksHandlerTrait;
 
