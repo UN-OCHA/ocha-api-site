@@ -15,13 +15,15 @@ use App\State\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: KeyFiguresRepository::class)]
 #[ApiResource(
     operations: [
         // All
         new Put(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_USER')",
+            securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
             uriTemplate: '/key_figures/{id}',
             denormalizationContext: [
                 'groups' => ['write'],
@@ -282,26 +284,35 @@ class KeyFigures
 {
     #[ORM\Id]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Groups('with_meta')]
     private ?string $id = null;
 
     #[ORM\Column(length: 3)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 3)]
     #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $iso3 = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $country = null;
 
     #[ORM\Column(length: 4)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 4, max: 4)]
     #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $year = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
+    #[Assert\NotBlank]
+    #[Assert\Regex("/^\d+(\.\d+)?$/")]
     #[Groups('write', 'without_meta', 'with_meta')]
     private ?string $value = null;
 
@@ -326,6 +337,7 @@ class KeyFigures
     private array $tags = [];
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Groups('write', 'with_meta')]
     private ?string $provider = null;
 
