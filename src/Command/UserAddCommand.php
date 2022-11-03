@@ -147,6 +147,7 @@ class UserAddCommand extends Command
         $isFts = $input->getOption('fts');
         $isRwCrisis = $input->getOption('rw-crisis');
         $isIdps = $input->getOption('idps');
+        $providers = [];
 
         $roles = [
             'ROLE_USER',
@@ -157,28 +158,37 @@ class UserAddCommand extends Command
         }
         if ($isFts) {
             $roles[] = 'ROLE_FTS';
+            $providers[] = 'fts';
         }
         if ($isRwCrisis) {
             $roles[] = 'ROLE_RW_CRISIS';
+            $providers[] = 'rw_crisis';
         }
         if ($isIdps) {
             $roles[] = 'ROLE_IDPS';
+            $providers[] = 'idps';
         }
 
-        // make sure to validate the user data is correct
-        $this->validateUserData($username, $email, $fullName);
+        // Update existing users.
+        $user = $this->users->findOneBy(['username' => $username]);
+        if (!$user) {
+            // make sure to validate the user data is correct
+            $this->validateUserData($username, $email, $fullName);
 
-        // create the user and hash its password
-        $user = new User();
-        $user->setFullName($fullName);
-        $user->setUsername($username);
-        $user->setEmail($email);
+            // create the user and hash its password
+            $user = new User();
+            $user->setFullName($fullName);
+            $user->setUsername($username);
+            $user->setEmail($email);
+            $user->setToken(bin2hex(random_bytes(16)));
+
+            // See https://symfony.com/doc/5.4/security.html#registering-the-user-hashing-passwords
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+        }
+
         $user->setRoles($roles);
-        $user->setToken(bin2hex(random_bytes(16)));
-
-        // See https://symfony.com/doc/5.4/security.html#registering-the-user-hashing-passwords
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
-        $user->setPassword($hashedPassword);
+        $user->setProviders($providers);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
