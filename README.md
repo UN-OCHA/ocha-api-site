@@ -43,9 +43,8 @@ console make:command
 ## Testing
 
 ```bash
-console doctrine:database:drop --force
-console doctrine:database:create
-console doctrine:schema:create
+fin console hautelook:fixtures:load -n
+fin exec phpunit
 ```
 
 ## Security

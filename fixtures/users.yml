@@ -1,0 +1,25 @@
+App\Entity\User:
+  admin:
+    email: 'admin@example'
+    roles: '[ROLE_USER, ROLE_ADMIN]'
+    password: ''
+    username: 'admin'
+    full_name: 'admin'
+    token: 'token1'
+    providers: '[]'
+  user_1:
+    email: 'user1@example'
+    roles: '[ROLE_USER, ROLE_SRC1]'
+    password: ''
+    username: 'user1'
+    full_name: 'user1'
+    token: 'token2'
+    providers: '[src1]'
+  user_2:
+    email: 'user2@example'
+    roles: '[ROLE_USER, ROLE_SRC1]'
+    password: ''
+    username: 'user2'
+    full_name: 'user2'
+    token: 'token3'
+    providers: '[src1, src2]'
