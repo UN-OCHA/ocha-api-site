@@ -282,60 +282,60 @@ class KeyFigures
     #[ORM\Id]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups('with_meta')]
+    #[Groups(['with_meta'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 3)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 3)]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $iso3 = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $country = null;
 
     #[ORM\Column(length: 4)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 4, max: 4)]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $year = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
     #[Assert\NotBlank]
     #[Assert\Regex("/^\d+(\.\d+)?$/")]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $value = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?\DateTimeInterface $updated = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $url = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $source = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups('write', 'without_meta', 'with_meta')]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private array $tags = [];
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups('write', 'with_meta')]
+    #[Groups(['write', 'with_meta'])]
     private ?string $provider = null;
 
     public function getId(): ?string
