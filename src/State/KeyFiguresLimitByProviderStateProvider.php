@@ -23,6 +23,7 @@ use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInter
 use ApiPlatform\State\ProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Collection state provider using the Doctrine ORM.
@@ -37,8 +38,12 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
     /**
      * @param QueryCollectionExtensionInterface[] $collectionExtensions
      */
-    public function __construct(private readonly ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory, private readonly ManagerRegistry $managerRegistry, private readonly iterable $collectionExtensions = [])
-    {
+    public function __construct(
+        private readonly ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
+        private readonly ManagerRegistry $managerRegistry,
+        private Security $security,
+        private readonly iterable $collectionExtensions = [],
+    ) {
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): iterable
@@ -48,6 +53,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
         /** @var EntityManagerInterface $manager */
         $manager = $this->managerRegistry->getManagerForClass($resourceClass);
 
+        /** @var \Doctrine\ORM\EntityRepository $repository */
         $repository = $manager->getRepository($resourceClass);
         if (!method_exists($repository, 'createQueryBuilder')) {
             throw new RuntimeException('The repository class must have a "createQueryBuilder" method.');
@@ -65,9 +71,18 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
         $provider = $properties['provider'] ?? NULL;
 
         if ($provider) {
-            $queryBuilder->where($queryBuilder->expr()->eq('o.provider', ':provider'))
+            $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
                 ->setParameter(':provider', $provider);
         }
+
+//        // Check user roles.
+//        /** @var \App\Entity\User */
+//        if ($user = $this->security->getUser()) {
+//            if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+//                $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
+//                    ->setParameter(':provider', $user->getUsername());
+//            }
+//        }
 
         foreach ($this->collectionExtensions as $extension) {
             $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);

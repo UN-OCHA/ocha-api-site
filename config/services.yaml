@@ -30,5 +30,4 @@ services:
 
     App\EventListener\PutListener:
         decorates: api_platform.listener.request.read
-        arguments:
-            - '@App\EventListener\PutListener.inner'
+        arguments: [ '@App\EventListener\PutListener.inner' ]

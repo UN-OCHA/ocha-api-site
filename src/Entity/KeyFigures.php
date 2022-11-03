@@ -21,27 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         // All
-        new Put(
-            security: "is_granted('ROLE_USER')",
-            securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
-            uriTemplate: '/key_figures/{id}',
-            denormalizationContext: [
-                'groups' => ['write'],
-            ],
-            openapiContext: [
-                'summary' => 'Create or update a key figures',
-                'description' => 'Create or update a key figures',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
-        ),
         new GetCollection(
             security: "is_granted('ROLE_ADMIN')",
-            normalizationContext: [
-                'groups' => ['with_meta'],
-                'skip_null_values' => FALSE,
-            ],
             uriTemplate: '/key_figures/years',
             output: SimpleStringObject::class,
             provider: KeyFiguresYearsStateProvider::class,
@@ -76,9 +57,25 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ]
         ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
+            uriTemplate: '/key_figures/{id}',
+            denormalizationContext: [
+                'groups' => ['write'],
+            ],
+            openapiContext: [
+                'summary' => 'Create or update a key figures',
+                'description' => 'Create or update a key figures',
+                'tags' => [
+                    'Key Figures',
+                ],
+            ]
+        ),
         new GetCollection(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_USER')",
             uriTemplate: '/key_figures',
+            provider: KeyFiguresLimitByProviderStateProvider::class,
             openapiContext: [
                 'summary' => 'Get a list of key figures',
                 'description' => 'Get a list of key figures',
@@ -501,4 +498,5 @@ class KeyFigures
 
         return $this;
     }
+
 }

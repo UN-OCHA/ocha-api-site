@@ -1,5 +1,12 @@
 # OCHA Api
 
+## Todo
+
+- Use array for provider on user
+- Autofilter on provider
+- Auto build aliases for routes
+- Add base class for state providers
+
 ## Resources
 
 - [Export as CSV](https://locastic.com/blog/easy-csv-export-in-api-platform)
