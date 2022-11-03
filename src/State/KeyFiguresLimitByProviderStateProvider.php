@@ -23,7 +23,8 @@ use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInter
 use ApiPlatform\State\ProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 
 /**
  * Collection state provider using the Doctrine ORM.
@@ -41,14 +42,13 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
     public function __construct(
         private readonly ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         private readonly ManagerRegistry $managerRegistry,
-        private Security $security,
+        private TokenStorageInterface $tokenStorage,
         private readonly iterable $collectionExtensions = [],
     ) {
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): iterable
     {
-
         $resourceClass = $operation->getClass();
         /** @var EntityManagerInterface $manager */
         $manager = $this->managerRegistry->getManagerForClass($resourceClass);
@@ -64,7 +64,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 
         $this->handleLinks($queryBuilder, $uriVariables, $queryNameGenerator, $context, $resourceClass, $operation);
 
-        // Limit to provider.
+        // Limit to provider specified on endpoint.
         /** @var \ApiPlatform\Metadata\GetCollection $operation */
         $operation = $context['operation'];
         $properties = $operation->getExtraProperties() ?? [];
@@ -75,14 +75,20 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
                 ->setParameter(':provider', $provider);
         }
 
-//        // Check user roles.
-//        /** @var \App\Entity\User */
-//        if ($user = $this->security->getUser()) {
-//            if (!in_array('ROLE_ADMIN', $user->getRoles())) {
-//                $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
-//                    ->setParameter(':provider', $user->getUsername());
-//            }
-//        }
+        // Check user roles if not admin.
+        /** @var \App\Entity\User */
+        if ($user = $this->tokenStorage->getToken()->getUser()) {
+            if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+                if (!empty($user->getProviders())) {
+                    $queryBuilder->andWhere($queryBuilder->expr()->in('o.provider', ':providers'))
+                        ->setParameter(':providers', $user->getProviders());
+                }
+                else {
+                    $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
+                        ->setParameter(':provider', $user->getUsername());
+                }
+            }
+        }
 
         foreach ($this->collectionExtensions as $extension) {
             $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);

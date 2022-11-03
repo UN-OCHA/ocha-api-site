@@ -36,6 +36,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
+    #[ORM\Column(nullable: true)]
+    private array $providers = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -141,4 +144,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getProviders(): array
+    {
+        return $this->providers;
+    }
+
+    public function setProviders(?array $providers): self
+    {
+        $this->providers = $providers;
+
+        return $this;
+    }
+
 }
