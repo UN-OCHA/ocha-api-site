@@ -6,7 +6,8 @@
 - ~~Autofilter on provider~~
 - ~~Auto build aliases for routes~~
 - Add base class for state providers
-- Add user with provider
+- Add command to add providers
+- Add user command with providers
 - Check read/write security
 
 ## Resources
