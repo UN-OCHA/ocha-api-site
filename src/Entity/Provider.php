@@ -18,6 +18,9 @@ class Provider
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $prefix = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $expand = null;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -43,6 +46,18 @@ class Provider
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getExpand(): ?string
+    {
+        return $this->expand;
+    }
+
+    public function setExpand(string $expand): self
+    {
+        $this->expand = $expand;
 
         return $this;
     }

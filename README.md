@@ -2,10 +2,12 @@
 
 ## Todo
 
-- Use array for provider on user
-- Autofilter on provider
-- Auto build aliases for routes
+- ~~Use array for provider on user~~
+- ~~Autofilter on provider~~
+- ~~Auto build aliases for routes~~
 - Add base class for state providers
+- Add user with provider
+- Check read/write security
 
 ## Resources
 

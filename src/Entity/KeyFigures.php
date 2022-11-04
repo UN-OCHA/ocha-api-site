@@ -20,6 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: KeyFiguresRepository::class)]
 #[ApiResource(
+    extraProperties: [
+        'expand' => 'key_figures',
+    ],
     operations: [
         // All
         new GetCollection(

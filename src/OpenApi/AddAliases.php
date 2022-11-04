@@ -18,9 +18,6 @@ class AddAliases implements ResourceMetadataCollectionFactoryInterface
 
     public function create(string $resourceClass): ResourceMetadataCollection
     {
-        // Load providers.
-        $providers = $this->providerRepository->findAll();
-
         //** @var \ApiPlatform\Metadata\Resource\ResourceMetadataCollection $resourceMetadataCollection */
         $resourceMetadataCollection = $this->decorated->create($resourceClass);
 
@@ -29,6 +26,17 @@ class AddAliases implements ResourceMetadataCollectionFactoryInterface
             if ($resourceMetadata::class !== 'ApiPlatform\Metadata\ApiResource') {
                 continue;
             }
+
+            $extra_properties = $resourceMetadata->getExtraProperties();
+            if (!isset($extra_properties['expand'])) {
+                continue;
+            }
+
+            // Load providers.
+            $expand = $extra_properties['expand'];
+            $providers = $this->providerRepository->findBy([
+                'expand' => $expand,
+            ]);
 
             /** @var ApiPlatform\Metadata\ApiResource $resourceMetadata */
             /** @var ApiPlatform\Metadata\Operations $operations */
@@ -49,16 +57,16 @@ class AddAliases implements ResourceMetadataCollectionFactoryInterface
 
                 // Generate for each provider.
                 foreach ($providers as $provider) {
-                    $new_key = str_replace('key_figures', $provider->getId(), $operation->getName());
+                    $new_key = str_replace($expand, $provider->getId(), $operation->getName());
                     $openApiContext = $operation->getOpenapiContext();
                     $openApiContext['tags'] = [$provider->getName()];
-                    $new_operation = $operation->withUriTemplate(str_replace('key_figures', $provider->getPrefix(), $operation->getUriTemplate()))
+                    $new_operation = $operation->withUriTemplate(str_replace($expand, $provider->getPrefix(), $operation->getUriTemplate()))
                         ->withExtraProperties([
                             'user_defined_uri_template' => TRUE,
                             'provider' => $provider->getId(),
                         ])
                         ->withOpenapiContext($openApiContext)
-                        ->withName(str_replace('key_figures', $provider->getid(), $operation->getRouteName()))
+                        ->withName(str_replace($expand, $provider->getid(), $operation->getRouteName()))
                     ;
 
                     $new_operations[$new_key] = $new_operation;
