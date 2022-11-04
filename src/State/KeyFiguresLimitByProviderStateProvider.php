@@ -77,7 +77,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 
         // Check user roles if not admin.
         /** @var \App\Entity\User */
-        if ($user = $this->tokenStorage->getToken()->getUser()) {
+        if ($this->tokenStorage->getToken() && $user = $this->tokenStorage->getToken()->getUser()) {
             if (!in_array('ROLE_ADMIN', $user->getRoles())) {
                 if (!empty($user->getProviders())) {
                     $queryBuilder->andWhere($queryBuilder->expr()->in('o.provider', ':providers'))

@@ -31,3 +31,8 @@ services:
     App\EventListener\PutListener:
         decorates: api_platform.listener.request.read
         arguments: [ '@App\EventListener\PutListener.inner' ]
+
+    App\OpenApi\AddAliases:
+        decorates: api_platform.metadata.resource.metadata_collection_factory
+        decoration_priority: 200
+        arguments: [ '@App\OpenApi\AddAliases.inner' ]
