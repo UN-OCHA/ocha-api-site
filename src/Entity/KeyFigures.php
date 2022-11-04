@@ -6,6 +6,7 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
 use App\Repository\KeyFiguresRepository;
@@ -67,6 +68,17 @@ use Symfony\Component\Validator\Constraints as Assert;
             openapiContext: [
                 'summary' => 'Create or update a key figures',
                 'description' => 'Create or update a key figures',
+                'tags' => [
+                    'Key Figures',
+                ],
+            ]
+        ),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            uriTemplate: '/key_figures/{id}',
+            openapiContext: [
+                'summary' => 'Get a key figures',
+                'description' => 'Get a key figures',
                 'tags' => [
                     'Key Figures',
                 ],
