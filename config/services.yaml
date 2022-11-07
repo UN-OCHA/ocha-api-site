@@ -34,5 +34,5 @@ services:
 
     App\OpenApi\AddAliases:
         decorates: api_platform.metadata.resource.metadata_collection_factory
-        decoration_priority: 200
+        decoration_priority: 300
         arguments: [ '@App\OpenApi\AddAliases.inner' ]

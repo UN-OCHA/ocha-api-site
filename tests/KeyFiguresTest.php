@@ -3,18 +3,11 @@
 namespace App\Tests;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Book;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
+use App\Tests\TestTrait;
 
 class KeyFiguresTest extends ApiTestCase
 {
-    use RefreshDatabaseTrait;
-
-    private $prefix = '/api/v1/';
-
-    protected function addPrefix(string $url) : string {
-        return rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
-    }
+    use TestTrait;
 
     public function testGetCollectionAsAdmin(): void
     {

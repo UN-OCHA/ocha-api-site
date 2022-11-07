@@ -26,6 +26,13 @@ class Provider
         return $this->id;
     }
 
+    public function setId(string $id): ?self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getPrefix(): ?string
     {
         return $this->prefix;

@@ -57,16 +57,17 @@ class AddAliases implements ResourceMetadataCollectionFactoryInterface
 
                 // Generate for each provider.
                 foreach ($providers as $provider) {
-                    $new_key = str_replace($expand, $provider->getId(), $operation->getName());
+                    $new_key = str_replace($expand, str_replace('-', '_', $provider->getPrefix()), $operation->getName());
                     $openApiContext = $operation->getOpenapiContext();
                     $openApiContext['tags'] = [$provider->getName()];
+                    /** @var \App\OpenApi\ApiPlatform\Metadata\Operation $new_operation */
                     $new_operation = $operation->withUriTemplate(str_replace($expand, $provider->getPrefix(), $operation->getUriTemplate()))
                         ->withExtraProperties([
                             'user_defined_uri_template' => TRUE,
                             'provider' => $provider->getId(),
                         ])
                         ->withOpenapiContext($openApiContext)
-                        ->withName(str_replace($expand, $provider->getPrefix(), $operation->getName()))
+                        ->withName(str_replace($expand, str_replace('-', '_', $provider->getPrefix()), $operation->getName()))
                     ;
 
                     $new_operations[$new_key] = $new_operation;

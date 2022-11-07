@@ -1,0 +1,11 @@
+App\Entity\Provider:
+  src1:
+    id: 'src1'
+    name: 'Source 1'
+    prefix: 'source1'
+    expand: 'key_figures'
+  src2:
+    id: 'src2'
+    name: 'Source 2'
+    prefix: 'source-2'
+    expand: 'key_figures'
