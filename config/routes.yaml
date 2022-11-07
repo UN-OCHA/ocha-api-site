@@ -4,10 +4,16 @@ controllers:
 api_platform:
     resource: .
     type: api_platform
-    prefix: /api
+    prefix: /api/v1
 homepage:
     path: /
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
     defaults:
-        path: '/api'
+        path: '/api/v1'
+        permanent: true
+api_home:
+    path: /api
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        path: '/api/v1'
         permanent: true
