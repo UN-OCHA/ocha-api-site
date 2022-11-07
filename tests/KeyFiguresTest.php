@@ -10,9 +10,15 @@ class KeyFiguresTest extends ApiTestCase
 {
     use RefreshDatabaseTrait;
 
+    private $prefix = '/api/v1/';
+
+    protected function addPrefix(string $url) : string {
+        return rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
+    }
+
     public function testGetCollectionAsAdmin(): void
     {
-        $response = static::createClient()->request('GET', '/api/key_figures', [
+        $response = static::createClient()->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token1',
                 'accept' => 'application/json',
@@ -28,7 +34,7 @@ class KeyFiguresTest extends ApiTestCase
 
     public function testGetCollectionAsUser1(): void
     {
-        $response = static::createClient()->request('GET', '/api/key_figures', [
+        $response = static::createClient()->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token2',
                 'accept' => 'application/json',
@@ -44,7 +50,7 @@ class KeyFiguresTest extends ApiTestCase
 
     public function testGetCollectionAsUser2(): void
     {
-        $response = static::createClient()->request('GET', '/api/key_figures', [
+        $response = static::createClient()->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token3',
                 'accept' => 'application/json',

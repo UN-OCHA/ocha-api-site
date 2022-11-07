@@ -5,24 +5,27 @@ namespace App\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\KeyFiguresRepository;
+use App\State\KeyFigureProviderTrait;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class KeyFiguresYearsStateProvider implements ProviderInterface
 {
 
-    protected KeyFiguresRepository $repository;
+    use KeyFigureProviderTrait;
 
-    public function __construct(KeyFiguresRepository $repository)
+    public function __construct(
+        private KeyFiguresRepository $repository,
+        private TokenStorageInterface $tokenStorage,
+    )
     {
-        $this->repository = $repository;
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        /** @var \ApiPlatform\Metadata\GetCollection $operation */
-        $operation = $context['operation'];
-        $properties = $operation->getExtraProperties() ?? [];
-        $provider = $properties['provider'] ?? NULL;
+        $this->checkProviderAccess($operation, $context);
 
+        $provider = $this->getProvider($operation, $context);
         return $this->repository->getDistinctYears($provider);
     }
 }

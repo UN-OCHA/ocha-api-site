@@ -18,11 +18,14 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryResultCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Exception\RuntimeException;
+use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\State\ProviderInterface;
+use App\State\KeyFigureProviderTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
@@ -34,6 +37,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 {
+    use KeyFigureProviderTrait;
     use LinksHandlerTrait;
 
     /**
@@ -47,7 +51,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
     ) {
     }
 
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): iterable
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $resourceClass = $operation->getClass();
         /** @var EntityManagerInterface $manager */
@@ -64,12 +68,10 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 
         $this->handleLinks($queryBuilder, $uriVariables, $queryNameGenerator, $context, $resourceClass, $operation);
 
-        // Limit to provider specified on endpoint.
-        /** @var \ApiPlatform\Metadata\GetCollection $operation */
-        $operation = $context['operation'];
-        $properties = $operation->getExtraProperties() ?? [];
-        $provider = $properties['provider'] ?? NULL;
+        $this->checkProviderAccess($operation, $context);
 
+        // Limit to provider specified on endpoint.
+        $provider = $this->getProvider($operation, $context);
         if ($provider) {
             $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
                 ->setParameter(':provider', $provider);
@@ -84,20 +86,25 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
                         ->setParameter(':providers', $user->getProviders());
                 }
                 else {
-                    $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
-                        ->setParameter(':provider', $user->getUsername());
+                    throw new BadRequestException('User needs to have at least one provider.');
                 }
             }
         }
 
-        foreach ($this->collectionExtensions as $extension) {
-            $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
+        // Collection.
+        if ($operation instanceof CollectionOperationInterface) {
+            foreach ($this->collectionExtensions as $extension) {
+                $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
 
-            if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass, $operation, $context)) {
-                return $extension->getResult($queryBuilder, $resourceClass, $operation, $context);
+                if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass, $operation, $context)) {
+                    return $extension->getResult($queryBuilder, $resourceClass, $operation, $context);
+                }
             }
+
+            return $queryBuilder->getQuery()->getResult();
         }
 
-        return $queryBuilder->getQuery()->getResult();
+        // Simple get.
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }

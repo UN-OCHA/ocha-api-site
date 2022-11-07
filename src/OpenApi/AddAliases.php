@@ -66,7 +66,7 @@ class AddAliases implements ResourceMetadataCollectionFactoryInterface
                             'provider' => $provider->getId(),
                         ])
                         ->withOpenapiContext($openApiContext)
-                        ->withName(str_replace($expand, $provider->getid(), $operation->getRouteName()))
+                        ->withName(str_replace($expand, $provider->getPrefix(), $operation->getName()))
                     ;
 
                     $new_operations[$new_key] = $new_operation;

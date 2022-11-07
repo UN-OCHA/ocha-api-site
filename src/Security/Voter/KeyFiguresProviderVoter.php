@@ -19,7 +19,9 @@ class KeyFiguresProviderVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        $supportsAttribute = in_array($attribute, ['KEY_FIGURES_UPSERT']);
+        $supportsAttribute = in_array($attribute, [
+            'KEY_FIGURES_UPSERT',
+        ]);
         $supportsSubject = $subject instanceof KeyFigures;
 
         return $supportsAttribute && $supportsSubject;
@@ -27,7 +29,7 @@ class KeyFiguresProviderVoter extends Voter
 
     /**
      * @param string $attribute
-     * @param KeyFigures $subject
+     * @param $subject
      * @param TokenInterface $token
      * @return bool
      */
@@ -40,7 +42,8 @@ class KeyFiguresProviderVoter extends Voter
                 
         switch ($attribute) {
             case 'KEY_FIGURES_UPSERT':
-                if ($user->getUsername() === $subject->getProvider()) {
+                /** @var \App\Entity\KeyFigures $subject */
+                if (in_array($subject->getProvider(), $user->getProviders())) {
                     return true;
                 }
                 break;

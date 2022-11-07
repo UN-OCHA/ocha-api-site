@@ -20,13 +20,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: KeyFiguresRepository::class)]
 #[ApiResource(
+    security: "is_granted('ROLE_USER')",
     extraProperties: [
         'expand' => 'key_figures',
     ],
     operations: [
-        // All
+        // Years.
         new GetCollection(
-            security: "is_granted('ROLE_ADMIN')",
             uriTemplate: '/key_figures/years',
             output: SimpleStringObject::class,
             provider: KeyFiguresYearsStateProvider::class,
@@ -43,8 +43,8 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ]
         ),
+        // Countries.
         new GetCollection(
-            security: "is_granted('ROLE_ADMIN')",
             uriTemplate: '/key_figures/countries',
             output: SimpleStringObject::class,
             provider: KeyFiguresCountriesStateProvider::class,
@@ -61,8 +61,8 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ]
         ),
+        // Create or update.
         new Put(
-            security: "is_granted('ROLE_USER')",
             securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
             uriTemplate: '/key_figures/{id}',
             denormalizationContext: [
@@ -76,8 +76,9 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ]
         ),
+        // Get.
         new Get(
-            security: "is_granted('ROLE_USER')",
+            provider: KeyFiguresLimitByProviderStateProvider::class,
             uriTemplate: '/key_figures/{id}',
             openapiContext: [
                 'summary' => 'Get a key figures',
@@ -87,8 +88,8 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ]
         ),
+        // Get.
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
             uriTemplate: '/key_figures',
             provider: KeyFiguresLimitByProviderStateProvider::class,
             openapiContext: [

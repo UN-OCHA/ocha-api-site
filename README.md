@@ -46,8 +46,10 @@ console make:command
 ## Testing
 
 ```bash
-fin console hautelook:fixtures:load -n
-fin exec phpunit
+console doctrine:database:create --env=test --if-not-exists -n
+console doctrine:schema:create --env=test -n
+console hautelook:fixtures:load --env=test -n
+exec phpunit
 ```
 
 ## Security

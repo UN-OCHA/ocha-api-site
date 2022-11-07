@@ -70,3 +70,6 @@ script:
 
   # PHP linting
   - find -L ./src -iregex '.*\.php$' -print0 | xargs -0 -n 1 -P 4 php -l
+
+  # @todo: Build docker image and run tests
+  
