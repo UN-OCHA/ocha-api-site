@@ -43,7 +43,7 @@ before_script:
   - '[[ -z $SYMFONY ]] || composer config extra.symfony.require "$SYMFONY"'
 
   # Composerify.
-  - composer install
+  - composer install --no-scripts
 
   # If it is available update the Symfony binary, if not install it.
   - if symfony self:version; then symfony self:update --yes ; else wget https://get.symfony.com/cli/installer -O - | bash ; fi
