@@ -7,6 +7,8 @@ App\Entity\User:
     full_name: 'admin'
     token: 'token1'
     providers: '[]'
+    can_read: '[]'
+    can_write: '[]'
   user_1:
     email: 'user1@example'
     roles: '[ROLE_USER]'
@@ -15,6 +17,8 @@ App\Entity\User:
     full_name: 'user1'
     token: 'token2'
     providers: '[src1]'
+    can_read: '[src1]'
+    can_write: '[]'
   user_2:
     email: 'user2@example'
     roles: '[ROLE_USER]'
@@ -23,3 +27,5 @@ App\Entity\User:
     full_name: 'user2'
     token: 'token3'
     providers: '[src1, src2]'
+    can_read: '[src1, src2]'
+    can_write: '[]'

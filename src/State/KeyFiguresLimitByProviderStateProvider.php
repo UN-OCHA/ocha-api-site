@@ -81,12 +81,12 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
         /** @var \App\Entity\User */
         if ($this->tokenStorage->getToken() && $user = $this->tokenStorage->getToken()->getUser()) {
             if (!in_array('ROLE_ADMIN', $user->getRoles())) {
-                if (!empty($user->getProviders())) {
+                if (!empty($user->getCanRead())) {
                     $queryBuilder->andWhere($queryBuilder->expr()->in('o.provider', ':providers'))
-                        ->setParameter(':providers', $user->getProviders());
+                        ->setParameter(':providers', $user->getCanRead());
                 }
                 else {
-                    throw new BadRequestException('User needs to have at least one provider.');
+                    throw new BadRequestException('User needs to have at least one can_read entry.');
                 }
             }
         }

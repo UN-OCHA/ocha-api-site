@@ -25,7 +25,7 @@ trait KeyFigureProviderTrait {
         /** @var \App\Entity\User */
         if ($this->tokenStorage->getToken() && $user = $this->tokenStorage->getToken()->getUser()) {
             if (!in_array('ROLE_ADMIN', $user->getRoles())) {
-                if (!in_array($provider, $user->getProviders())) {
+                if (!in_array($provider, $user->getCanRead())) {
                     throw new AccessDeniedHttpException('This API Key does not have access to this endpoint.');
                 }
             }

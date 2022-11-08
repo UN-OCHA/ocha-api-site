@@ -43,7 +43,7 @@ class KeyFiguresProviderVoter extends Voter
         switch ($attribute) {
             case 'KEY_FIGURES_UPSERT':
                 /** @var \App\Entity\KeyFigures $subject */
-                if (in_array($subject->getProvider(), $user->getProviders())) {
+                if (in_array($subject->getProvider(), $user->getCanWrite())) {
                     return true;
                 }
                 break;

@@ -39,6 +39,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private array $providers = [];
 
+    #[ORM\Column(nullable: true)]
+    private array $can_read = [];
+
+    #[ORM\Column(nullable: true)]
+    private array $can_write = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +159,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProviders(?array $providers): self
     {
         $this->providers = $providers;
+
+        return $this;
+    }
+
+    public function getCanRead(): array
+    {
+        return $this->can_read;
+    }
+
+    public function setCanRead(?array $can_read): self
+    {
+        $this->can_read = $can_read;
+
+        return $this;
+    }
+
+    public function getCanWrite(): array
+    {
+        return $this->can_write;
+    }
+
+    public function setCanWrite(?array $can_write): self
+    {
+        $this->can_write = $can_write;
 
         return $this;
     }
