@@ -53,6 +53,14 @@ console hautelook:fixtures:load --env=test -n
 phpunit
 ```
 
+## Providers
+
+```bash
+console app:add-provider fts "FTS" fts key_figures
+console app:add-provider idps "Internally displaced persons key figures" idps key_figures
+console app:add-provider rw_crisis "ReliefWeb Crisis Figures" rw-crisis key_figures
+```
+
 ## Security
 
 ### API-Key (active)
