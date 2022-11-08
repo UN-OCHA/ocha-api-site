@@ -50,7 +50,7 @@ console doctrine:database:drop --env=test --force
 console doctrine:database:create --env=test --if-not-exists -n
 console doctrine:schema:create --env=test -n
 console hautelook:fixtures:load --env=test -n
-exec phpunit
+phpunit
 ```
 
 ## Security
@@ -60,9 +60,9 @@ exec phpunit
 Admin have access to all resources.
 
 ```bash
-console app:add-user fts fts@example.com fts --fts
-console app:add-user rwcrisis rwcrisis@example.com rwcrisis --rw-crisis
-console app:add-user idps idps@example.com idps --idps
+console app:add-user fts fts@example.com fts fts
+console app:add-user rwcrisis rwcrisis@example.com rwcrisis rw_crisis
+console app:add-user idps idps@example.com idps idps
 console app:add-user admin admin@example.com admin --admin
 ```
 

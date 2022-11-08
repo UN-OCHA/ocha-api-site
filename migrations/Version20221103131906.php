@@ -21,6 +21,7 @@ final class Version20221103131906 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE user ADD providers JSON DEFAULT NULL');
+        $this->addSql('UPDATE user set providers = "[]"');
     }
 
     public function down(Schema $schema): void

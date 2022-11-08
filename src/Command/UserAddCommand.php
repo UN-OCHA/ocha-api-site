@@ -56,10 +56,9 @@ class UserAddCommand extends Command
             ->addArgument('username', InputArgument::OPTIONAL, 'The username of the new user')
             ->addArgument('email', InputArgument::OPTIONAL, 'The email of the new user')
             ->addArgument('full-name', InputArgument::OPTIONAL, 'The full name of the new user')
+            ->addArgument('can-read', InputArgument::OPTIONAL, 'Grant read access')
+            ->addArgument('can-write', InputArgument::OPTIONAL, 'Grant write access')
             ->addOption('admin', null, InputOption::VALUE_NONE, 'If set, the user is created as an administrator')
-            ->addOption('fts', null, InputOption::VALUE_NONE, 'If set, grant FTS role')
-            ->addOption('rw-crisis', null, InputOption::VALUE_NONE, 'If set, grant RW Crisis role')
-            ->addOption('idps', null, InputOption::VALUE_NONE, 'If set, grant IDPS role')
         ;
     }
 
@@ -127,6 +126,22 @@ class UserAddCommand extends Command
             $fullName = $this->io->ask('Full Name', null, [$this->validator, 'validateFullName']);
             $input->setArgument('full-name', $fullName);
         }
+
+        $canRead = $input->getArgument('can-read');
+        if (null !== $canRead) {
+            $this->io->text(' > <info>Comma separated list of providers</info>: '.$canRead);
+        } else {
+            $canRead = $this->io->ask('Can read', null);
+            $input->setArgument('can-read', $canRead);
+        }
+
+        $canWrite = $input->getArgument('can-write');
+        if (null !== $canWrite) {
+            $this->io->text(' > <info>Comma separated list of providers</info>: '.$canWrite);
+        } else {
+            $canWrite = $this->io->ask('Can write', null);
+            $input->setArgument('can-write', $canWrite);
+        }
     }
 
     /**
@@ -143,11 +158,10 @@ class UserAddCommand extends Command
         $email = $input->getArgument('email');
         $fullName = $input->getArgument('full-name');
 
+        $can_read = $input->getArgument('can-read') ?? '';
+        $can_write = $input->getArgument('can-write') ?? '';
+
         $isAdmin = $input->getOption('admin');
-        $isFts = $input->getOption('fts');
-        $isRwCrisis = $input->getOption('rw-crisis');
-        $isIdps = $input->getOption('idps');
-        $providers = [];
 
         $roles = [
             'ROLE_USER',
@@ -155,18 +169,6 @@ class UserAddCommand extends Command
 
         if ($isAdmin) {
             $roles[] = 'ROLE_ADMIN';
-        }
-        if ($isFts) {
-            $roles[] = 'ROLE_FTS';
-            $providers[] = 'fts';
-        }
-        if ($isRwCrisis) {
-            $roles[] = 'ROLE_RW_CRISIS';
-            $providers[] = 'rw_crisis';
-        }
-        if ($isIdps) {
-            $roles[] = 'ROLE_IDPS';
-            $providers[] = 'idps';
         }
 
         // Update existing users.
@@ -188,7 +190,9 @@ class UserAddCommand extends Command
         }
 
         $user->setRoles($roles);
-        $user->setProviders($providers);
+        $user->setProviders([]);
+        $user->setCanRead(explode(',', $can_read));
+        $user->setCanWrite(explode(',', $can_write));
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

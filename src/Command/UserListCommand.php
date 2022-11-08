@@ -11,17 +11,13 @@
 
 namespace App\Command;
 
-use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Utils\Validator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -81,7 +77,7 @@ class UserListCommand extends Command
         $users = $this->users->findAll();
 
         $table = new Table($output);
-        $table->setHeaders(['Email', 'Roles', 'Token']);
+        $table->setHeaders(['Email', 'Roles', 'Token', 'Read', 'Write']);
 
         foreach ($users as $user) {
             /** @var \App\Entity\User $user */
@@ -89,6 +85,8 @@ class UserListCommand extends Command
                 $user->getEmail(),
                 implode(', ', $user->getRoles()),
                 $user->getToken(),
+                implode(', ', $user->getCanRead()),
+                implode(', ', $user->getCanWrite()),
             ]);
         }
         $table->render();
