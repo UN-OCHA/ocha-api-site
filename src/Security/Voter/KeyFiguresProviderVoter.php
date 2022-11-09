@@ -21,6 +21,7 @@ class KeyFiguresProviderVoter extends Voter
     {
         $supportsAttribute = in_array($attribute, [
             'KEY_FIGURES_UPSERT',
+            'KEY_FIGURES_BATCH',
         ]);
         $supportsSubject = $subject instanceof KeyFigures;
 
@@ -39,7 +40,7 @@ class KeyFiguresProviderVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-                
+
         switch ($attribute) {
             case 'KEY_FIGURES_UPSERT':
                 /** @var \App\Entity\KeyFigures $subject */
@@ -47,7 +48,11 @@ class KeyFiguresProviderVoter extends Voter
                     return true;
                 }
                 break;
-        }
+
+            case 'KEY_FIGURES_BATCH':
+                // @todo does not get called by POST.
+                return !empty($user->getCanWrite());
+            }
 
         return false;
     }

@@ -8,10 +8,16 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\KeyFiguresBatchController;
+use App\Dto\BatchCollection;
+use App\Dto\BatchResponses;
 use App\Repository\KeyFiguresRepository;
+use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
 use App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider;
+use App\State\KeyFigures\KeyFiguresPutStateProvider;
 use App\State\KeyFigures\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -65,12 +71,29 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(
             securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
             uriTemplate: '/key_figures/{id}',
+            processor: KeyFiguresPutStateProvider::class,
             denormalizationContext: [
                 'groups' => ['write'],
             ],
             openapiContext: [
                 'summary' => 'Create or update a key figures',
                 'description' => 'Create or update a key figures',
+                'tags' => [
+                    'Key Figures',
+                ],
+            ]
+        ),
+        // Batch update.
+        new Post(
+            securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('KEY_FIGURES_BATCH', object)",
+            uriTemplate: '/key_figures/batch',
+            input: BatchCollection::class,
+            processor: KeyFiguresBatchProcessor::class,
+            controller: KeyFiguresBatchController::class,
+            output: BatchResponses::class,
+            openapiContext: [
+                'summary' => 'Create or update a key figures in batch',
+                'description' => 'Create or update a key figures in batch',
                 'tags' => [
                     'Key Figures',
                 ],

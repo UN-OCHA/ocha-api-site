@@ -5,10 +5,13 @@
 - ~~Use array for provider on user~~
 - ~~Autofilter on provider~~
 - ~~Auto build aliases for routes~~
-- Add base class for state providers
-- Add command to add providers
-- Add user command with providers
-- Check read/write security
+- ~~Add base class for state providers~~
+- ~~Add command to add providers~~
+- ~~Add user command with providers~~
+- ~~Check read/write security~~
+- add service name in header
+- ~~batch endpoint~~
+- extra fields as json blob
 
 ## Resources
 
