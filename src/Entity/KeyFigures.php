@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\Put;
 use App\Controller\KeyFiguresBatchController;
 use App\Dto\BatchCollection;
 use App\Dto\BatchResponses;
+use App\Dto\SimpleStringObject;
 use App\Repository\KeyFiguresRepository;
 use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
