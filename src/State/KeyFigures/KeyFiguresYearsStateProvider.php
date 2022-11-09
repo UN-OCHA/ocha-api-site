@@ -1,12 +1,11 @@
 <?php
 
-namespace App\State;
+namespace App\State\KeyFigures;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\KeyFiguresRepository;
-use App\State\KeyFigureProviderTrait;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use App\State\KeyFigures\KeyFigureProviderTrait;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class KeyFiguresYearsStateProvider implements ProviderInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\State;
+namespace App\State\KeyFigures;
 
 use ApiPlatform\Metadata\Operation;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;

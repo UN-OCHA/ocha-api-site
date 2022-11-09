@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the API Platform project.
- *
- * (c) Kévin Dunglas <dunglas@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
-namespace App\State;
+namespace App\State\KeyFigures;
 
 use ApiPlatform\Doctrine\Orm\State\LinksHandlerTrait;
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
@@ -22,19 +13,13 @@ use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\State\ProviderInterface;
-use App\State\KeyFigureProviderTrait;
+use App\State\KeyFigures\KeyFigureProviderTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
-/**
- * Collection state provider using the Doctrine ORM.
- *
- * @author Kévin Dunglas <kevin@dunglas.fr>
- * @author Samuel ROZE <samuel.roze@gmail.com>
- */
 final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 {
     use KeyFigureProviderTrait;

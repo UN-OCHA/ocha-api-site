@@ -1,11 +1,11 @@
 <?php
 
-namespace App\State;
+namespace App\State\KeyFigures;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\KeyFiguresRepository;
-use App\State\KeyFigureProviderTrait;
+use App\State\KeyFigures\KeyFigureProviderTrait;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class KeyFiguresCountriesStateProvider implements ProviderInterface

@@ -25,7 +25,7 @@ services:
         arguments: [ '@App\OpenApi\OpenApiFactory.inner' ]
         autoconfigure: false
 
-    App\State\KeyFiguresLimitByProviderStateProvider:
+    App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider:
         arguments: [ '@api_platform.metadata.resource.metadata_collection_factory', '@doctrine', '@security.token_storage', !tagged_iterator { tag: 'api_platform.doctrine.orm.query_extension.collection', index_by: 'key' } ]
 
     App\EventListener\PutListener:
