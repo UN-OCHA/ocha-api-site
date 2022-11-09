@@ -25,9 +25,22 @@ services:
         arguments: [ '@App\OpenApi\OpenApiFactory.inner' ]
         autoconfigure: false
 
-    App\State\KeyFiguresLimitByProviderStateProvider:
+    App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider:
         arguments: [ '@api_platform.metadata.resource.metadata_collection_factory', '@doctrine', '@security.token_storage', !tagged_iterator { tag: 'api_platform.doctrine.orm.query_extension.collection', index_by: 'key' } ]
+
+    App\State\KeyFigures\KeyFiguresPutStateProvider:
+        bind:
+            $decorated: '@api_platform.doctrine.orm.state.persist_processor'
+
+    App\State\User\RegisterStateProvider:
+        bind:
+            $decorated: '@api_platform.doctrine.orm.state.persist_processor'
 
     App\EventListener\PutListener:
         decorates: api_platform.listener.request.read
         arguments: [ '@App\EventListener\PutListener.inner' ]
+
+    App\OpenApi\AddAliases:
+        decorates: api_platform.metadata.resource.metadata_collection_factory
+        decoration_priority: 499
+        arguments: [ '@App\OpenApi\AddAliases.inner' ]

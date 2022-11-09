@@ -2,10 +2,16 @@
 
 ## Todo
 
-- Use array for provider on user
-- Autofilter on provider
-- Auto build aliases for routes
-- Add base class for state providers
+- ~~Use array for provider on user~~
+- ~~Autofilter on provider~~
+- ~~Auto build aliases for routes~~
+- ~~Add base class for state providers~~
+- ~~Add command to add providers~~
+- ~~Add user command with providers~~
+- ~~Check read/write security~~
+- add service name in header
+- ~~batch endpoint~~
+- extra fields as json blob
 
 ## Resources
 
@@ -43,8 +49,19 @@ console make:command
 ## Testing
 
 ```bash
-fin console hautelook:fixtures:load -n
-fin exec phpunit
+console doctrine:database:drop --env=test --force
+console doctrine:database:create --env=test --if-not-exists -n
+console doctrine:schema:create --env=test -n
+console hautelook:fixtures:load --env=test -n
+phpunit
+```
+
+## Providers
+
+```bash
+console app:add-provider fts "FTS" fts key_figures
+console app:add-provider idps "Internally displaced persons key figures" idps key_figures
+console app:add-provider rw_crisis "ReliefWeb Crisis Figures" rw-crisis key_figures
 ```
 
 ## Security
@@ -54,9 +71,9 @@ fin exec phpunit
 Admin have access to all resources.
 
 ```bash
-console app:add-user fts fts@example.com fts --fts
-console app:add-user rwcrisis rwcrisis@example.com rwcrisis --rw-crisis
-console app:add-user idps idps@example.com idps --idps
+console app:add-user fts fts@example.com fts fts
+console app:add-user rwcrisis rwcrisis@example.com rwcrisis rw_crisis
+console app:add-user idps idps@example.com idps idps
 console app:add-user admin admin@example.com admin --admin
 ```
 

@@ -1,37 +1,27 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Command;
 
-use App\Repository\UserRepository;
+use App\Repository\ProviderRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-/**
- * A console command that list users.
- */
 #[AsCommand(
-    name: 'app:list-user',
-    description: 'List users'
+    name: 'app:list-provider',
+    description: 'Add a short description for your command',
 )]
-class UserListCommand extends Command
+class ProviderListCommand extends Command
 {
     private SymfonyStyle $io;
 
     public function __construct(
-        private UserRepository $users
+        private ProviderRepository $providers
     ) {
         parent::__construct();
     }
@@ -64,19 +54,18 @@ class UserListCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $users = $this->users->findAll();
+        $providers = $this->providers->findAll();
 
         $table = new Table($output);
-        $table->setHeaders(['Email', 'Roles', 'Token', 'Read', 'Write']);
+        $table->setHeaders(['Id', 'Name', 'Prefix', 'Expand']);
 
-        foreach ($users as $user) {
+        foreach ($providers as $provider) {
             /** @var \App\Entity\User $user */
             $table->addRow([
-                $user->getEmail(),
-                implode(', ', $user->getRoles()),
-                $user->getToken(),
-                implode(', ', $user->getCanRead()),
-                implode(', ', $user->getCanWrite()),
+                $provider->getId(),
+                $provider->getName(),
+                $provider->getPrefix(),
+                $provider->getExpand(),
             ]);
         }
         $table->render();
@@ -91,6 +80,6 @@ class UserListCommand extends Command
      */
     private function getCommandHelp(): string
     {
-        return 'The <info>%command.name%</info> command list users in the database';
+        return 'The <info>%command.name%</info> command list providers in the database';
     }
 }

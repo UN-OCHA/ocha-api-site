@@ -1,39 +1,28 @@
 <?php
 
-/*
- * This file is part of the API Platform project.
- *
- * (c) Kévin Dunglas <dunglas@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
-namespace App\State;
+namespace App\State\KeyFigures;
 
 use ApiPlatform\Doctrine\Orm\State\LinksHandlerTrait;
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryResultCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Exception\RuntimeException;
+use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\State\ProviderInterface;
+use App\State\KeyFigures\KeyFigureProviderTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
-/**
- * Collection state provider using the Doctrine ORM.
- *
- * @author Kévin Dunglas <kevin@dunglas.fr>
- * @author Samuel ROZE <samuel.roze@gmail.com>
- */
 final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 {
+    use KeyFigureProviderTrait;
     use LinksHandlerTrait;
 
     /**
@@ -47,7 +36,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
     ) {
     }
 
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): iterable
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $resourceClass = $operation->getClass();
         /** @var EntityManagerInterface $manager */
@@ -64,12 +53,10 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 
         $this->handleLinks($queryBuilder, $uriVariables, $queryNameGenerator, $context, $resourceClass, $operation);
 
-        // Limit to provider specified on endpoint.
-        /** @var \ApiPlatform\Metadata\GetCollection $operation */
-        $operation = $context['operation'];
-        $properties = $operation->getExtraProperties() ?? [];
-        $provider = $properties['provider'] ?? NULL;
+        $this->checkProviderAccess($operation, $context);
 
+        // Limit to provider specified on endpoint.
+        $provider = $this->getProvider($operation, $context);
         if ($provider) {
             $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
                 ->setParameter(':provider', $provider);
@@ -77,27 +64,32 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
 
         // Check user roles if not admin.
         /** @var \App\Entity\User */
-        if ($user = $this->tokenStorage->getToken()->getUser()) {
+        if ($this->tokenStorage->getToken() && $user = $this->tokenStorage->getToken()->getUser()) {
             if (!in_array('ROLE_ADMIN', $user->getRoles())) {
-                if (!empty($user->getProviders())) {
+                if (!empty($user->getCanRead())) {
                     $queryBuilder->andWhere($queryBuilder->expr()->in('o.provider', ':providers'))
-                        ->setParameter(':providers', $user->getProviders());
+                        ->setParameter(':providers', $user->getCanRead());
                 }
                 else {
-                    $queryBuilder->andWhere($queryBuilder->expr()->eq('o.provider', ':provider'))
-                        ->setParameter(':provider', $user->getUsername());
+                    throw new BadRequestException('User needs to have at least one can_read entry.');
                 }
             }
         }
 
-        foreach ($this->collectionExtensions as $extension) {
-            $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
+        // Collection.
+        if ($operation instanceof CollectionOperationInterface) {
+            foreach ($this->collectionExtensions as $extension) {
+                $extension->applyToCollection($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
 
-            if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass, $operation, $context)) {
-                return $extension->getResult($queryBuilder, $resourceClass, $operation, $context);
+                if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass, $operation, $context)) {
+                    return $extension->getResult($queryBuilder, $resourceClass, $operation, $context);
+                }
             }
+
+            return $queryBuilder->getQuery()->getResult();
         }
 
-        return $queryBuilder->getQuery()->getResult();
+        // Simple get.
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }

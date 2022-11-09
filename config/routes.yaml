@@ -1,13 +1,15 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
-api_platform:
-    resource: .
-    type: api_platform
-    prefix: /api
 homepage:
     path: /
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
     defaults:
-        path: '/api'
+        path: '/api/v1'
+        permanent: true
+api_home:
+    path: /api
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        path: '/api/v1'
         permanent: true

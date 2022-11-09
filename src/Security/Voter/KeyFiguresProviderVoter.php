@@ -19,7 +19,10 @@ class KeyFiguresProviderVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        $supportsAttribute = in_array($attribute, ['KEY_FIGURES_UPSERT']);
+        $supportsAttribute = in_array($attribute, [
+            'KEY_FIGURES_UPSERT',
+            'KEY_FIGURES_BATCH',
+        ]);
         $supportsSubject = $subject instanceof KeyFigures;
 
         return $supportsAttribute && $supportsSubject;
@@ -27,7 +30,7 @@ class KeyFiguresProviderVoter extends Voter
 
     /**
      * @param string $attribute
-     * @param KeyFigures $subject
+     * @param $subject
      * @param TokenInterface $token
      * @return bool
      */
@@ -37,14 +40,19 @@ class KeyFiguresProviderVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-                
+
         switch ($attribute) {
             case 'KEY_FIGURES_UPSERT':
-                if ($user->getUsername() === $subject->getProvider()) {
+                /** @var \App\Entity\KeyFigures $subject */
+                if (in_array($subject->getProvider(), $user->getCanWrite())) {
                     return true;
                 }
                 break;
-        }
+
+            case 'KEY_FIGURES_BATCH':
+                // @todo does not get called by POST.
+                return !empty($user->getCanWrite());
+            }
 
         return false;
     }
