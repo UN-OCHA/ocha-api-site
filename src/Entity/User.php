@@ -2,20 +2,63 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
+use App\State\User\MeStateProvider;
+use App\State\User\RegisterStateProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+    cacheHeaders: [
+        'max_age' => 60,
+        'vary' => ['Authorization']
+    ],
+    operations: [
+        // Me.
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            uriTemplate: '/me',
+            provider: MeStateProvider::class,
+            openapiContext: [
+                'summary' => 'Get profile',
+                'description' => 'Get profile',
+                'tags' => [
+                    'User',
+                ],
+            ]
+        ),
+        new Post(
+            uriTemplate: '/register',
+            processor: RegisterStateProvider::class,
+            openapiContext: [
+                'summary' => 'Create an account',
+                'description' => 'Create an account',
+                'tags' => [
+                    'User',
+                ],
+            ]
+        ),
+    ]
+)]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['read', 'write'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -28,21 +71,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $FullName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read'])]
     private ?string $token = null;
 
     #[ORM\Column(nullable: true)]
     private array $providers = [];
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['read'])]
     private array $can_read = [];
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['read'])]
     private array $can_write = [];
 
     public function getId(): ?int
