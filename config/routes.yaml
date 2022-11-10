@@ -3,10 +3,7 @@ controllers:
     type: attribute
 homepage:
     path: /
-    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
-    defaults:
-        path: '/api/v1'
-        permanent: true
+    controller: App\Page\HomePageController::home
 api_home:
     path: /api
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController

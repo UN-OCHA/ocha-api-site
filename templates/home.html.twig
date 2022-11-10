@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>OCHA API</h1>
+
+<h2>Do you need to embed OCHA API content into your website? </h2>
+<p>OCHA API offers all its content through its API to be consumed by any other service.</p>
+
+<ul>
+    <li>
+        <em>Get key figure data by country and year.</em>
+    </li>
+</ul>
+
+<p>Jump to: <a href="#auth">Authentication</a> | <a href="#sources">Datasources</a> | <a href="#sources">Adding data</a> | <a href="#doc">Documentation</a> | <a href="#feedback">Feedback and support</a> | <a href="#tos">Terms of Service and Quotas</a> | <a href="#faq">FAQ</a></p>
+
+<h2 id="auth">Authentication</h2>
+<p>You will need an API key to be able to read or write data.</p>
+<p>You can request an API key by doing an API call to <code>{{ url('_api_/register_post') }}</code>
+<code><pre>
+    curl -X 'POST' '{{ url('_api_/register_post') }}' \
+        -H 'accept: application/json' \
+        -H 'Content-Type: application/json' \
+        -d '{
+            "email": "info@example.com",
+            "username": "username",
+            "FullName": "My full name"
+        }'  
+</pre></code>
+
+<p>If you require write access please drop us an email at <a href="mailto:info@example.com">info@example.com</a>.</p>
+
+<p><a href="#top">Back to top</a></p>
+<h2 id="auth">Datasources</h2>
+<ul>
+    <li>
+        <em>Key Figures</em>
+        <p>Key figures has support for extra fields and will accept any number of them.</p>
+        <ul>
+            <li><strong>FTS</strong>: Data from <a rel="noopener noreferrer" target="_blank" href="https://fts.unocha.org">https://fts.unocha.org</a></li>
+            <li><strong>IDPs</strong>: Data from <a rel="noopener noreferrer" target="_blank" href="https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps">https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps</a></li>
+            <li><strong>RW Crisis</strong>: Data from <a rel="noopener noreferrer" target="_blank" href="https://github.com/reliefweb/crisis-app-data/tree/v2/edition/world/countries">https://github.com/reliefweb/crisis-app-data/tree/v2/edition/world/countries</a></li>
+        </ul>
+    </li>
+</ul>
+
+<p><a href="#top">Back to top</a></p>
+<h2 id="add">Adding data</h2>
+<p>Make sure you already have requested an API key and have write access.</p>
+<p>Since data is stored inside a shared database, you are responsible to provide a unique id for each record.</p>
+
+<h3>Use n8n</h3>
+<img src="/img/n8n_idps.png" width="80%"/>
+<p>If you prefer to use a visual tool to add data you can use <a rel="noopener noreferrer" target="_blank" href="https://dev.api-sources-unocha-org.ahconu.org">n8n</a>.</p>
+<p>You can find a template to get you started at <a href="/n8n/idps.json">IDPS template</a>, you can import it into a blank workflow in n8n.</p>
+
+
+<h3>Use REST</h3>
+<p>All datasources have 2 endpoints to create or update data.</p>
+<ol>
+    <li><strong>PUT</strong>: Allows you to create or update 1 item.</li>
+    <li><strong>POST</strong>: Allows you to create or update 100 items at once. This is prefered if you need to update lots of records.</li>
+</ol>
+
+<p><a href="#top">Back to top</a></p>
+<h2 id="doc">Documentation</h2>
+<p>Visit our <a href="{{ url('api_home') }}" rel="noreferrer noopener">API Documentation</a> page
+    to find out more and to get started. The documentation have live examples that you can modify and see the results
+    directly on the help page!</p>
+<p><a href="#top">Back to top</a></p>
+
+<h2 id="feedback">Feedback and support</h2>
+<p>If you have questions or you have noticed something strange with our API then please get in touch.</p>
+<p>If you have some questions or feedback, including big ideas for improvements, you can write to us at
+    <a href="mailto:info@example.com">info@example.com</a>.</p>
+<p><a href="#top">Back to top</a></p>
+
+<h2 id="tos">Terms of Service and Quotas</h2>
+<p>Anyone can use the API. You should respect the
+    intellectual property rights of the original source when using content retrieved through the API.</p>
+<p>To improve its service, we may log your API calls and analyze usage patterns. Please, <strong>use the
+        parameter appname</strong> in your calls, so we can track the usage of the API for statistical and performance
+    purposes.</p>
+<p>In order to ensure optimum performance for everyone, the API is restricted in two ways:</p>
+<ol>
+    <li>The maximum number of entries returned per call is 500.</li>
+    <li>The maximum number of calls allowed per day is 10000.</li>
+</ol>
+<p>We feel that these limitations are reasonable and should not interfere with most applications. If they cause
+    significant problems for your use case, please let us know at <a href="mailto:info@example.com">info@example.com</a> and we will review on a
+    case-by-case basis.</p>
+<p>We do not guarantee the accuracy of its data and are not responsible for any damages resulting from the use
+    of API. There are no fees associated with the use of the API.</p>
+<p><a href="#top">Back to top</a></p>
+
+<h2 id="faq">Frequently asked questions</h2>
+<p><em>How often is the data updated?</em></p>
+<p>This depends on the endpoint, but all data is at least updated once a day.</p>
+<p><em>Can anyone use the API? What restrictions are there?</em></p>
+<p>For details, see the <a href="#tos">Terms of Service</a>.</p>
+<p><em>Where do I get help?</em></p>
+<p>For details, see the <a href="#feedback">Feedback and support</a> section on this page.</p>
+<p><a href="#top">Back to top</a></p>
+
+{% endblock %}
