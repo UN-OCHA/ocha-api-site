@@ -130,7 +130,7 @@ class ImportFtsCommand extends Command
           continue;
         }
         
-        $id = 'fts_' . strtolower($plan['locations'][0]['iso3']) . '_' . $year . '_' . $figure_type;
+        $id = 'fts_' . $plan['id'] . '_' .strtolower($plan['locations'][0]['iso3']) . '_' . $year . '_' . $figure_type;
         $item = [
           'id' => $id,
           'name' => $info['label'],
@@ -147,6 +147,11 @@ class ImportFtsCommand extends Command
             'financial',
           ],
           'provider' => 'fts',
+          'extra' => [
+            'plan_id' => $plan['id'],
+            'plan_name' => $plan['planVersion']['name'],
+            'plan_code' => $plan['planVersion']['code'],
+          ],
         ];
 
         if ($existing = $this->load($id)) {
