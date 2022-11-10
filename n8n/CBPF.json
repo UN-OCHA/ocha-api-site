@@ -1,0 +1,344 @@
+{
+  "name": "CBPF",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "86054e74-0532-4136-a2c1-9b7b350f134d",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const iso_2_3 = $node[\"iso_2_3\"].json;\nconst metadata = $node[\"metadata\"].json;\n\nconsole.log('------');\nconsole.log(iso_2_3.json);\nconsole.log(metadata.json);\nconsole.log('------');\n\nconst figures = {\n  'ApprovedNumbOfProjects': 'Approved Number Of Projects',\n  'ApprovedNumbOfPartners': 'Approved Numbber Of Partners',\n  'ApprovedBudget': 'Approved Budget',\n  'PipelineNumbOfProjects': 'Pipeline Number Of Projects',\n  'PipelineNumbOfPartners': 'Pipeline Number Of Partners',\n  'PipelineBudget': 'Pipeline Budget',\n};\n\nlet output = [];\n\nfor (item of items) {\n  for (const [figureKey, figureLabel] of Object.entries(figures)) {\n    if (item.json[figureKey]) {\n      output.push({\n        id: 'cbpf_' + item.json.PooledFundName + '_' + item.json.AllocationYear + '_' + figureKey,\n        country: item.json.PooledFundName,\n        iso3: iso_2_3[metadata[item.json.PooledFundName]['CountryCode']],\n        year: item.json.AllocationYear.toString(),\n        name: figureLabel,\n        value: item.json[figureKey].toString(),\n        source: 'CBPF',\n        url: 'https://cbpf.unocha.org/',\n        provider: 'cbpf'\n      });\n    }\n  }\n\n\n}\n\nreturn output;"
+      },
+      "id": "efc8294d-5245-4d39-b361-3ffa6d411a9f",
+      "name": "Build records",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api-test.docksal.site/api/v1/cbpf/batch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "API-KEY",
+              "value": "203e7e747c7226113c1104c40d53bb41"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{$json}}",
+        "options": {}
+      },
+      "id": "cc1dee42-3bcf-4b4c-a194-892cb547fe0e",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1780,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "id": "3df68346-4f4f-43b1-911e-c19c885406f9",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData"
+      },
+      "id": "e1cd276d-b9bc-4e76-a15a-028c55b3fa83",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://cbpfapi.unocha.org/vo2/odata/AllocationCountByYearAndFund",
+        "options": {}
+      },
+      "id": "77e5181f-b8de-47e1-a313-f514faf66b5f",
+      "name": "Get data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        680,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "value",
+        "include": "=noOtherFields",
+        "options": {}
+      },
+      "id": "43ec1c73-86ad-458f-bf77-1fcd3cb0ed8c",
+      "name": "Extract value list",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://cbpfapi.unocha.org/vo2/odata/Poolfund",
+        "options": {}
+      },
+      "id": "635a90d7-60b2-43cc-8eea-6eaa8e188e73",
+      "name": "Get meta data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        680,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "value",
+        "options": {}
+      },
+      "id": "a777b8f2-190b-4017-8e44-bfc79bf55f28",
+      "name": "Extract value list1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e3b72b5a-a10c-492c-9a18-68c88ce2af7d",
+      "name": "metadata",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://country.io/iso3.json",
+        "options": {}
+      },
+      "id": "6fc3a3a2-f379-43f9-8cab-6fa4af771547",
+      "name": "Iso codes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        680,
+        -640
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9dcf23d9-9096-48f0-9e6a-8d3125479cf4",
+      "name": "iso_2_3",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let output = {};\n\nfor (item of items) {\n  output[item.json.PoolfundName] = item.json;\n}\n\nreturn output;"
+      },
+      "id": "9dc7578d-bdea-4515-a141-7459f980d72c",
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        -400
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Build records": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Iso codes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get data": {
+      "main": [
+        [
+          {
+            "node": "Extract value list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract value list": {
+      "main": [
+        [
+          {
+            "node": "Build records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get meta data": {
+      "main": [
+        [
+          {
+            "node": "Extract value list1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract value list1": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Iso codes": {
+      "main": [
+        [
+          {
+            "node": "iso_2_3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "iso_2_3": {
+      "main": [
+        [
+          {
+            "node": "Get meta data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "metadata": {
+      "main": [
+        [
+          {
+            "node": "Get data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 4,
+  "meta": {
+    "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
+  },
+  "tags": []
+}

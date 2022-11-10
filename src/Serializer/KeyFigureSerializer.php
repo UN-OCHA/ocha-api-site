@@ -25,6 +25,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         'tags' => 'tags',
         'provider' => 'provider',
         'extra' => 'extra',
+        'data' => 'data',
     ];
 
     public function __construct(NormalizerInterface $decorated)
@@ -62,14 +63,53 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
     public function denormalize($data, string $type, string $format = null, array $context = [])
     {
-        // Check for any extra keys.
-        if (!empty(array_diff_key($data, $this->defaultFields))) {
-            // Move them into extra.
-            $data['extra'] = $data['extra'] ?? [];
-            $data['extra'] += array_diff_key($data, $this->defaultFields);
-            $data = array_diff_key($data, $data['extra']);
+        /** @var ApiPlatform\Metadata\Operations $operations */
+        $operation = $context['operation'];
+        $properties = $operation->getExtraProperties() ?? [];
+        $provider = $properties['provider'] ?? NULL;
+
+        // Multiple records.
+        if (isset($data['data'])) {
+            if (is_array($data['data'])) {
+                foreach ($data['data'] as &$row) {
+                    // Force provider.
+                    if ($provider) {
+                        $row['provider'] = $provider;
+                    }
+
+                    // Type conversion.
+                    $row['year'] = (string) $row['year'];
+                    $row['value'] = (string) $row['value'];
+
+                    // Check for any extra keys.
+                    if (!empty(array_diff_key($row, $this->defaultFields))) {
+                        // Move them into extra.
+                        $row['extra'] = $row['extra'] ?? [];
+                        $row['extra'] += array_diff_key($row, $this->defaultFields);
+                        $row = array_diff_key($row, $row['extra']);
+                    }
+                }
+            }
         }
-        //dd($data);
+        else {
+            // Force provider.
+            if ($provider) {
+                $data['provider'] = $provider;
+            }
+
+            // Type conversion.
+            $data['year'] = (string) $data['year'];
+            $data['value'] = (string) $data['value'];
+
+            // Check for any extra keys.
+            if (!empty(array_diff_key($data, $this->defaultFields))) {
+                // Move them into extra.
+                $data['extra'] = $data['extra'] ?? [];
+                $data['extra'] += array_diff_key($data, $this->defaultFields);
+                $data = array_diff_key($data, $data['extra']);
+            }
+        }
+
         return $this->decorated->denormalize($data, $type, $format, $context);
     }
 

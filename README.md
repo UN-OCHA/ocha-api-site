@@ -9,9 +9,19 @@
 - ~~Add command to add providers~~
 - ~~Add user command with providers~~
 - ~~Check read/write security~~
-- add service name in header
 - ~~batch endpoint~~
-- extra fields as json blob
+- ~~extra fields as json blob~~
+- add service name in header
+
+## OPS
+
+### Add new key figure provider
+
+```bash
+console app:add-provider cbpf "Country-Based Pooled Funds" cbpf key_figures
+console app:add-user cbpf cbpf@example.com cbpf cbpf cbpf
+console cache:clear
+```
 
 ## Resources
 
@@ -62,6 +72,7 @@ phpunit
 console app:add-provider fts "FTS" fts key_figures
 console app:add-provider idps "Internally displaced persons key figures" idps key_figures
 console app:add-provider rw_crisis "ReliefWeb Crisis Figures" rw-crisis key_figures
+console app:add-provider cbpf "Country-Based Pooled Funds" cbpf key_figures
 ```
 
 ## Security
@@ -83,6 +94,7 @@ Add users with read/write permissions.
 
 ```bash
 console app:add-user idps idps@example.com idps idps idps
+console app:add-user cbpf cbpf@example.com cbpf cbpf cbpf
 ```
 
 ### JWT (not enabled)
