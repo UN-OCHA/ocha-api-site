@@ -23,6 +23,12 @@ console app:add-user cbpf cbpf@example.com cbpf cbpf cbpf
 console cache:clear
 ```
 
+## Reset data of a provider
+
+```bash
+console doctrine:query:sql "delete from key_figures where provider = \"cbpf\""
+```
+
 ## Resources
 
 - [Export as CSV](https://locastic.com/blog/easy-csv-export-in-api-platform)
