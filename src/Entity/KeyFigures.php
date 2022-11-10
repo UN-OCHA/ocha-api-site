@@ -189,6 +189,10 @@ class KeyFigures
     #[Groups(['write', 'with_meta'])]
     private ?string $provider = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['write', 'with_meta'])]
+    private array $extra = [];
+
     public function getId(): ?string
     {
         return $this->id;
@@ -333,6 +337,18 @@ class KeyFigures
         return $this;
     }
 
+    public function getExtra(): array
+    {
+        return $this->extra;
+    }
+
+    public function setExtra(?array $extra): self
+    {
+        $this->extra = $extra;
+
+        return $this;
+    }
+
     public function fromValues(array $values): self {
         $this->id = $values['id'];
         $this->iso3 = $values['iso3'];
@@ -344,8 +360,9 @@ class KeyFigures
         $this->url = $values['url'];
         $this->source = $values['source'];
         $this->description = $values['description'] ?? '';
-        $this->tags = $values['tags'];
+        $this->tags = $values['tags'] ?? [];
         $this->provider = $values['provider'];
+        $this->extra = $values['extra'] ?? [];
 
         return $this;
     }

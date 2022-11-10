@@ -68,13 +68,21 @@ console app:add-provider rw_crisis "ReliefWeb Crisis Figures" rw-crisis key_figu
 
 ### API-Key (active)
 
-Admin have access to all resources.
+Admin have read/write access to all resources.
+
+Add users with read permissions.
 
 ```bash
 console app:add-user fts fts@example.com fts fts
 console app:add-user rwcrisis rwcrisis@example.com rwcrisis rw_crisis
 console app:add-user idps idps@example.com idps idps
 console app:add-user admin admin@example.com admin --admin
+```
+
+Add users with read/write permissions.
+
+```bash
+console app:add-user idps idps@example.com idps idps idps
 ```
 
 ### JWT (not enabled)

@@ -44,3 +44,7 @@ services:
         decorates: api_platform.metadata.resource.metadata_collection_factory
         decoration_priority: 499
         arguments: [ '@App\OpenApi\AddAliases.inner' ]
+
+    App\Serializer\KeyFigureSerializer:
+        # By default .inner is passed as argument
+        decorates: 'api_platform.serializer.normalizer.item'
