@@ -46,6 +46,7 @@ COPY --from=builder /srv/www/vendor /srv/www/vendor
 COPY --from=builder /srv/www/composer.json /srv/www/composer.json
 COPY --from=builder /srv/www/composer.lock /srv/www/composer.lock
 COPY --from=builder /srv/www/docker/manifest.json /srv/www/public/build/manifest.json
+COPY --from=builder /srv/www/docker/99-elastic-apm-custom.ini /tmp/99-elastic-apm-custom.ini
 
 RUN  apk add -U --no-cache php81-sodium && \
      rm -rf /var/cache/apk/* && \
@@ -53,7 +54,11 @@ RUN  apk add -U --no-cache php81-sodium && \
      rm -rf /srv/www/html && \
      ln -s /srv/www/public /srv/www/html && \
      mkdir -p /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions /etc/nginx/custom && \
-     chown appuser:appuser /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions
+     chown appuser:appuser /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions && \
+     curl -L -o /tmp/apm-agent-php_1.6.1_all.apk https://github.com/elastic/apm-agent-php/releases/download/v1.6.1/apm-agent-php_1.6.1_all.apk && \
+     apk add --allow-untrusted /tmp/apm-agent-php_1.6.1_all.apk && \
+     rm -f /tmp/apm-agent-php_1.6.1_all.apk && \
+     mv -f /tmp/99-elastic-apm-custom.ini /etc/php8/conf.d/99-elastic-apm-custom.ini
 
 COPY --from=builder /srv/www/docker/etc/nginx/apps/drupal/drupal.conf /etc/nginx/apps/drupal/drupal.conf
 COPY --from=builder /srv/www/docker/etc/nginx/custom/hsts.conf /etc/nginx/custom/hsts.conf
