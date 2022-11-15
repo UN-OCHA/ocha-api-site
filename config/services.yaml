@@ -36,6 +36,10 @@ services:
         bind:
             $decorated: '@api_platform.doctrine.orm.state.persist_processor'
 
+    App\EventListener\RequireServiceNameListener:
+        decorates: api_platform.listener.request.read
+        arguments: [ '@App\EventListener\RequireServiceNameListener.inner' ]
+
     App\EventListener\PutListener:
         decorates: api_platform.listener.request.read
         arguments: [ '@App\EventListener\PutListener.inner' ]
