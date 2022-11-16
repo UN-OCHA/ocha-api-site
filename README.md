@@ -23,6 +23,16 @@ n8n needs the following environment variables defined, they will not be visible 
 - ACAPS_USERNAME
 - ACAPS_PASSWORD
 
+### Workflows
+
+Workflows can be executed from files, no UI needed.
+
+`files` is a mapped directory.
+
+```bash
+docker-compose exec -u node n8n n8n execute --file /files/IDPS.json
+```
+
 ### Add new key figure provider
 
 ```bash
