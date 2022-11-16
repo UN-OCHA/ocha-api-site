@@ -31,6 +31,7 @@ Workflows can be executed from files, no UI needed.
 
 ```bash
 docker-compose exec -u node n8n n8n execute --file /files/IDPS.json
+docker-compose exec -e FTS_YEAR=2019 -u node n8n n8n execute --file /files/FTS.json
 ```
 
 ### Add new key figure provider
