@@ -8,8 +8,8 @@
       "type": "n8n-nodes-base.start",
       "typeVersion": 1,
       "position": [
-        -560,
-        120
+        2160,
+        180
       ]
     },
     {
@@ -23,13 +23,13 @@
           }
         }
       },
-      "id": "c33ad596-6b64-46c3-9538-9f752ad46380",
+      "id": "8c290215-3ab4-456e-90cd-5d526dfb305f",
       "name": "Get CSV",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [
-        -340,
-        120
+        2360,
+        180
       ]
     },
     {
@@ -39,25 +39,25 @@
           "includeEmptyCells": false
         }
       },
-      "id": "648e58a7-ac3a-453d-aa8b-b5a013b39b46",
+      "id": "07355580-cdb3-4449-82fb-c46fb8bfd9b4",
       "name": "Spreadsheet File",
       "type": "n8n-nodes-base.spreadsheetFile",
       "typeVersion": 1,
       "position": [
-        -120,
-        120
+        2580,
+        180
       ],
       "alwaysOutputData": false
     },
     {
       "parameters": {},
-      "id": "1224676d-e33e-40c3-b6c6-491757280425",
+      "id": "00b85d32-9e6f-49b6-acb5-2df11eca35db",
       "name": "Data",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        100,
-        120
+        2800,
+        180
       ],
       "notesInFlow": true,
       "notes": "Do not rename"
@@ -66,13 +66,13 @@
       "parameters": {
         "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.ISO3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty iso3.\n  if (item.json.ISO3 == '') {\n    continue;\n  }\n\n  if (item.json['Conflict Stock Displacement']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Conflict Stock Displacement',\n      value: item.json['Conflict Stock Displacement'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Conflict Internal Displacements']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Conflict Internal Displacements',\n      value: item.json['Conflict Internal Displacements'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Disaster Internal Displacements']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Disaster Internal Displacements',\n      value: item.json['Disaster Internal Displacements'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Disaster Stock Displacement']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Disaster Stock Displacement',\n      value: item.json['Disaster Stock Displacement'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n}\n\nreturn output;"
       },
-      "id": "76eacaf1-faf7-40f7-be77-4720a7d26a12",
-      "name": "Build records",
+      "id": "a2906dc7-a205-45b1-a0f7-7c60c0091723",
+      "name": "Build records1",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        320,
-        120
+        3020,
+        180
       ]
     },
     {
@@ -94,13 +94,13 @@
         "body": "={{$json}}",
         "options": {}
       },
-      "id": "150fb541-22e4-470d-963d-ded49c31694c",
-      "name": "HTTP Request",
+      "id": "7f868b3c-99d4-43e5-b3ec-23f78d6423f3",
+      "name": "HTTP Request1",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [
-        1000,
-        120
+        3700,
+        180
       ]
     },
     {
@@ -108,13 +108,13 @@
         "batchSize": 100,
         "options": {}
       },
-      "id": "adc84dfa-31a6-4225-9b92-bbb50f0954d6",
-      "name": "SplitInBatches",
+      "id": "f171d429-82e2-42ba-a6fd-a77288077759",
+      "name": "SplitInBatches1",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        520,
-        120
+        3220,
+        180
       ]
     },
     {
@@ -122,13 +122,13 @@
         "operation": "aggregateItems",
         "aggregate": "aggregateAllItemData"
       },
-      "id": "a139672d-eaea-4d8c-a1f3-bb165f390005",
-      "name": "Item Lists",
+      "id": "049dc014-ad9e-4bb9-a5d1-4cfd129a3ae7",
+      "name": "Item Lists1",
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 1,
       "position": [
-        740,
-        120
+        3440,
+        180
       ]
     }
   ],
@@ -171,51 +171,51 @@
       "main": [
         [
           {
-            "node": "Build records",
+            "node": "Build records1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Build records": {
+    "Build records1": {
       "main": [
         [
           {
-            "node": "SplitInBatches",
+            "node": "SplitInBatches1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "SplitInBatches": {
+    "HTTP Request1": {
       "main": [
         [
           {
-            "node": "Item Lists",
+            "node": "SplitInBatches1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP Request": {
+    "SplitInBatches1": {
       "main": [
         [
           {
-            "node": "SplitInBatches",
+            "node": "Item Lists1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Item Lists": {
+    "Item Lists1": {
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -224,7 +224,13 @@
     }
   },
   "active": false,
-  "settings": {},
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "any",
+    "executionTimeout": 600
+  },
+  "hash": "b58cf39e4ed3fef8a5328413c8a1f9f9",
   "id": 3,
   "meta": {
     "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"

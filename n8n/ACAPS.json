@@ -302,7 +302,12 @@
     }
   },
   "active": false,
-  "settings": {},
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "any",
+    "executionTimeout": 600
+  },
   "hash": "c6a928861898494d433adb2fdeaa8216",
   "id": 5,
   "meta": {
