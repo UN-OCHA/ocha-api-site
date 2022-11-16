@@ -122,7 +122,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=http://api-test.docksal.site/api/v1/inform/batch",
+        "url": "={{ $env.OCHA_API_URL }}/inform/batch",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

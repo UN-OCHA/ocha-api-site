@@ -78,7 +78,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=http://api-test.docksal.site/api/v1/idps/batch",
+        "url": "={{ $env.OCHA_API_URL }}/idps/batch",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

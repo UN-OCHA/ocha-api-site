@@ -28,7 +28,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://api-test.docksal.site/api/v1/cbpf/batch",
+        "url": "={{ $env.OCHA_API_URL }}/cbpf/batch",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

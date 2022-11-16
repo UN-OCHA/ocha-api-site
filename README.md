@@ -11,9 +11,17 @@
 - ~~Check read/write security~~
 - ~~batch endpoint~~
 - ~~extra fields as json blob~~
-- add service name in header
+- ~~add service name in header~~
 
 ## OPS
+
+### n8n
+
+n8n needs the following environment variables defined, they will not be visible in the UI.
+
+- OCHA_API_URL
+- ACAPS_USERNAME
+- ACAPS_PASSWORD
 
 ### Add new key figure provider
 
@@ -23,7 +31,7 @@ console app:add-user cbpf cbpf@example.com cbpf cbpf cbpf
 console cache:clear
 ```
 
-## Reset data of a provider
+### Reset data of a provider
 
 ```bash
 console doctrine:query:sql "delete from key_figures where provider = \"cbpf\""
