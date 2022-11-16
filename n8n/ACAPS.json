@@ -1,0 +1,318 @@
+{
+  "name": "ACAPS",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d6bb08f7-a63d-4967-97e2-f0ec26bceab7",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        180,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.acaps.org/api/v1/token-auth/",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "xxx"
+            },
+            {
+              "name": "password",
+              "value": "xxx"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "797d57bb-f299-416b-8966-dc10ef9a7bd9",
+      "name": "Token",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        380,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"next\"]}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Token {{$node[\"Token\"].json[\"token\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "89b022ee-45df-4d1f-bdaa-43b530f20e1c",
+      "name": "Country data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        820,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "\nlet next = 'https://api.acaps.org/api/v1/inform-severity-index/country-log/'\n\nif (items[0].json.next) {\n  next = items[0].json.next\n}\n\nreturn [\n  {\n    json: {\n      next : next\n    }\n  }\n]"
+      },
+      "id": "8f0a7b8e-bf94-4324-b017-28a6a2795328",
+      "name": "Set URL",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        600,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"Country data\"].json[\"next\"]}}",
+              "operation": "contains",
+              "value2": "api.acaps.org"
+            }
+          ]
+        }
+      },
+      "id": "28d1317a-3ba8-458e-88c7-923f1ff614f5",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2260,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "next",
+              "value": "={{$node[\"Country data\"].json[\"next\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "53a9638e-fd1a-4ba9-9604-3838dc38e711",
+      "name": "Update next URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip empty iso3.\n  if (item.json.iso3 == '') {\n    continue;\n  }\n\n  if (item.json.value) {\n    item.json.year = item.json.year || item.json.date.substr(0, 4);\n    output.push({\n      id: 'inform_acaps_' + item.json.iso3 + '_' + item.json.year + '_' + item.json.indicator,\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: item.json.indicator,\n      value: item.json.value,\n      source: 'ACAPS',\n      url: 'https://data.humdata.org/dataset/inform-global-crisis-severity-index',\n    });\n  }\n}\n\nreturn output;"
+      },
+      "id": "b4abe83f-ff20-40f6-84bf-74c1a2211a2f",
+      "name": "Build records",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://api-test.docksal.site/api/v1/inform/batch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "API-KEY",
+              "value": "15a499d1e84635ece394078c8feaa161"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{$json}}",
+        "options": {}
+      },
+      "id": "60a38716-d2f6-454f-94a8-b5810a7e16b6",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1920,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData"
+      },
+      "id": "c93574ea-84f4-4cbe-b3b8-c8290edbb0fb",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return items[0].json.results;"
+      },
+      "id": "0b41eb47-b129-4e5d-86da-a5c8730d23e4",
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        240
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token": {
+      "main": [
+        [
+          {
+            "node": "Set URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set URL": {
+      "main": [
+        [
+          {
+            "node": "Country data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Country data": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Update next URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update next URL": {
+      "main": [
+        [
+          {
+            "node": "Set URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build records": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Build records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": 5,
+  "meta": {
+    "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
+  },
+  "tags": [
+    {
+      "id": "1",
+      "name": "inform",
+      "createdAt": "2022-11-16T09:10:13.398Z",
+      "updatedAt": "2022-11-16T09:10:13.398Z"
+    }
+  ]
+}
