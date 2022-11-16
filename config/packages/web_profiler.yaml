@@ -1,6 +1,6 @@
 when@dev:
     web_profiler:
-        toolbar: true
+        toolbar: '%env(bool:PLATFORM_ENABLE_PROFILER)%'
         intercept_redirects: false
 
     framework:
@@ -10,7 +10,7 @@ when@dev:
 
 when@test:
     web_profiler:
-        toolbar: false
+        toolbar: '%env(bool:PLATFORM_ENABLE_PROFILER)%'
         intercept_redirects: false
 
     framework:

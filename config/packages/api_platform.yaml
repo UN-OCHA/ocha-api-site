@@ -3,7 +3,6 @@ api_platform:
     description: 'The public OCHA API'
     version: 0.0.1
     show_webby: '%env(bool:PLATFORM_SHOW_WEBBY)%'
-    enable_profiler: '%env(bool:PLATFORM_ENABLE_PROFILER)%'
     formats:
         json:     ['application/json']
         jsonld:   ['application/ld+json']
