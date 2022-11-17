@@ -15,13 +15,19 @@
 
 ## OPS
 
+### env
+
+- `N8N_WORKFLOW_ENDPOINT="http://192.168.3.20:5678/api/v1"`
+- `N8N_WORKFLOW_API_KEY="n8n_api_cd9be...."`
+
 ### n8n
 
 n8n needs the following environment variables defined, they will not be visible in the UI.
 
-- OCHA_API_URL
-- ACAPS_USERNAME
-- ACAPS_PASSWORD
+- `N8N_TEMPLATES_HOST=http://api-test.docksal.site/api/v1/n8n`
+- `OCHA_API_URL=http://api-test.docksal.site/api/v1`
+- `ACAPS_USERNAME`
+- `ACAPS_PASSWORD`
 
 ### Workflows
 
