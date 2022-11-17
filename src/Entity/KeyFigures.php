@@ -160,7 +160,7 @@ class KeyFigures
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
     #[Assert\NotBlank]
-    #[Assert\Regex("/^\d+(\.\d+)?$/")]
+    #[Assert\Regex("/^-?\d+(\.\d+)?$/")]
     #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $value = null;
 
