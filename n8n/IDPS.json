@@ -50,28 +50,43 @@
       "alwaysOutputData": false
     },
     {
-      "parameters": {},
-      "id": "00b85d32-9e6f-49b6-acb5-2df11eca35db",
-      "name": "Data",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        2800,
-        180
-      ],
-      "notesInFlow": true,
-      "notes": "Do not rename"
-    },
-    {
       "parameters": {
         "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.ISO3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty iso3.\n  if (item.json.ISO3 == '') {\n    continue;\n  }\n\n  if (item.json['Conflict Stock Displacement']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Conflict Stock Displacement',\n      value: item.json['Conflict Stock Displacement'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Conflict Internal Displacements']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_conflict_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Conflict Internal Displacements',\n      value: item.json['Conflict Internal Displacements'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Disaster Internal Displacements']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_internal_displacements',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Disaster Internal Displacements',\n      value: item.json['Disaster Internal Displacements'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n\n  if (item.json['Disaster Stock Displacement']) {\n    output.push({\n      id: 'idps_' + item.json.ISO3 + '_' + item.json.Year + '_disaster_stock_displacement',\n      country: item.json.Name,\n      iso3: item.json.ISO3,\n      year: item.json.Year.toString(),\n      name: 'Disaster Stock Displacement',\n      value: item.json['Disaster Stock Displacement'].toString(),\n      source: 'iDMC',\n      url: 'https://data.humdata.org/dataset/idmc-internally-displaced-persons-idps',\n    });\n  }\n}\n\nreturn output;"
       },
       "id": "a2906dc7-a205-45b1-a0f7-7c60c0091723",
-      "name": "Build records1",
+      "name": "Build records",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        3020,
+        2980,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "id": "f171d429-82e2-42ba-a6fd-a77288077759",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData"
+      },
+      "id": "049dc014-ad9e-4bb9-a5d1-4cfd129a3ae7",
+      "name": "Combine records",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        3660,
         180
       ]
     },
@@ -95,40 +110,57 @@
         "options": {}
       },
       "id": "7f868b3c-99d4-43e5-b3ec-23f78d6423f3",
-      "name": "HTTP Request1",
+      "name": "Save it",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [
-        3700,
+        3920,
         180
       ]
     },
     {
       "parameters": {
-        "batchSize": 100,
-        "options": {}
+        "content": "## Get CSV\n\nLoads a CSV file from a URL, and converts it into a table output.",
+        "height": 319.38986122360757,
+        "width": 444.3185469376445
       },
-      "id": "f171d429-82e2-42ba-a6fd-a77288077759",
-      "name": "SplitInBatches1",
-      "type": "n8n-nodes-base.splitInBatches",
+      "id": "0a387117-750e-4fa8-8918-99514c3d0ccf",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3220,
-        180
+        2300,
+        40
       ]
     },
     {
       "parameters": {
-        "operation": "aggregateItems",
-        "aggregate": "aggregateAllItemData"
+        "content": "## Build records\n\nSince the CSV file has it's key figures as columns, we need to create 4 key figures for each line of data.",
+        "height": 315.11093877465146,
+        "width": 402.59905306032397
       },
-      "id": "049dc014-ad9e-4bb9-a5d1-4cfd129a3ae7",
-      "name": "Item Lists1",
-      "type": "n8n-nodes-base.itemLists",
+      "id": "1369f2d1-d2fc-42ca-9f82-9d3791666d63",
+      "name": "Note1",
+      "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3440,
-        180
+        2820,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Save the data\n\nThis saves the data in chunks to the API server. Make sure to update the **endpoint** and **API-Key** for your data.",
+        "height": 368.5974693866,
+        "width": 802.6783020377011
+      },
+      "id": "b00c55ea-e241-450c-a21b-555ffb9017ac",
+      "name": "Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        40
       ]
     }
   ],
@@ -160,62 +192,51 @@
       "main": [
         [
           {
-            "node": "Data",
+            "node": "Build records",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Data": {
+    "Build records": {
       "main": [
         [
           {
-            "node": "Build records1",
+            "node": "SplitInBatches",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Build records1": {
+    "SplitInBatches": {
       "main": [
         [
           {
-            "node": "SplitInBatches1",
+            "node": "Combine records",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP Request1": {
+    "Combine records": {
       "main": [
         [
           {
-            "node": "SplitInBatches1",
+            "node": "Save it",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "SplitInBatches1": {
+    "Save it": {
       "main": [
         [
           {
-            "node": "Item Lists1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Item Lists1": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request1",
+            "node": "SplitInBatches",
             "type": "main",
             "index": 0
           }
@@ -230,7 +251,7 @@
     "callerPolicy": "any",
     "executionTimeout": 600
   },
-  "hash": "b58cf39e4ed3fef8a5328413c8a1f9f9",
+  "hash": "e056c93921a9ccc91184d93cb9001bcb",
   "id": 3,
   "meta": {
     "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
