@@ -16,6 +16,7 @@ class KeyFiguresTest extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token1',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
@@ -29,6 +30,7 @@ class KeyFiguresTest extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token2',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
@@ -42,6 +44,7 @@ class KeyFiguresTest extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
