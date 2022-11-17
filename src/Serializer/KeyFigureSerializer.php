@@ -80,6 +80,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                         $row['provider'] = $provider;
                     }
 
+                    // Set Id if not set.
+                    if (!isset($row['id'])) {
+                        $row['id'] = implode('_', [
+                            $row['provider'],
+                            $row['iso3'],
+                            $row['year'],
+                            $row['name'],
+                        ]);
+                    }
+
                     // Type conversion.
                     $row['year'] = (string) $row['year'];
                     $row['value'] = (string) $row['value'];
