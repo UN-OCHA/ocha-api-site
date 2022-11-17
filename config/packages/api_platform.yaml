@@ -2,7 +2,7 @@ api_platform:
     title: 'OCHA API'
     description: 'The public OCHA API'
     version: 0.0.1
-    show_webby: '%env(bool:PLATFORM_SHOW_WEBBY)%'
+    show_webby: false
     formats:
         json:     ['application/json']
         jsonld:   ['application/ld+json']
