@@ -124,9 +124,20 @@ class TemplateAddCommand extends Command
 
       switch ($node['type']) {
         case 'n8n-nodes-base.httpRequest':
+          // Remove credentials.
+          if (isset($node['credentials'])) {
+            unset($node['credentials']);
+          }
+
           if (isset($node['parameters']['headerParameters']['parameters'])) {
             foreach ($node['parameters']['headerParameters']['parameters'] as &$parameter) {
+              // Remove API key.
               if (strtoupper($parameter['name']) == 'API-KEY') {
+                $parameter['value'] = '';
+              }
+
+              // Remove APP name.
+              if (strtoupper($parameter['name']) == 'APP-NAME') {
                 $parameter['value'] = '';
               }
             }
