@@ -1,6 +1,9 @@
 dist: focal
 language: php
 
+services:
+  - mysql
+
 php:
   - 8.1
 
@@ -71,5 +74,27 @@ script:
   # PHP linting
   - find -L ./src -iregex '.*\.php$' -print0 | xargs -0 -n 1 -P 4 php -l
 
-  # @todo: Build docker image and run tests
-  
+  # Setup tests
+  - mysql -e "CREATE DATABASE test;"
+  - mysql -e "CREATE USER user@127.0.0.1 IDENTIFIED BY 'user';"
+  - mysql -e "GRANT ALL ON test.* to user@127.0.0.1;"
+  - echo 'DATABASE_URL="mysql://user:user@127.0.0.1/test?charset=utf8"' >> .env
+
+  - ./bin/console doctrine:database:drop --env=test --force
+  - ./bin/console doctrine:database:create --env=test --if-not-exists -n
+  - ./bin/console doctrine:schema:create --env=test -n
+  - ./bin/console hautelook:fixtures:load --env=test -n
+  - ./bin/console cache:clear
+
+  # Start server
+  - php -S localhost:8080
+
+  # Run tests
+  - ./bin/phpunit
+
+after_success:
+  - killall -9 php
+  - echo "The tests completed without errors."
+
+after_failure:
+  - echo "The tests failed. Please check the output above for problems."
