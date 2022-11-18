@@ -81,6 +81,9 @@ class TemplateAddCommand extends Command
       'connections' => 'connections',
     ]);
 
+    // Remove secrets.
+    $this->sanitizeCredentials($workflow);
+
     /** @var \App\Entity\N8nWorkflow */
     $item = $this->load($id);
     if (!$item) {
@@ -101,13 +104,37 @@ class TemplateAddCommand extends Command
         $category->setName($label);
         $this->category_repo->save($category);
       }
-      
+
       if (!$item->getCategories()->contains($category)) {
         $item->addCategory($category);
       }
     }
 
     $this->save($item);
+  }
+
+  /**
+   * Sanitize credentials.
+   */
+  protected function sanitizeCredentials(&$workflow) {
+    foreach ($workflow['nodes'] as &$node) {
+      if (!isset($node['type'])) {
+        continue;
+      }
+
+      switch ($node['type']) {
+        case 'n8n-nodes-base.httpRequest':
+          if (isset($node['parameters']['headerParameters']['parameters'])) {
+            foreach ($node['parameters']['headerParameters']['parameters'] as &$parameter) {
+              if (strtoupper($parameter['name']) == 'API-KEY') {
+                $parameter['value'] = '';
+              }
+            }
+          }
+
+          break;
+      }
+    }
   }
 
   /**
