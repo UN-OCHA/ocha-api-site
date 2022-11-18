@@ -9,3 +9,8 @@ App\Entity\Provider:
     name: 'Source 2'
     prefix: 'source-2'
     expand: 'key_figures'
+  src3:
+    id: 'src3'
+    name: 'Source 3'
+    prefix: 'source-3'
+    expand: 'key_figures'

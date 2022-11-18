@@ -6,7 +6,7 @@ use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class KeyFiguresSrc2PutTest extends WebTestCase
+class KeyFiguresSrc3PutTest extends WebTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
@@ -19,10 +19,10 @@ class KeyFiguresSrc2PutTest extends WebTestCase
         'value' => '777',
     ];
 
-    public function testGetOnSource2AsAdmin(): void
+    public function testOnSource3AsAdmin(): void
     {
         /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('PUT', $this->addPrefix('source-2') . '/1', [
+        $response = $this->http->request('PUT', $this->addPrefix('source-3') . '/1', [
             'headers' => [
                 'API-KEY' => 'token1',
                 'APP-NAME' => 'test',
@@ -41,13 +41,13 @@ class KeyFiguresSrc2PutTest extends WebTestCase
         $this->assertEquals('Indicator', $body->name);
         $this->assertEquals('777.00', $body->value);
         $this->assertEquals([], $body->tags);
-        $this->assertEquals('src2', $body->provider);
+        $this->assertEquals('src3', $body->provider);
     }
 
-    public function testGetOnSource2AsUser1(): void
+    public function testOnSource3AsUser1(): void
     {
         /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('PUT', $this->addPrefix('source-2') . '/2', [
+        $response = $this->http->request('PUT', $this->addPrefix('source-3') . '/2', [
             'headers' => [
                 'API-KEY' => 'token2',
                 'APP-NAME' => 'test',
@@ -56,16 +56,16 @@ class KeyFiguresSrc2PutTest extends WebTestCase
             'json' => $this->data,
         ]);
 
-        // User 1 does not have access to source 2.
+        // User 1 does not have access to source 3.
         $this->assertEquals(403, $response->getStatusCode());
     }
 
-    public function testGetOnSource2AsUser2(): void
+    public function testOnSource3AsUser3(): void
     {
         /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('PUT', $this->addPrefix('source-2') . '/3', [
+        $response = $this->http->request('PUT', $this->addPrefix('source-3') . '/3', [
             'headers' => [
-                'API-KEY' => 'token3',
+                'API-KEY' => 'token4',
                 'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ],
@@ -82,7 +82,7 @@ class KeyFiguresSrc2PutTest extends WebTestCase
         $this->assertEquals('Indicator', $body->name);
         $this->assertEquals('777.00', $body->value);
         $this->assertEquals([], $body->tags);
-        $this->assertEquals('src2', $body->provider);
+        $this->assertEquals('src3', $body->provider);
     }
 
 }

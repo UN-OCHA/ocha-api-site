@@ -23,7 +23,8 @@ env:
     - SYMFONY_DEPRECATIONS_HELPER=9
     - ACTION="install"
     - PATH="$HOME/.symfony/bin:$PATH"
-    - DATABASE_URL=sqlite://database.db3
+    - DATABASE_URL="mysql://user:user@127.0.0.1/test?charset=utf8"
+    - TEST_SERVER="http://localhost:8080"
 
 # Make sure we have a recent version of docker-compose.
 addons:
@@ -55,6 +56,17 @@ before_script:
   - chmod +x ./bin/local-php-security-checker
 
 script:
+  # Setup tests
+  - mysql -e "CREATE DATABASE test;"
+  - mysql -e "CREATE USER user@127.0.0.1 IDENTIFIED BY 'user';"
+  - mysql -e "GRANT ALL ON test.* to user@127.0.0.1;"
+
+  - ./bin/console doctrine:database:drop --force
+  - ./bin/console doctrine:database:create --if-not-exists -n
+  - ./bin/console doctrine:schema:create -n
+  - ./bin/console hautelook:fixtures:load -n
+  - ./bin/console cache:clear
+
   # Valid composer.json?
   - composer validate --no-check-version --strict
   # This checks that the YAML config files contain no syntax errors.
@@ -74,19 +86,8 @@ script:
   # PHP linting
   - find -L ./src -iregex '.*\.php$' -print0 | xargs -0 -n 1 -P 4 php -l
 
-  # Setup tests
-  - mysql -e "CREATE DATABASE test;"
-  - mysql -e "CREATE USER user@127.0.0.1 IDENTIFIED BY 'user';"
-  - mysql -e "GRANT ALL ON test.* to user@127.0.0.1;"
-
-  - ./bin/console doctrine:database:drop --force
-  - ./bin/console doctrine:database:create --if-not-exists -n
-  - ./bin/console doctrine:schema:create -n
-  - ./bin/console hautelook:fixtures:load -n
-  - ./bin/console cache:clear
-
   # Start server
-  - php -S localhost:8080 &
+  - php -S localhost:8080 -t public/ &
 
   # Run tests
   - ./bin/phpunit

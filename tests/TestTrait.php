@@ -25,7 +25,7 @@ trait TestTrait {
     }
 
     protected function addPrefix(string $url) : string {
-        return 'http://api-test.docksal.site' . rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
+        return $_ENV['TEST_SERVER'] . rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
     }
 
     protected function getBody(CurlResponse $response) {

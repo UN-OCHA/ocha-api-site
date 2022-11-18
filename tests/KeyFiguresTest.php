@@ -22,7 +22,7 @@ class KeyFiguresTest extends WebTestCase
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(40, $this->getBody($response));
+        $this->assertGreaterThan(40, $this->getBody($response));
     }
 
     public function testGetCollectionAsUser1(): void
@@ -36,7 +36,7 @@ class KeyFiguresTest extends WebTestCase
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(20, $this->getBody($response));
+        $this->assertCount(30, $this->getBody($response));
     }
 
     public function testGetCollectionAsUser2(): void

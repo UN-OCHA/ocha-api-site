@@ -6,7 +6,7 @@ use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class KeyFiguresSrc2BatchTest extends WebTestCase
+class KeyFiguresSrc3BatchTest extends WebTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
@@ -30,10 +30,10 @@ class KeyFiguresSrc2BatchTest extends WebTestCase
         ],
     ];
 
-    public function testOnSource2AsAdmin(): void
+    public function testOnSource3AsAdmin(): void
     {
         /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-2') . '/batch', [
+        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token1',
                 'APP-NAME' => 'test',
@@ -47,14 +47,14 @@ class KeyFiguresSrc2BatchTest extends WebTestCase
         $body = json_decode($response->getContent());
         $this->assertCount(2, $body->successful);
         $this->assertCount(0, $body->failed);
-        $this->assertContains('src2_afg_2021_Indicator', $body->successful);
-        $this->assertContains('src2_afg_2022_Indicator', $body->successful);
+        $this->assertContains('src3_afg_2021_Indicator', $body->successful);
+        $this->assertContains('src3_afg_2022_Indicator', $body->successful);
     }
 
-    public function testOnSource2AsUser1(): void
+    public function testOnSource3AsUser1(): void
     {
         /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-2') . '/batch', [
+        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token2',
                 'APP-NAME' => 'test',
@@ -69,16 +69,16 @@ class KeyFiguresSrc2BatchTest extends WebTestCase
         $body = json_decode($response->getContent());
         $this->assertCount(0, $body->successful);
         $this->assertCount(2, $body->failed);
-        $this->assertContains('src2_afg_2021_Indicator', $body->failed);
-        $this->assertContains('src2_afg_2022_Indicator', $body->failed);
+        $this->assertContains('src3_afg_2021_Indicator', $body->failed);
+        $this->assertContains('src3_afg_2022_Indicator', $body->failed);
     }
 
-    public function testOnSource2AsUser2(): void
+    public function testOnSource3AsUser3(): void
     {
         /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-2') . '/batch', [
+        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
-                'API-KEY' => 'token3',
+                'API-KEY' => 'token4',
                 'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ],
@@ -90,8 +90,8 @@ class KeyFiguresSrc2BatchTest extends WebTestCase
         $body = json_decode($response->getContent());
         $this->assertCount(2, $body->successful);
         $this->assertCount(0, $body->failed);
-        $this->assertContains('src2_afg_2021_Indicator', $body->successful);
-        $this->assertContains('src2_afg_2022_Indicator', $body->successful);
+        $this->assertContains('src3_afg_2021_Indicator', $body->successful);
+        $this->assertContains('src3_afg_2022_Indicator', $body->successful);
    }
 
 }

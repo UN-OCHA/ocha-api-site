@@ -23,7 +23,7 @@ class KeyFiguresSrc2Test extends WebTestCase
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(20, $this->getBody($response));
+        $this->assertCount(10, $this->getBody($response));
     }
 
     public function testGetOnSource2AsUser1(): void
@@ -53,7 +53,7 @@ class KeyFiguresSrc2Test extends WebTestCase
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(20, $this->getBody($response));
+        $this->assertCount(10, $this->getBody($response));
     }
 
 }
