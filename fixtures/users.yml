@@ -18,7 +18,7 @@ App\Entity\User:
     token: 'token2'
     providers: '[src1]'
     can_read: '[src1]'
-    can_write: '[]'
+    can_write: '[src1]'
   user_2:
     email: 'user2@example'
     roles: '[ROLE_USER]'
@@ -28,4 +28,4 @@ App\Entity\User:
     token: 'token3'
     providers: '[src1, src2]'
     can_read: '[src1, src2]'
-    can_write: '[]'
+    can_write: '[src1, src2]'
