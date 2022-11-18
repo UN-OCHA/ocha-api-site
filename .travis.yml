@@ -78,12 +78,11 @@ script:
   - mysql -e "CREATE DATABASE test;"
   - mysql -e "CREATE USER user@127.0.0.1 IDENTIFIED BY 'user';"
   - mysql -e "GRANT ALL ON test.* to user@127.0.0.1;"
-  - echo 'DATABASE_URL="mysql://user:user@127.0.0.1/test?charset=utf8"' >> .env
 
-  - ./bin/console doctrine:database:drop --env=test --force
-  - ./bin/console doctrine:database:create --env=test --if-not-exists -n
-  - ./bin/console doctrine:schema:create --env=test -n
-  - ./bin/console hautelook:fixtures:load --env=test -n
+  - ./bin/console doctrine:database:drop --force
+  - ./bin/console doctrine:database:create --if-not-exists -n
+  - ./bin/console doctrine:schema:create -n
+  - ./bin/console hautelook:fixtures:load -n
   - ./bin/console cache:clear
 
   # Start server
