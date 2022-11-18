@@ -29,3 +29,13 @@ App\Entity\User:
     providers: '[src1, src2]'
     can_read: '[src1, src2]'
     can_write: '[src1, src2]'
+  user_3:
+    email: 'user3@example'
+    roles: '[ROLE_USER]'
+    password: ''
+    username: 'user3'
+    full_name: 'user3'
+    token: 'token4'
+    providers: '[src1, src3]'
+    can_read: '[src1, src3]'
+    can_write: '[src1, src3]'
