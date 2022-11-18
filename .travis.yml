@@ -24,6 +24,7 @@ env:
     - ACTION="install"
     - PATH="$HOME/.symfony/bin:$PATH"
     - DATABASE_URL="mysql://user:user@127.0.0.1/test?charset=utf8"
+    - TEST_SERVER="http://localhost:8080"
 
 # Make sure we have a recent version of docker-compose.
 addons:
