@@ -23,7 +23,7 @@ env:
     - SYMFONY_DEPRECATIONS_HELPER=9
     - ACTION="install"
     - PATH="$HOME/.symfony/bin:$PATH"
-    - DATABASE_URL=sqlite://database.db3
+    - DATABASE_URL="mysql://user:user@127.0.0.1/test?charset=utf8"
 
 # Make sure we have a recent version of docker-compose.
 addons:
