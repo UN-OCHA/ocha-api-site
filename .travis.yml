@@ -87,7 +87,7 @@ script:
   - find -L ./src -iregex '.*\.php$' -print0 | xargs -0 -n 1 -P 4 php -l
 
   # Start server
-  - php -S localhost:8080 &
+  - php -S localhost:8080 -t public/ &
 
   # Run tests
   - ./bin/phpunit
