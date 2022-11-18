@@ -86,7 +86,7 @@ script:
   - ./bin/console cache:clear
 
   # Start server
-  - php -S localhost:8080
+  - php -S localhost:8080 &
 
   # Run tests
   - ./bin/phpunit
