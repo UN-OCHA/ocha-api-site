@@ -1,42 +1,18 @@
 {
-  "name": "FTS on MySQL",
+  "name": "FTS",
   "nodes": [
-    {
-      "parameters": {
-        "functionCode": "let record = {};\n\nrecord.year = item.query.year || 2022;\n\nreturn record;"
-      },
-      "id": "dd62e4f8-aa41-4526-9e1a-b0563ce034dd",
-      "name": "2020",
-      "type": "n8n-nodes-base.functionItem",
-      "typeVersion": 1,
-      "position": [
-        180,
-        60
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "d6e4055c-e1df-4a56-aeab-0b01c96da4f0",
-      "name": "Start",
-      "type": "n8n-nodes-base.start",
-      "typeVersion": 1,
-      "position": [
-        -180,
-        -80
-      ]
-    },
     {
       "parameters": {
         "url": "=https://api.hpc.tools/v1/public/plan/year/{{$json[\"year\"]}}",
         "options": {}
       },
-      "id": "469d5571-1ea3-4748-a14a-0be4c6bf0940",
+      "id": "619af71c-7340-4fac-ab17-7e7c8064f223",
       "name": "Get plans by year",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [
-        400,
-        0
+        1640,
+        -180
       ]
     },
     {
@@ -44,26 +20,26 @@
         "fieldToSplitOut": "data",
         "options": {}
       },
-      "id": "474e809c-fa95-4b7a-8dd4-04b8cabaab59",
+      "id": "d603f9fa-69b1-4a40-beb9-7056d6eb5226",
       "name": "Extract data",
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 1,
       "position": [
-        560,
-        180
+        1800,
+        0
       ]
     },
     {
       "parameters": {
         "functionCode": "let record = {};\n\nrecord.Id = item.id;\nrecord.plan_id = item.id;\nrecord.updated = item.updatedAt.replace('T', ' ').replace('Z', '').substr(0, item.updatedAt.indexOf('.'));\nrecord.name = item.planVersion.name;\nrecord.year = item.years[0].year;\nrecord.code = item.planVersion.code;\nrecord.original_requirements = item.origRequirements;\nrecord.revised_requirements = item.revisedRequirements;\nrecord.iso3 = item.locations[0].iso3;\nrecord.country = item.locations[0].name;\n\nreturn record;"
       },
-      "id": "d86cb73d-8247-4880-bfd9-2a8be427a6fd",
+      "id": "67f1c3d1-c811-4eb1-bac2-1ec503b60cc6",
       "name": "Build base record",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
       "position": [
-        1220,
-        180
+        2460,
+        0
       ]
     },
     {
@@ -71,26 +47,26 @@
         "url": "=https://api.hpc.tools/v1/public/plan/id/{{$json[\"plan_id\"]}}",
         "options": {}
       },
-      "id": "379371e8-5cd7-490b-8b22-cb3708083623",
+      "id": "68f0b7b4-ab5f-4b8d-810c-bb9d2e628cbc",
       "name": "Get plan details",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [
-        1520,
-        220
+        2880,
+        -80
       ]
     },
     {
       "parameters": {
         "functionCode": "// Code here will run once per input item.\n// More info and help: https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.functionitem/\n// Tip: You can use luxon for dates and $jmespath for querying JSON structures\n\nlet record = {};\nconsole.log($node[\"Build base record\"].data.plan_id);\n\nrecord.plan_id = $node[\"Build base record\"].data.plan_id;\nrecord.total_requirements = item.data.revisedRequirements;\n\nreturn record;"
       },
-      "id": "df09eea0-49ff-4f96-83b3-7f166032287f",
+      "id": "583f44b3-87c4-4040-91af-682cba94e9cf",
       "name": "Extract revised requirements",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
       "position": [
-        1760,
-        160
+        3060,
+        -80
       ]
     },
     {
@@ -98,31 +74,31 @@
         "url": "=https://api.hpc.tools/v1/public/fts/flow?planId={{$json[\"plan_id\"]}}",
         "options": {}
       },
-      "id": "0a7987c0-8ff8-4542-aeb4-e9b73aa927d5",
+      "id": "a0bf8516-1801-4a4b-82ab-777b7d27a4c2",
       "name": "Get flow info",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [
-        1520,
-        400
+        2760,
+        80
       ]
     },
     {
       "parameters": {
         "functionCode": "// Code here will run once per input item.\n// More info and help: https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.functionitem/\n// Tip: You can use luxon for dates and $jmespath for querying JSON structures\n\nlet record = {};\n\nrecord.plan_id = $node[\"Build base record\"].data.plan_id;\nrecord.funding_total = item.data.incoming.fundingTotal;\n\nreturn record;"
       },
-      "id": "8ad94f00-fb79-48f0-a257-5f13db2a9980",
+      "id": "a1e3f5fb-373b-47bc-82dd-2e998eb51954",
       "name": "Extract funding total",
       "type": "n8n-nodes-base.functionItem",
       "typeVersion": 1,
       "position": [
-        1760,
-        400
+        3000,
+        80
       ]
     },
     {
       "parameters": {
-        "mode": "mergeByFields",
+        "mode": "combine",
         "mergeByFields": {
           "values": [
             {
@@ -133,18 +109,18 @@
         },
         "options": {}
       },
-      "id": "d0a41aa8-0ec3-4440-9972-ed87d39206a8",
+      "id": "a9e75154-8683-438d-bbea-42db3a5854a1",
       "name": "Merge 1",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        1940,
-        0
+        3200,
+        -320
       ]
     },
     {
       "parameters": {
-        "mode": "mergeByFields",
+        "mode": "combine",
         "mergeByFields": {
           "values": [
             {
@@ -155,104 +131,123 @@
         },
         "options": {}
       },
-      "id": "101a6dd3-e4bc-455e-a3a2-bba812587273",
+      "id": "9e7fff42-b655-42b2-bbdd-ac949222e198",
       "name": "Merge 2",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        2120,
-        340
+        3360,
+        20
       ]
     },
     {
       "parameters": {
         "functionCode": "let output = [];\n\nfor (item of items) {\n  console.log(item.json.locations[0]);\n  if (item.json.locations[0] && item.json.locations[0].iso3 && item.json.locations[0].iso3.length > 0) {\n    output.push(item);\n  }\n}\n\nreturn output;"
       },
-      "id": "d2841e2a-ed37-4c3a-85ec-757b572b3c52",
+      "id": "8b6ea276-1b8d-44e4-905a-4e00f63705b9",
       "name": "We need ISO3",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        780,
-        180
+        2020,
+        0
       ]
     },
     {
       "parameters": {
-        "path": "fill",
         "options": {}
       },
-      "id": "39a18d9a-c5a7-4537-aebd-ad91dc35e925",
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
-      "position": [
-        -120,
-        120
-      ],
-      "webhookId": "841de7ef-211c-4334-ab37-ea6ffb23763d"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "id": "dabc7926-cc79-4d90-a81d-0167747fe61d",
+      "id": "14943492-0553-4982-84eb-065f9a0d642c",
       "name": "SplitInBatches",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        1000,
-        180
+        2240,
+        0
       ]
     },
     {
       "parameters": {
-        "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.iso3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty iso3.\n  if (item.json.iso3 == '') {\n    continue;\n  }\n\n  if (item.json['original_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_original_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Original requirements',\n      value: item.json['original_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n\n  if (item.json['revised_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_revised_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Revised requirements',\n      value: item.json['revised_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n \n  if (item.json['total_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_total_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Total requirements',\n      value: item.json['total_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n\n  if (item.json['funding_total'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_funding_total',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Funding total',\n      value: item.json['funding_total'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      tags: '[\"fts\",\"financial\"]',\n      provider: 'fts',\n    });\n  }\n \n}\n\nreturn output;"
+        "functionCode": "let output = [];\n\nfor (item of items) {\n  // Skip hxl row.\n  if (item.json.iso3.substr(0, 1) == '#') {\n    continue;\n  }\n\n  // Skip empty iso3.\n  if (item.json.iso3 == '') {\n    continue;\n  }\n\n  if (item.json['original_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_original_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Original requirements',\n      value: item.json['original_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      provider: 'fts',\n    });\n  }\n\n  if (item.json['revised_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_revised_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Revised requirements',\n      value: item.json['revised_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      provider: 'fts',\n    });\n  }\n \n  if (item.json['total_requirements'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_total_requirements',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Total requirements',\n      value: item.json['total_requirements'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      provider: 'fts',\n    });\n  }\n\n  if (item.json['funding_total'] != '') {\n    output.push({\n      id: 'fts_' + item.json.iso3 + '_' + item.json.year + '_funding_total',\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: 'Funding total',\n      value: item.json['funding_total'],\n      source: 'FTS',\n      url: 'https://fts.unocha.org/appeals/' + item.json.plan_id + '/summary',\n      description: item.json.name + ' [' + item.json.code + ']',\n      updated: item.json.updated,\n      provider: 'fts',\n    });\n  }\n \n}\n\nreturn output;"
       },
-      "id": "70cda90e-fc5e-4752-b6a4-c0619ba111ee",
+      "id": "18abb6eb-d008-4801-8745-86765e92b612",
       "name": "Function",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        2280,
-        340
+        3520,
+        20
       ]
     },
     {
       "parameters": {
-        "operation": "upsert",
-        "table": "key_figures",
-        "columns": "id,iso3,country,year,name,value,url,source,updated,description,tags,provider"
+        "jsCode": "let record = {};\n\nrecord.year = $env.FTS_YEAR || new Date().getFullYear();\n\nreturn record;\n"
       },
-      "id": "7227557d-6a4d-45a0-b6db-865f7f66eb02",
-      "name": "MySqlExtend1",
-      "type": "n8n-nodes-mysql-extend.mySqlExtend",
+      "id": "451d6986-c7bc-41fc-904d-9f467a4cc740",
+      "name": "Set year",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        2440,
-        340
-      ],
-      "credentials": {
-        "mySqlExtend": {
-          "id": "5",
-          "name": "MySqlExtend account"
-        }
-      }
+        1440,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.OCHA_API_URL }}/fts/batch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "API-KEY",
+              "value": "82797b265d1b576df2be0bb6a789fef5"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{$json}}",
+        "options": {}
+      },
+      "id": "213ac819-e7f4-4095-abc7-daa9d8eeda1d",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        3900,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData"
+      },
+      "id": "f24d68bd-3e05-4f5d-ab12-3092a3a38e48",
+      "name": "Item Lists1",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        20
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "6f9fc067-ed54-4606-8c4e-b9bfdf75bdbd",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        -180
+      ]
     }
   ],
   "pinData": {},
   "connections": {
-    "2020": {
-      "main": [
-        [
-          {
-            "node": "Get plans by year",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get plans by year": {
       "main": [
         [
@@ -373,17 +368,6 @@
         ]
       ]
     },
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "2020",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "SplitInBatches": {
       "main": [
         [
@@ -399,14 +383,25 @@
       "main": [
         [
           {
-            "node": "MySqlExtend1",
+            "node": "Item Lists1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "MySqlExtend1": {
+    "Set year": {
+      "main": [
+        [
+          {
+            "node": "Get plans by year",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
       "main": [
         [
           {
@@ -416,11 +411,39 @@
           }
         ]
       ]
+    },
+    "Item Lists1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Set year",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
-  "settings": {},
-  "id": 1,
+  "active": false,
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "any",
+    "executionTimeout": 900
+  },
+  "hash": "a3b97cbbf522aaebf3911f2b398e419e",
+  "id": 6,
   "meta": {
     "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
   },

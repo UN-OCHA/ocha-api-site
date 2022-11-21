@@ -28,7 +28,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://api-test.docksal.site/api/v1/cbpf/batch",
+        "url": "={{ $env.OCHA_API_URL }}/cbpf/batch",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -335,7 +335,12 @@
     }
   },
   "active": false,
-  "settings": {},
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "any",
+    "executionTimeout": 600
+  },
   "id": 4,
   "meta": {
     "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"

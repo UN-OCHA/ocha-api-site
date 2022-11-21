@@ -1,5 +1,5 @@
 App\Entity\KeyFigures:
-  keyfigure_{1..20}:
+  keyfigure_{1..30}:
     id  (unique): <name(30)>
     iso3: 'afg'
     country: 'Afghanistan'
@@ -12,7 +12,7 @@ App\Entity\KeyFigures:
     description: ''
     tags: []
     provider: 'src1'
-  keyfigure_{21..40}:
+  keyfigure_{31..40}:
     id  (unique): <name(30)>
     iso3: 'afg'
     country: 'Afghanistan'

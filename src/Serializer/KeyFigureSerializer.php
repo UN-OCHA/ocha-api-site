@@ -64,9 +64,12 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     public function denormalize($data, string $type, string $format = null, array $context = [])
     {
         /** @var ApiPlatform\Metadata\Operations $operations */
-        $operation = $context['operation'];
-        $properties = $operation->getExtraProperties() ?? [];
-        $provider = $properties['provider'] ?? NULL;
+        $provider = NULL;
+        if (isset($context['operation'])) {
+            $operation = $context['operation'];
+            $properties = $operation->getExtraProperties() ?? [];
+            $provider = $properties['provider'] ?? NULL;
+        }
 
         // Multiple records.
         if (isset($data['data'])) {
@@ -75,6 +78,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                     // Force provider.
                     if ($provider) {
                         $row['provider'] = $provider;
+                    }
+
+                    // Set Id if not set.
+                    if (!isset($row['id'])) {
+                        $row['id'] = implode('_', [
+                            $row['provider'],
+                            $row['iso3'],
+                            $row['year'],
+                            $row['name'],
+                        ]);
                     }
 
                     // Type conversion.

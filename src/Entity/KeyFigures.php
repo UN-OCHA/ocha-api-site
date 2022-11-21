@@ -56,8 +56,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             output: SimpleStringObject::class,
             provider: KeyFiguresCountriesStateProvider::class,
             openapiContext: [
-                'summary' => 'Get a list countries',
-                'description' => 'Get a list of iso3 codes',
+                'summary' => 'Get a list of countries',
+                'description' => 'Get a list of iso3 codes and names',
                 'tags' => [
                     'Key Figures',
                 ],
@@ -77,8 +77,8 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => ['write'],
             ],
             openapiContext: [
-                'summary' => 'Create or update a key figures',
-                'description' => 'Create or update a key figures',
+                'summary' => 'Create or update a key figure',
+                'description' => 'Create or update a key figure',
                 'tags' => [
                     'Key Figures',
                 ],
@@ -94,7 +94,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             output: BatchResponses::class,
             openapiContext: [
                 'summary' => 'Create or update a key figures in batch',
-                'description' => 'Create or update a key figures in batch',
+                'description' => 'Create or update a key figures in batch, the code example below is not correct, you need to pass an array of objects like you would do for the Put command.',
                 'tags' => [
                     'Key Figures',
                 ],
@@ -105,8 +105,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             provider: KeyFiguresLimitByProviderStateProvider::class,
             uriTemplate: '/key_figures/{id}',
             openapiContext: [
-                'summary' => 'Get a key figures',
-                'description' => 'Get a key figures',
+                'summary' => 'Get a key figure',
+                'description' => 'Get a key figure',
                 'tags' => [
                     'Key Figures',
                 ],
@@ -160,7 +160,7 @@ class KeyFigures
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
     #[Assert\NotBlank]
-    #[Assert\Regex("/^\d+(\.\d+)?$/")]
+    #[Assert\Regex("/^-?\d+(\.\d+)?$/")]
     #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $value = null;
 

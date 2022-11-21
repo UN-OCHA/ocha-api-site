@@ -1,0 +1,324 @@
+{
+  "name": "ACAPS",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d6bb08f7-a63d-4967-97e2-f0ec26bceab7",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        340,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.acaps.org/api/v1/token-auth/",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "={{ $env.ACAPS_USERNAME }}"
+            },
+            {
+              "name": "password",
+              "value": "={{ $env.ACAPS_PASSWORD }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "62794899-746d-46c2-af1a-a9bab0007f08",
+      "name": "Token",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        560,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"next\"]}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Token {{$node[\"Token\"].json[\"token\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ffc2178b-0700-42a6-8044-28bd08aa494f",
+      "name": "Country data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        940,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"Country data\"].json[\"next\"]}}",
+              "operation": "contains",
+              "value2": "api.acaps.org"
+            }
+          ]
+        }
+      },
+      "id": "10cbd77b-9d36-41a1-8085-93d9e0ff0aa8",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "next",
+              "value": "={{$node[\"Country data\"].json[\"next\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9684178c-c0f5-43a4-b16f-4bca8905d09d",
+      "name": "Update next URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = [];\n\nfor (item of items) {\n  // Skip empty iso3.\n  if (item.json.iso3 == '') {\n    continue;\n  }\n\n  if (item.json.value) {\n    item.json.year = item.json.year || item.json.date.substr(0, 4);\n    output.push({\n      id: 'inform_acaps_' + item.json.iso3 + '_' + item.json.year + '_' + item.json.indicator,\n      country: item.json.country,\n      iso3: item.json.iso3,\n      year: item.json.year,\n      name: item.json.indicator,\n      value: item.json.value,\n      source: 'ACAPS',\n      url: 'https://data.humdata.org/dataset/inform-global-crisis-severity-index',\n    });\n  }\n}\n\nreturn output;"
+      },
+      "id": "ac738204-b4c5-42d4-9244-125d380c23ed",
+      "name": "Build records",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.OCHA_API_URL }}/inform/batch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "API-KEY",
+              "value": "15a499d1e84635ece394078c8feaa161"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{$json}}",
+        "options": {}
+      },
+      "id": "148891cf-c9c1-4ad2-b858-f98a7599eb50",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1700,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData"
+      },
+      "id": "16feca56-6631-4842-8993-5745fc08e0e2",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items[0].json.results;"
+      },
+      "id": "3222e4c3-9e32-4f86-a4a7-a66e5b3c6644",
+      "name": "Function",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nlet next = 'https://api.acaps.org/api/v1/inform-severity-index/country-log/'\n\nif (items[0].json.next) {\n  next = items[0].json.next\n}\n\nreturn [\n  {\n    json: {\n      next : next\n    }\n  }\n]"
+      },
+      "id": "a5001907-01f2-4639-b276-752e7637989d",
+      "name": "Set URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        760,
+        160
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token": {
+      "main": [
+        [
+          {
+            "node": "Set URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Country data": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Update next URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build records": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Build records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set URL": {
+      "main": [
+        [
+          {
+            "node": "Country data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update next URL": {
+      "main": [
+        [
+          {
+            "node": "Set URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "any",
+    "executionTimeout": 600
+  },
+  "hash": "c6a928861898494d433adb2fdeaa8216",
+  "id": 5,
+  "meta": {
+    "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
+  },
+  "tags": [
+    {
+      "createdAt": "2022-11-16T09:10:13.398Z",
+      "updatedAt": "2022-11-16T09:10:13.398Z",
+      "id": "1",
+      "name": "inform"
+    }
+  ]
+}

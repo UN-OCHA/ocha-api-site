@@ -17,12 +17,13 @@ class KeyFiguresSrc2Test extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('source-2'), [
             'headers' => [
                 'API-KEY' => 'token1',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(20, $this->getBody($response));
+        $this->assertCount(10, $this->getBody($response));
     }
 
     public function testGetOnSource2AsUser1(): void
@@ -31,6 +32,7 @@ class KeyFiguresSrc2Test extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('source-2'), [
             'headers' => [
                 'API-KEY' => 'token2',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
@@ -45,12 +47,13 @@ class KeyFiguresSrc2Test extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('source-2'), [
             'headers' => [
                 'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(20, $this->getBody($response));
+        $this->assertCount(10, $this->getBody($response));
     }
 
 }

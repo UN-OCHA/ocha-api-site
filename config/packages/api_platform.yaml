@@ -2,6 +2,7 @@ api_platform:
     title: 'OCHA API'
     description: 'The public OCHA API'
     version: 0.0.1
+    show_webby: false
     formats:
         json:     ['application/json']
         jsonld:   ['application/ld+json']
@@ -13,6 +14,9 @@ api_platform:
         api_keys:
             API-Key:
                 name: API-KEY
+                type: header
+            APP-NAME:
+                name: APP-NAME
                 type: header
         swagger_ui_extra_configuration:
             defaultModelsExpandDepth: -1

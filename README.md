@@ -11,9 +11,34 @@
 - ~~Check read/write security~~
 - ~~batch endpoint~~
 - ~~extra fields as json blob~~
-- add service name in header
+- ~~add service name in header~~
 
 ## OPS
+
+### env
+
+- `N8N_WORKFLOW_ENDPOINT="http://192.168.3.20:5678/api/v1"`
+- `N8N_WORKFLOW_API_KEY="n8n_api_cd9be...."`
+
+### n8n
+
+n8n needs the following environment variables defined, they will not be visible in the UI.
+
+- `N8N_TEMPLATES_HOST=http://api-test.docksal.site/api/v1/n8n`
+- `OCHA_API_URL=http://api-test.docksal.site/api/v1`
+- `ACAPS_USERNAME`
+- `ACAPS_PASSWORD`
+
+### Workflows
+
+Workflows can be executed from files, no UI needed.
+
+`files` is a mapped directory.
+
+```bash
+docker-compose exec -u node n8n n8n execute --file /files/IDPS.json
+docker-compose exec -e FTS_YEAR=2019 -u node n8n n8n execute --file /files/FTS.json
+```
 
 ### Add new key figure provider
 
@@ -23,7 +48,7 @@ console app:add-user cbpf cbpf@example.com cbpf cbpf cbpf
 console cache:clear
 ```
 
-## Reset data of a provider
+### Reset data of a provider
 
 ```bash
 console doctrine:query:sql "delete from key_figures where provider = \"cbpf\""

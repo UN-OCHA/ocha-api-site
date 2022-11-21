@@ -16,12 +16,13 @@ class KeyFiguresTest extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token1',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(40, $this->getBody($response));
+        $this->assertGreaterThan(40, $this->getBody($response));
     }
 
     public function testGetCollectionAsUser1(): void
@@ -29,12 +30,13 @@ class KeyFiguresTest extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token2',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertCount(20, $this->getBody($response));
+        $this->assertCount(30, $this->getBody($response));
     }
 
     public function testGetCollectionAsUser2(): void
@@ -42,6 +44,7 @@ class KeyFiguresTest extends WebTestCase
         $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
                 'accept' => 'application/json',
             ]
         ]);
