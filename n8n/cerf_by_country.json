@@ -1,0 +1,245 @@
+{
+  "name": "Cerf by country",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2dfebdbd-c7c2-484a-a3e7-4b88c3da0ce2",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://cerfgms-webapi.unocha.org/secured/v1/3C73551D45B0F67050264EE2E1970A9B/project/year/{{$json[\"year\"]}}.json",
+        "options": {}
+      },
+      "id": "93cf86c2-c50c-4aac-8a10-02ad02e2a279",
+      "name": "Get projects",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "let record = {};\n\nrecord.year = item.year;\nrecord.name = item.emergencyTypeName + ': ' + item.windowFullName + ' ('  + item.projectStatus + ')';\nrecord.country = item.countryName;\nrecord.iso3 = item.countryCode;\n\nrecord.value = item.totalAmountApproved;\nrecord.description = item.projectTitle,\nrecord.source = 'CERF';\nrecord.url = 'https://cerf.un.org/what-we-do/allocation/' + item.year + '/country/' + item.countryID + '/' + item.applicationCode + '/' + item.projectCode;\nrecord.extra = {\n  'emergency': item.emergencyTypeName,\n  'window': item.windowFullName,\n  'status': item.projectStatus,\n};\n\nreturn record;"
+      },
+      "id": "4370a196-3bed-466f-b3e0-4fa439919444",
+      "name": "Project base record",
+      "type": "n8n-nodes-base.functionItem",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "id": "df5868fc-9c2a-4f9e-a0a6-835c3fc5afe4",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        540,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "aggregateItems",
+        "aggregate": "aggregateAllItemData"
+      },
+      "id": "c65e2678-a6f0-46cd-8b33-3a4c9a7d8908",
+      "name": "Combine records",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        760,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.OCHA_API_URL }}/cerf/batch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "API-KEY",
+              "value": "b01647634df4e0ba1b449d189b6cb879"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{$json}}",
+        "options": {}
+      },
+      "id": "0ee697e1-b236-478c-8ba0-9313d2b3f33c",
+      "name": "Save it",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1020,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Save the data\n\nThis saves the data in chunks to the API server. Make sure to update the **endpoint** and **API-Key** for your data.",
+        "height": 321.5974693866,
+        "width": 802.6783020377011
+      },
+      "id": "907188fe-f4bf-46ed-98fa-124961a0b5e7",
+      "name": "Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        400,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let record = {};\n\nrecord.year = $env.CERF_YEAR || new Date().getFullYear();\n\nreturn record;\n"
+      },
+      "id": "7996c553-d7d5-49e6-a2f0-0d912e911a63",
+      "name": "Set year",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get data by year.\n\n",
+        "height": 319.38986122360757,
+        "width": 444.3185469376445
+      },
+      "id": "6321255d-3b1e-4711-aff9-54a59602784d",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Build records\n\nCombine for same emergency and status.",
+        "height": 318.11093877465146,
+        "width": 402.59905306032397
+      },
+      "id": "aab979be-df2b-4df1-b7ac-6467fe029fce",
+      "name": "Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        80
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Set year",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get projects": {
+      "main": [
+        [
+          {
+            "node": "Project base record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project base record": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Combine records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine records": {
+      "main": [
+        [
+          {
+            "node": "Save it",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save it": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set year": {
+      "main": [
+        [
+          {
+            "node": "Get projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "hash": "7b8b3ede9f188eca997d641924137152",
+  "id": 9,
+  "meta": {
+    "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
+  },
+  "tags": []
+}

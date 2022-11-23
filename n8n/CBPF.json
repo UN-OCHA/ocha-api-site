@@ -335,12 +335,7 @@
     }
   },
   "active": false,
-  "settings": {
-    "saveExecutionProgress": true,
-    "saveManualExecutions": true,
-    "callerPolicy": "any",
-    "executionTimeout": 600
-  },
+  "settings": {},
   "id": 4,
   "meta": {
     "instanceId": "f21f3ab16fb83938bb58bdb6512c7fe42a006f6d47aa702af6693d9df47facc8"
