@@ -33,10 +33,11 @@ class KeyFiguresBatchController extends AbstractController {
             );
 
             if ($result->getStatusCode() !== 200) {
-                $responses->failed[] = $item['id'];
+                $body = json_decode($result->getContent(), TRUE);
+                $responses->failed[$item['id']] = $result->getStatusCode() . ': ' . $body['detail'];
             }
             else {
-                $responses->successful[] = $item['id'];
+                $responses->successful[$item['id']] = 'Updated';
             }
         }
 

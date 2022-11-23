@@ -88,6 +88,8 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                             $row['year'],
                             $row['name'],
                         ]);
+
+                        $row['id'] = preg_replace('/[^A-Za-z0-9\-_]/', '', $row['id']);
                     }
 
                     // Type conversion.

@@ -38,13 +38,23 @@ Workflows can be executed from files, no UI needed.
 ```bash
 docker-compose exec -u node n8n n8n execute --file /files/IDPS.json
 docker-compose exec -e FTS_YEAR=2019 -u node n8n n8n execute --file /files/FTS.json
+
+docker-compose exec -e CERF_YEAR=2022 -u node n8n n8n execute --file /files/cerf_by_country.json
+docker-compose exec -e CERF_YEAR=2021 -u node n8n n8n execute --file /files/cerf_by_country.json
+docker-compose exec -e CERF_YEAR=2020 -u node n8n n8n execute --file /files/cerf_by_country.json
+docker-compose exec -e CERF_YEAR=2019 -u node n8n n8n execute --file /files/cerf_by_country.json
+docker-compose exec -e CERF_YEAR=2018 -u node n8n n8n execute --file /files/cerf_by_country.json
+docker-compose exec -e CERF_YEAR=2017 -u node n8n n8n execute --file /files/cerf_by_country.json
+docker-compose exec -e CERF_YEAR=2016 -u node n8n n8n execute --file /files/cerf_by_country.json
+
 ```
 
 ### Add new key figure provider
 
 ```bash
-console app:add-provider cbpf "Country-Based Pooled Funds" cbpf key_figures
-console app:add-user cbpf cbpf@example.com cbpf cbpf cbpf
+console app:add-provider cerf "CERF" cerf key_figures
+console app:add-user cerf cerf@example.com cerf cerf cerf
+console app:grant-access numbers cerf
 console cache:clear
 ```
 
