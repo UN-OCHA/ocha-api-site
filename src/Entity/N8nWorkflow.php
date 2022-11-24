@@ -32,6 +32,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ],
             ]
         ),
+        new Get(
+            uriTemplate: '/n8n/workflows/templates/{id}',
+            controller: N8nWorkflowController::class,
+            read: false,
+            openapiContext: [
+                'summary' => 'Get an n8n workflow',
+                'description' => 'Get an n8n workflow',
+                'tags' => [
+                    'n8n',
+                ],
+            ]
+        ),
         // Get.
         new GetCollection(
             uriTemplate: '/n8n/templates/workflows',
