@@ -1,0 +1,23 @@
+/**
+ * OCHA API custom CSS
+ */
+
+/* in-page navigation */
+.nav--in-page__links {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+.nav--in-page__link {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* code blocks */
+pre {
+  padding: 1rem;
+  background: var(--brand-grey);
+  border-radius: 5px;
+}
