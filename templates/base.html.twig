@@ -11,16 +11,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black_translucent">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-{#
+
   <script>
       document.documentElement.className = document.documentElement.className.replace('no-js', typeof document.addEventListener !== 'undefined' ? 'js' : 'no-js');
   </script>
-#}
+
   {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
   {% block stylesheets %}
-  <link rel="stylesheet" media="all" href="./css/css_9m8-tA3IQf8ThlLQYTTZUyEweCvyR908Tg0XCbKYOfY.css">
-  <link rel="stylesheet" media="all" href="./css/css_RTVjny1TG-K2l0RBtCa-yZy0-krf44G6TeqH-wzfc2o.css">
-  {{ encore_entry_link_tags('app') }}
+    <link rel="stylesheet" media="all" href="./css/css_9m8-tA3IQf8ThlLQYTTZUyEweCvyR908Tg0XCbKYOfY.css">
+    <link rel="stylesheet" media="all" href="./css/css_RTVjny1TG-K2l0RBtCa-yZy0-krf44G6TeqH-wzfc2o.css">
+    <link rel="stylesheet" media="all" href="./css/ocha-api.css">
+    {{ encore_entry_link_tags('app') }}
   {% endblock %}
 </head>
 
