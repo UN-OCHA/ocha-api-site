@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Tests;
 
@@ -44,11 +44,11 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
 
         $this->assertEquals(201, $response->getStatusCode());
 
-        $body = json_decode($response->getContent());
-        $this->assertCount(2, $body->successful);
-        $this->assertCount(0, $body->failed);
-        $this->assertContains('src3_afg_2021_Indicator', $body->successful);
-        $this->assertContains('src3_afg_2022_Indicator', $body->successful);
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertCount(2, $body['successful']);
+        $this->assertCount(0, $body['failed']);
+        $this->assertArrayHasKey('src3_afg_2021_Indicator', $body['successful']);
+        $this->assertArrayHasKey('src3_afg_2022_Indicator', $body['successful']);
     }
 
     public function testOnSource3AsUser1(): void
@@ -66,11 +66,11 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
         // User 1 does not have access to source 2.
         $this->assertEquals(201, $response->getStatusCode());
 
-        $body = json_decode($response->getContent());
-        $this->assertCount(0, $body->successful);
-        $this->assertCount(2, $body->failed);
-        $this->assertContains('src3_afg_2021_Indicator', $body->failed);
-        $this->assertContains('src3_afg_2022_Indicator', $body->failed);
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertCount(0, $body['successful']);
+        $this->assertCount(2, $body['failed']);
+        $this->assertArrayHasKey('src3_afg_2021_Indicator', $body['failed']);
+        $this->assertArrayHasKey('src3_afg_2022_Indicator', $body['failed']);
     }
 
     public function testOnSource3AsUser3(): void
@@ -87,11 +87,11 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
 
         $this->assertEquals(201, $response->getStatusCode());
 
-        $body = json_decode($response->getContent());
-        $this->assertCount(2, $body->successful);
-        $this->assertCount(0, $body->failed);
-        $this->assertContains('src3_afg_2021_Indicator', $body->successful);
-        $this->assertContains('src3_afg_2022_Indicator', $body->successful);
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertCount(2, $body['successful']);
+        $this->assertCount(0, $body['failed']);
+        $this->assertArrayHasKey('src3_afg_2021_Indicator', $body['successful']);
+        $this->assertArrayHasKey('src3_afg_2022_Indicator', $body['successful']);
    }
 
 }
