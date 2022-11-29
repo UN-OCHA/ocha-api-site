@@ -12,7 +12,7 @@ class UserTest extends ApiTestCase
 
     public function testMeEndpoint(): void
     {
-      $response = static::createClient()->request('GET', '/api/v1/me', [
+      $response = static::createClient()->request('GET', $this->addPrefix('me'), [
         'headers' => [
           'API-KEY' => 'token1',
           'APP-NAME' => 'test',
@@ -36,7 +36,7 @@ class UserTest extends ApiTestCase
 
     public function testRegister(): void
     {
-      $response = static::createClient()->request('POST', '/api/v1/register', [
+      $response = static::createClient()->request('POST', $this->addPrefix('register'), [
         'headers' => [
           'APP-NAME' => 'test',
           'accept' => 'application/json',

@@ -10,9 +10,9 @@ class KeyFiguresFutureTest extends ApiTestCase
     use RefreshDatabaseTrait;
     use TestTrait;
 
-    public function testMeEndpoint(): void
+    public function testSrc1Endpoint(): void
     {
-      $response = static::createClient()->request('GET', '/api/v1/source1', [
+      $response = static::createClient()->request('GET', $this->addPrefix('source1'), [
         'headers' => [
           'API-KEY' => 'token1',
           'APP-NAME' => 'test',
