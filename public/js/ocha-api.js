@@ -9,6 +9,7 @@
         ev.preventDefault();
         var linkTarget = '#' + link.getAttribute('href').split('#')[1];
         document.querySelector(linkTarget).scrollIntoView({behavior: 'smooth'});
+        history.pushState({}, '', linkTarget);
       });
     });
   }
