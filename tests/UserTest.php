@@ -59,4 +59,5 @@ class UserTest extends ApiTestCase
         'can_write' => [],
       ]);
     }
+
 }
