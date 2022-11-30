@@ -2,17 +2,14 @@
  * OCHA API custom CSS
  */
 
-/* in-page navigation */
-.nav--in-page__links {
-  display: flex;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-}
-.nav--in-page__link {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+/* in-page nav */
+a[href="#main-content"]::after {
+  position: relative;
+  top: 0.125rem;
+  content: '⬆';
+  display: inline-block;
+  margin-inline-start: .25rem;
+  font-size: 1.25rem;
 }
 
 /* code blocks */
