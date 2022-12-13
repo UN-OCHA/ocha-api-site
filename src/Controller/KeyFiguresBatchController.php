@@ -8,14 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 
 class KeyFiguresBatchController extends AbstractController {
-    
+
     public function __construct(private HttpKernelInterface $kernel)
     {
     }
-        
+
     public function __invoke(Request $request, BatchCollection $data): BatchResponses
     {
         $responses = new BatchResponses;
@@ -33,10 +32,14 @@ class KeyFiguresBatchController extends AbstractController {
             );
 
             if ($result->getStatusCode() !== 200) {
-                $responses->failed[] = $item['id'];
+                $body = json_decode($result->getContent(), TRUE);
+                $responses->failed[$item['id']] = $result->getStatusCode();
+                if (isset($body['detail']) && !empty($body['detail'])) {
+                  $responses->failed[$item['id']] .=  ': ' . $body['detail'];
+                }
             }
             else {
-                $responses->successful[] = $item['id'];
+                $responses->successful[$item['id']] = 'Updated';
             }
         }
 
@@ -53,5 +56,5 @@ class KeyFiguresBatchController extends AbstractController {
         } catch (\Exception $e) {
             return new Response(sprintf('Batch element #%d failed, check the log files.', $index), 400);
         }
-    }    
+    }
 }

@@ -1,0 +1,20 @@
+/**
+ * OCHA API custom CSS
+ */
+
+/* in-page nav */
+a[href="#main-content"]::after {
+  position: relative;
+  top: 0.125rem;
+  content: '⬆';
+  display: inline-block;
+  margin-inline-start: .25rem;
+  font-size: 1.25rem;
+}
+
+/* code blocks */
+pre {
+  padding: 1rem;
+  background: var(--brand-grey);
+  border-radius: 5px;
+}

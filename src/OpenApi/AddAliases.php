@@ -65,6 +65,7 @@ class AddAliases implements ResourceMetadataCollectionFactoryInterface
                         ->withExtraProperties([
                             'user_defined_uri_template' => TRUE,
                             'provider' => $provider->getId(),
+                            'expand' => $expand,
                         ])
                         ->withOpenapiContext($openApiContext)
                         ->withName(str_replace($expand, str_replace('-', '_', $provider->getPrefix()), $operation->getName()))

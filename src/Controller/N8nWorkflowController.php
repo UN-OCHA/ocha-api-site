@@ -17,6 +17,6 @@ class N8nWorkflowController extends AbstractController
 
     public function __invoke($id)
     {
-        return ['workflow' => $this->repo->findOneBy(['id' => $id])];
+        return $this->repo->findOneBy(['id' => $id]);
     }
 }

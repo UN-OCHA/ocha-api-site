@@ -59,4 +59,4 @@ RUN  wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=
      mv -f /tmp/99-elastic-apm-custom.ini /etc/php81/conf.d/99-elastic-apm-custom.ini
 
 COPY --from=builder /srv/www/docker/etc/nginx/apps/drupal/drupal.conf /etc/nginx/apps/drupal/drupal.conf
-COPY --from=builder /srv/www/docker/etc/nginx/custom/hsts.conf /etc/nginx/custom/hsts.conf
+COPY --from=builder /srv/www/docker/etc/nginx/custom/headers.conf /etc/nginx/custom/headers.conf

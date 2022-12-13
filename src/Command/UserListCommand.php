@@ -67,11 +67,12 @@ class UserListCommand extends Command
         $users = $this->users->findAll();
 
         $table = new Table($output);
-        $table->setHeaders(['Email', 'Roles', 'Token', 'Read', 'Write']);
+        $table->setHeaders(['Username', 'Email', 'Roles', 'Token', 'Read', 'Write']);
 
         foreach ($users as $user) {
             /** @var \App\Entity\User $user */
             $table->addRow([
+                $user->getUsername(),
                 $user->getEmail(),
                 implode(', ', $user->getRoles()),
                 $user->getToken(),
