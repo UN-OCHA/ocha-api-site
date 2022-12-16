@@ -91,7 +91,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "changelog": "conventional-changelog",
+        "release": "conventional-changelog",
+        "release:patch": "conventional-changelog --patch",
+        "release:minor": "conventional-changelog --minor",
+        "release:major": "conventional-changelog --major"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -105,6 +110,7 @@
     "require-dev": {
         "hautelook/alice-bundle": "^2.11",
         "justinrainbow/json-schema": "^5.2",
+        "marcocesarato/php-conventional-changelog": "^1.16",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.1.*",
         "symfony/css-selector": "6.1.*",
@@ -114,5 +120,5 @@
         "symfony/stopwatch": "6.1.*",
         "symfony/web-profiler-bundle": "6.1.*"
     },
-    "version": "0.0.1"
+    "version": "0.1.1"
 }
