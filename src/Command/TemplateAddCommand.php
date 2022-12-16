@@ -49,6 +49,8 @@ class TemplateAddCommand extends Command
           ->addArgument('name', InputArgument::REQUIRED, 'Name')
           ->addArgument('description', InputArgument::REQUIRED, 'Description')
           ->addArgument('categories', InputArgument::OPTIONAL, 'Categories')
+          ->addArgument('N8N_WORKFLOW_API_KEY', InputArgument::OPTIONAL, 'N8N_WORKFLOW_API_KEY')
+          ->addArgument('N8N_WORKFLOW_ENDPOINT', InputArgument::OPTIONAL, 'N8N_WORKFLOW_ENDPOINT')
         ;
     }
 
@@ -61,6 +63,9 @@ class TemplateAddCommand extends Command
         $name = $input->getArgument('name');
         $description = $input->getArgument('description');
         $categories = explode(',', $input->getArgument('categories')) ?? [];
+
+        $_ENV['N8N_WORKFLOW_API_KEY'] = $input->getArgument('N8N_WORKFLOW_API_KEY') ?? $_ENV['N8N_WORKFLOW_API_KEY'];
+        $_ENV['N8N_WORKFLOW_ENDPOINT'] = $input->getArgument('N8N_WORKFLOW_ENDPOINT') ?? $_ENV['N8N_WORKFLOW_ENDPOINT'];
 
         $this->updateWorkflow($id, $workflow_id, $name, $description, $categories);
         $this->io->success('Data updated.');
@@ -174,7 +179,7 @@ class TemplateAddCommand extends Command
    *   Raw results.
    */
   public function getDataFromApi(string $path, array $query = []) : array {
-    $endpoint = $_ENV['N8N_WORKFLOW_ENDPOINT'] ?? '';
+    $endpoint = rtrim($_ENV['N8N_WORKFLOW_ENDPOINT'] ?? '', '/');
     $api_key = $_ENV['N8N_WORKFLOW_API_KEY'] ?? '';
 
     if (empty($endpoint)) {
