@@ -39,9 +39,9 @@
         "FullName": "My full name"
     }'</code></pre>
 
+<p>For all GET request you have to specify a header parameter `APP-NAME` or the request will fail.</p>
 <p>If you require write access please drop us an email at <a href="mailto:support@unocha.org">support@unocha.org</a>.</p>
 <p><a href="#main-content">Back to top</a></p>
-
 
 <h2 id="sources">Datasources</h2>
 <ul>
@@ -58,7 +58,6 @@
 </ul>
 <p><a href="#main-content">Back to top</a></p>
 
-
 <h2 id="add">Adding data</h2>
 <p>Make sure you already have requested an API key and have write access.</p>
 <p>Since data is stored inside a shared database, you are responsible to provide a unique id for each record.</p>
@@ -66,7 +65,10 @@
 <h3>Use n8n</h3>
 <img src="/img/n8n_idps.png" width="80%"/>
 <p>If you prefer to use a visual tool to add data you can use <a rel="noopener noreferrer" target="_blank" href="https://dev.api-sources-unocha-org.ahconu.org">n8n</a>.</p>
-<p>You can find a template to get you started at <a href="/n8n/idps.json">IDPS template</a>, you can import it into a blank workflow in n8n.</p>
+<p>You can find a templates to get you started at <a rel="noopener noreferrer" target="_blank" href="https://dev.api-sources-unocha-org.ahconu.org/templates">n8n Templates</a>.</p>
+<p>If you want an account please drop us an email at <a href="mailto:support@unocha.org">support@unocha.org</a>.</p>
+<p>Once your workflow is finalized, let us know and we will deploy it to production</p>
+<p><a href="#main-content">Back to top</a></p>
 
 <h3>Use REST</h3>
 <p>All datasources have 2 endpoints to create or update data.</p>
@@ -76,17 +78,14 @@
 </ul>
 <p><a href="#main-content">Back to top</a></p>
 
-
-<h2 id="doc">Documentation</h2>
+<h2 id="doc">API Documentation</h2>
 <p>Visit our <a href="{{ url('api_home') }}" rel="noreferrer noopener">API Documentation</a> page to find out more and to get started. The documentation have live examples that you can modify and see the results directly on the help page!</p>
 <p><a href="#main-content">Back to top</a></p>
-
 
 <h2 id="feedback">Feedback and support</h2>
 <p>If you have questions or you have noticed something strange with our API then please get in touch.</p>
 <p>If you have some questions or feedback, including big ideas for improvements, you can write to us at <a href="mailto:support@unocha.org">support@unocha.org</a>.</p>
 <p><a href="#main-content">Back to top</a></p>
-
 
 <h2 id="tos">Terms of Service and Quotas</h2>
 <p>Anyone can use the API. You should respect the intellectual property rights of the original source when using content retrieved through the API.</p>
@@ -99,7 +98,6 @@
 <p>We feel that these limitations are reasonable and should not interfere with most applications. If they cause significant problems for your use case, please let us know at <a href="mailto:support@unocha.org">support@unocha.org</a> and we will review on a case-by-case basis.</p>
 <p>We do not guarantee the accuracy of its data and are not responsible for any damages resulting from the use of API. There are no fees associated with the use of the API.</p>
 <p><a href="#main-content">Back to top</a></p>
-
 
 <h2 id="faq">Frequently asked questions (<abbr>FAQs</abbr>)</h2>
 <p>Here are some quick answers to get you started.</p>
