@@ -93,6 +93,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read'])]
     private array $can_write = [];
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $webhook = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -231,6 +234,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCanWrite(?array $can_write): self
     {
         $this->can_write = $can_write;
+
+        return $this;
+    }
+
+    public function getWebhook(): ?string
+    {
+        return $this->webhook;
+    }
+
+    public function setWebhook(?string $webhook): self
+    {
+        $this->webhook = $webhook;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\EventListener;
 
 use App\Entity\KeyFigures;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -13,6 +15,7 @@ class DatabaseOnFlushListener
     public function __construct(
       private ManagerRegistry $managerRegistry,
       private HttpClientInterface $httpClient,
+      private EntityManagerInterface $entityManager,
     )
     {
     }
@@ -52,13 +55,27 @@ class DatabaseOnFlushListener
         }
 
         if (!empty($payload)) {
-            $endpoint = 'http://numbers.docksal.site/webhook/listen';
-            $this->httpClient->request('POST', $endpoint, [
-              'json' => ['data' => $payload],
-            ]);
+            $provider = $payload[0]['data']['provider'];
 
+            $query = $this->entityManager->createQueryBuilder()
+                ->select('u')
+                ->from('App:User', 'u')
+                ->where('u.webhook is not null');
+            $users = $query->getQuery()->getResult();
+
+            /** @var \App\Entity\User $user */
+            foreach ($users as $user) {
+                if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+                    if (!in_array($provider, $user->getCanRead())) {
+                        continue;
+                    }
+                }
+
+                $endpoint = $user->getWebhook();
+                $this->httpClient->request('POST', $endpoint, [
+                    'json' => ['data' => $payload],
+                ]);
+            }
         }
-        trigger_deprecation('payload', '0.0.1', print_r($payload, TRUE));
-
     }
 }
