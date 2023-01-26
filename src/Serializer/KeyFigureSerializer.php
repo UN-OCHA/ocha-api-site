@@ -26,6 +26,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         'provider' => 'provider',
         'extra' => 'extra',
         'data' => 'data',
+        'values' => 'values',
     ];
 
     public function __construct(NormalizerInterface $decorated)
@@ -46,6 +47,9 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
+        if (isset($data['values'])) {
+        //  unset($data['values']);
+        }
         if (isset($data['extra'])) {
             if (is_array($data['extra'])) {
                 $data += array_diff_key($data['extra'], $this->defaultFields);

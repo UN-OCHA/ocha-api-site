@@ -39,6 +39,11 @@ class KeyFiguresRepository extends ServiceEntityRepository
         }
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     /**
      * @return KeyFigures[]
      */
@@ -90,7 +95,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
             $qb->where($qb->expr()->eq('f.provider', ':provider'))
                 ->setParameter(':provider', $provider);
         }
-    
+
         return $qb->getQuery()
             ->getArrayResult()
         ;

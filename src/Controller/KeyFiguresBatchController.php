@@ -2,12 +2,17 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Metadata\Operation;
 use App\Dto\BatchCollection;
 use App\Dto\BatchResponses;
+use App\Entity\KeyFigures;
+use App\Repository\KeyFiguresRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class KeyFiguresBatchController extends AbstractController {
 
@@ -15,46 +20,71 @@ class KeyFiguresBatchController extends AbstractController {
     {
     }
 
-    public function __invoke(Request $request, BatchCollection $data): BatchResponses
+    public function __invoke(Request $request, BatchCollection $data, KeyFiguresRepository $repository, TokenStorageInterface $tokenStorage): BatchResponses
     {
-        $responses = new BatchResponses;
 
-        $headers = $request->headers->all();
-        foreach ($data->data as $k => $item) {
-            $headers['content-length'] = strlen(json_encode($item));
+        $operation = $request->attributes->get('_api_operation');
+        $this->checkProviderAccess($operation, $tokenStorage);
 
-            $result = $this->executeSubRequest(
-                $k,
-                str_replace('/batch', '/' . $item['id'], $request->getPathInfo()),
-                'PUT',
-                $headers,
-                json_encode($item)
-            );
-
-            if ($result->getStatusCode() !== 200) {
-                $body = json_decode($result->getContent(), TRUE);
-                $responses->failed[$item['id']] = $result->getStatusCode();
-                if (isset($body['detail']) && !empty($body['detail'])) {
-                  $responses->failed[$item['id']] .=  ': ' . $body['detail'];
-                }
-            }
-            else {
-                $responses->successful[$item['id']] = 'Updated';
-            }
+        $provider = $this->getProvider($operation);
+        if (!$provider) {
+            throw new BadRequestException('Provider not initialized.');
         }
 
+        $responses = new BatchResponses;
+        foreach ($data->data as $k => $item) {
+          if ($existing = $repository->findOneBy(['id' => $item['id']])) {
+            if ($existing->getProvider() !== $provider) {
+              $responses->failed[$item['id']] = 'Unable to change provider';
+            }
+            try {
+              $existing->fromValues($item);
+              $repository->save($existing);
+              $responses->successful[$item['id']] = 'Updated';
+            }
+            catch (\Exception $e) {
+              $responses->failed[$item['id']] = $e->getMessage();
+            }
+          }
+          else {
+            $new = new KeyFigures();
+
+            try {
+              $new->fromValues($item);
+              $repository->save($new);
+              $responses->successful[$item['id']] = 'Created';
+            }
+            catch (\Exception $e) {
+              $responses->failed[$item['id']] = $e->getMessage();
+            }
+          }
+        }
+        $repository->flush();
         return $responses;
     }
 
-    private function executeSubRequest(int $index, string $path, string $method, array $headers, string $body): Response
-    {
-        $subRequest = Request::create($path, $method, [], [], [], [], $body);
-        $subRequest->headers->replace($headers);
+    protected function getProvider(Operation $operation) {
+      $properties = $operation->getExtraProperties() ?? [];
+      return $properties['provider'] ?? NULL;
+    }
 
-        try {
-            return $this->kernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        } catch (\Exception $e) {
-            return new Response(sprintf('Batch element #%d failed, check the log files.', $index), 400);
+    protected function checkProviderAccess(Operation $operation, TokenStorageInterface $tokenStorage) {
+        $provider = $this->getProvider($operation);
+
+        // Empty provider is allowed.
+        if (empty($provider)) {
+            return;
+        }
+
+        // Check user roles if not admin.
+        /** @var \App\Entity\User */
+        if ($tokenStorage->getToken() && $user = $tokenStorage->getToken()->getUser()) {
+            if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+                if (!in_array($provider, $user->getCanWrite())) {
+                    throw new AccessDeniedHttpException('This API Key does not have access to this endpoint.');
+                }
+            }
         }
     }
+
 }

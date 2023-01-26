@@ -367,4 +367,21 @@ class KeyFigures
         return $this;
     }
 
+    public function extractValues(): array {
+      return [
+        'id' => $this->id,
+        'iso3' => $this->iso3,
+        'country' => $this->country,
+        'year' => $this->year,
+        'name' => $this->name,
+        'value' => $this->value,
+        'updated' => $this->updated ?? NULL,
+        'url' => $this->url,
+        'source' => $this->source,
+        'description' => $this->description ?? '',
+        'tags' => $this->tags ?? [],
+        'provider' => $this->provider,
+        'extra' => $this->extra ?? [],
+      ];
+  }
 }
