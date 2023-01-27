@@ -2,6 +2,7 @@
 
 namespace App\Serializer;
 
+use App\Dto\ArchiveInput;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -72,8 +73,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           return $this->decorated->denormalize($data, $type, $format, $context);
       }
 
-      // Get extra properties.
+      /** @var \ApiPlatform\Metadata\Operation $operation */
       $operation = $context['operation'];
+      $input = $operation->getInput();
+
+      // Use default denormalizer for archive.
+      if ($input && $input['class'] == ArchiveInput::class) {
+        return $this->decorated->denormalize($data, $type, $format, $context);
+      }
+
+      // Get extra properties.
       $properties = $operation->getExtraProperties() ?? [];
 
       // Check if we need to do something.
@@ -81,7 +90,6 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         return $this->decorated->denormalize($data, $type, $format, $context);
       }
 
-      /** @var ApiPlatform\Metadata\Operations $operations */
       $provider = $properties['provider'] ?? NULL;
 
       // Multiple records.

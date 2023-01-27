@@ -10,7 +10,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\KeyFiguresArchiveController;
 use App\Controller\KeyFiguresBatchController;
+use App\Dto\ArchiveInput;
 use App\Dto\BatchCollection;
 use App\Dto\BatchResponses;
 use App\Dto\SimpleStringObject;
@@ -100,6 +102,22 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ]
         ),
+        // Archive.
+        new Post(
+          securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')",
+          uriTemplate: '/key_figures/archive',
+          input: ArchiveInput::class,
+          read: false,
+          controller: KeyFiguresArchiveController::class,
+          output: SimpleStringObject::class,
+          openapiContext: [
+              'summary' => 'Archive records by country and/or year',
+              'description' => 'Archive records by country and/or year.',
+              'tags' => [
+                  'Key Figures',
+              ],
+          ]
+        ),
         // Get.
         new Get(
             provider: KeyFiguresLimitByProviderStateProvider::class,
@@ -126,7 +144,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['iso3' => 'exact', 'year' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
 class KeyFigures
 {
@@ -192,6 +210,10 @@ class KeyFigures
     #[ORM\Column(nullable: true)]
     #[Groups(['write', 'with_meta'])]
     private array $extra = [];
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['write', 'with_meta'])]
+    private ?bool $archived = null;
 
     public function getId(): ?string
     {
@@ -356,13 +378,23 @@ class KeyFigures
         $this->year = $values['year'];
         $this->name = $values['name'];
         $this->value = $values['value'];
-        $this->updated = $values['updated'] ?? NULL;
         $this->url = $values['url'];
         $this->source = $values['source'];
         $this->description = $values['description'] ?? '';
         $this->tags = $values['tags'] ?? [];
         $this->provider = $values['provider'];
         $this->extra = $values['extra'] ?? [];
+        $this->archived = $values['archived'] ?? FALSE;
+
+        if (!isset($values['updated'])) {
+          $this->updated = $values['updated'];
+        }
+        elseif (is_string($values['updated'])) {
+          $this->updated = new \DateTime($values['updated']);
+        }
+        else {
+          $this->updated = $values['updated'] ?? NULL;
+        }
 
         return $this;
     }
@@ -382,6 +414,19 @@ class KeyFigures
         'tags' => $this->tags ?? [],
         'provider' => $this->provider,
         'extra' => $this->extra ?? [],
+        'archived' => $this->archived ?? FALSE,
       ];
   }
+
+    public function isArchived(): ?bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(?bool $archived): self
+    {
+        $this->archived = $archived;
+
+        return $this;
+    }
 }
