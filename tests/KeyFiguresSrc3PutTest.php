@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Tests;
 
@@ -31,7 +31,7 @@ class KeyFiguresSrc3PutTest extends WebTestCase
             'json' => $this->data,
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(201, $response->getStatusCode());
 
         $body = json_decode($response->getContent());
         $this->assertEquals('1', $body->id);
@@ -72,7 +72,7 @@ class KeyFiguresSrc3PutTest extends WebTestCase
             'json' => $this->data,
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(201, $response->getStatusCode());
 
         $body = json_decode($response->getContent());
         $this->assertEquals('3', $body->id);
