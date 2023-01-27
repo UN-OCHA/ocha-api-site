@@ -2,11 +2,11 @@
 
 namespace App\Tests;
 
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class KeyFiguresSrc3BatchTest extends WebTestCase
+class KeyFiguresSrc3BatchTest extends ApiTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
@@ -32,8 +32,7 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
 
     public function testOnSource3AsAdmin(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
+        $response = static::createClient()->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token1',
                 'APP-NAME' => 'test',
@@ -53,8 +52,7 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
 
     public function testOnSource3AsUser1(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
+        $response = static::createClient()->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token2',
                 'APP-NAME' => 'test',
@@ -69,8 +67,7 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
 
     public function testOnSource3AsUser3(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
+        $response = static::createClient()->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token4',
                 'APP-NAME' => 'test',

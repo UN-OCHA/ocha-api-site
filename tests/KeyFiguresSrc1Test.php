@@ -1,20 +1,19 @@
-<?php 
+<?php
 
 namespace App\Tests;
 
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class KeyFiguresSrc1Test extends WebTestCase
+class KeyFiguresSrc1Test extends ApiTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
 
     public function testGetOnSource1AsAdmin(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('GET', $this->addPrefix('source1'), [
+        $response = static::createClient()->request('GET', $this->addPrefix('source1'), [
             'headers' => [
                 'API-KEY' => 'token1',
                 'APP-NAME' => 'test',
@@ -28,8 +27,7 @@ class KeyFiguresSrc1Test extends WebTestCase
 
     public function testGetOnSource1AsUser1(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('GET', $this->addPrefix('source1'), [
+        $response = static::createClient()->request('GET', $this->addPrefix('source1'), [
             'headers' => [
                 'API-KEY' => 'token2',
                 'APP-NAME' => 'test',
@@ -43,8 +41,7 @@ class KeyFiguresSrc1Test extends WebTestCase
 
     public function testGetOnSource1AsUser2(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('GET', $this->addPrefix('source1'), [
+        $response = static::createClient()->request('GET', $this->addPrefix('source1'), [
             'headers' => [
                 'API-KEY' => 'token3',
                 'APP-NAME' => 'test',
