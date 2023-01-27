@@ -378,8 +378,8 @@ class KeyFigures
         $this->year = $values['year'];
         $this->name = $values['name'];
         $this->value = $values['value'];
-        $this->url = $values['url'];
-        $this->source = $values['source'];
+        $this->url = $values['url'] ?? '';
+        $this->source = $values['source'] ?? '';
         $this->description = $values['description'] ?? '';
         $this->tags = $values['tags'] ?? [];
         $this->provider = $values['provider'];
@@ -387,7 +387,7 @@ class KeyFigures
         $this->archived = $values['archived'] ?? FALSE;
 
         if (!isset($values['updated'])) {
-          $this->updated = $values['updated'];
+          $this->updated = NULL;
         }
         elseif (is_string($values['updated'])) {
           $this->updated = new \DateTime($values['updated']);
