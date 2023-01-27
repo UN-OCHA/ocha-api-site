@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Controller\KeyFiguresArchiveController;
 use App\Controller\KeyFiguresBatchController;
 use App\Dto\ArchiveInput;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     security: "is_granted('ROLE_USER')",
     extraProperties: [
         'expand' => 'key_figures',
+        'standard_put' => false,
     ],
     operations: [
         // Years.
@@ -39,36 +41,36 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/key_figures/years',
             output: SimpleStringObject::class,
             provider: KeyFiguresYearsStateProvider::class,
-            openapiContext: [
-                'summary' => 'Get a list years',
-                'description' => 'Get a list of years',
-                'tags' => [
-                    'Key Figures',
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Array of years keyed by year',
-                    ],
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a list years',
+              description: 'Get a list of years',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of years keyed by year',
+                  ],
+              ],
+            ),
         ),
         // Countries.
         new GetCollection(
             uriTemplate: '/key_figures/countries',
             output: SimpleStringObject::class,
             provider: KeyFiguresCountriesStateProvider::class,
-            openapiContext: [
-                'summary' => 'Get a list of countries',
-                'description' => 'Get a list of iso3 codes and names',
-                'tags' => [
-                    'Key Figures',
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Array of countries keyed by iso3 code',
-                    ],
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a list countries',
+              description: 'Get a list of countries',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of countries keyed by year',
+                  ],
+              ],
+            ),
         ),
         // Create or update.
         new Put(
@@ -78,13 +80,13 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: [
                 'groups' => ['write'],
             ],
-            openapiContext: [
-                'summary' => 'Create or update a key figure',
-                'description' => 'Create or update a key figure',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Create or update a key figure',
+              description: 'Create or update a key figure',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
         ),
         // Batch update.
         new Post(
@@ -94,13 +96,13 @@ use Symfony\Component\Validator\Constraints as Assert;
             processor: KeyFiguresBatchProcessor::class,
             controller: KeyFiguresBatchController::class,
             output: BatchResponses::class,
-            openapiContext: [
-                'summary' => 'Create or update a key figures in batch',
-                'description' => 'Create or update a key figures in batch, the code example below is not correct, you need to pass an array of objects like you would do for the Put command.',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Create or update a key figures in batch',
+              description: 'Create or update a key figures in batch, the code example below is not correct, you need to pass an array of objects like you would do for the Put command.',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
         ),
         // Archive.
         new Post(
@@ -110,37 +112,37 @@ use Symfony\Component\Validator\Constraints as Assert;
           read: false,
           controller: KeyFiguresArchiveController::class,
           output: SimpleStringObject::class,
-          openapiContext: [
-              'summary' => 'Archive records by country and/or year',
-              'description' => 'Archive records by country and/or year.',
-              'tags' => [
-                  'Key Figures',
-              ],
-          ]
+          openapi: new OpenApiOperation(
+            summary: 'Archive records by country and/or year',
+            description: 'Archive records by country and/or year',
+            tags: [
+                'Key Figures',
+            ],
+          ),
         ),
         // Get.
         new Get(
             provider: KeyFiguresLimitByProviderStateProvider::class,
             uriTemplate: '/key_figures/{id}',
-            openapiContext: [
-                'summary' => 'Get a key figure',
-                'description' => 'Get a key figure',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a key figure',
+              description: 'Get a key figure',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
         ),
         // Get.
         new GetCollection(
             uriTemplate: '/key_figures',
             provider: KeyFiguresLimitByProviderStateProvider::class,
-            openapiContext: [
-                'summary' => 'Get a list of key figures',
-                'description' => 'Get a list of key figures',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a list of key figures',
+              description: 'Get a list of key figures',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
         ),
     ]
 )]

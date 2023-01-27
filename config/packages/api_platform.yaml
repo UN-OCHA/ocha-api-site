@@ -22,7 +22,7 @@ api_platform:
             defaultModelsExpandDepth: -1
     http_cache:
         invalidation:
-            enabled: true
+            enabled: false
     defaults:
         pagination_items_per_page: 500
         cache_headers:
