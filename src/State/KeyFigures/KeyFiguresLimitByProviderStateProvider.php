@@ -29,7 +29,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
      * @param QueryCollectionExtensionInterface[] $collectionExtensions
      */
     public function __construct(
-        ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
+        private readonly ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         private readonly ManagerRegistry $managerRegistry,
         private TokenStorageInterface $tokenStorage,
         private readonly iterable $collectionExtensions = [],
