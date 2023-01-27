@@ -63,14 +63,8 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
             'json' => $this->data,
         ]);
 
-        // User 1 does not have access to source 2.
-        $this->assertEquals(201, $response->getStatusCode());
-
-        $body = json_decode($response->getContent(), TRUE);
-        $this->assertCount(0, $body['successful']);
-        $this->assertCount(2, $body['failed']);
-        $this->assertArrayHasKey('src3_afg_2021_Indicator', $body['failed']);
-        $this->assertArrayHasKey('src3_afg_2022_Indicator', $body['failed']);
+        // User 1 does not have access to source 3.
+        $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testOnSource3AsUser3(): void

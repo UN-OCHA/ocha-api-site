@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Controller\N8nCategoriesController;
 use App\Repository\N8nCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,26 +18,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
         // Get.
         new Get(
             uriTemplate: '/n8n/templates/categories/{id}',
-            openapiContext: [
-                'summary' => 'Get an n8n category',
-                'description' => 'Get an n8n category',
-                'tags' => [
-                    'n8n',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get an n8n category',
+              description: 'Get an n8n category',
+              tags: [
+                  'n8n',
+              ],
+            ),
         ),
         // Get.
         new GetCollection(
             uriTemplate: '/n8n/templates/categories',
             controller: N8nCategoriesController::class,
             read: false,
-            openapiContext: [
-                'summary' => 'Get n8n categories',
-                'description' => 'Get n8n categories',
-                'tags' => [
-                    'n8n',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get an n8n categories',
+              description: 'Get an n8n categories',
+              tags: [
+                  'n8n',
+              ],
+            ),
         ),
     ]
 )]
