@@ -72,9 +72,14 @@ class DatabaseOnFlushListener
                 }
 
                 $endpoint = $user->getWebhook();
-                $this->httpClient->request('POST', $endpoint, [
-                    'json' => ['data' => $payload],
-                ]);
+                try {
+                  $this->httpClient->request('POST', $endpoint, [
+                      'json' => ['data' => $payload],
+                  ]);
+                }
+                catch (\Exception $e) {
+                  // Ignore it.
+                }
             }
         }
     }
