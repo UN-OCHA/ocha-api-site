@@ -4,10 +4,28 @@ networks:
   default:
 
 services:
-  site:
-    restart: always
-    image: ocha-api-site:local
-    hostname: ocha-api-test
-    container_name: ocha-api-site-test
+  mysql:
+    image: public.ecr.aws/unocha/mysql:10.6
+    hostname: mysql-test
+    container_name: ocha-api-mysql-test
+    environment:
+      MYSQL_DB: ocha_api
+      MYSQL_USER: ocha_api
+      MYSQL_PASS: ocha_api
     networks:
       - default
+
+  site:
+    restart: always
+    image: public.ecr.aws/unocha/ocha-api-site:local
+    hostname: ocha-api-test
+    container_name: ocha-api-site-test
+    environment:
+      SYMFONY_PHPUNIT_DIR: './bin/.phpunit'
+      SYMFONY_DEPRECATIONS_HELPER: 9
+      DATABASE_URL: 'mysql://ocha_api:ocha_api@mysql/ocha_api?charset=utf8'
+      TEST_SERVER: 'http://localhost:80'
+    networks:
+      - default
+    depends_on:
+      - mysql
