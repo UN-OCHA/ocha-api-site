@@ -93,8 +93,8 @@ jobs:
             docker-compose -f tests/docker-compose.yml exec -u appuser -w /srv/www -T site ./bin/console lint:container
             docker-compose -f tests/docker-compose.yml exec -u appuser -w /srv/www -T site ./bin/local-php-security-checker
             docker-compose -f tests/docker-compose.yml exec -u appuser -w /srv/www -T site ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-          env:
-            fail-fast: true
+        env:
+          fail-fast: true
 
       - name: Install Environment
         id: install
