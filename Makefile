@@ -16,7 +16,7 @@ build:	clean
 				--build-arg GITHUB_REPOSITORY=`git config --get remote.origin.url` \
 				--build-arg GITHUB_SHA=`git rev-parse --short HEAD` \
 				--build-arg GITHUB_MESSAGE="`git  log -1 --pretty=%B --oneline`" \
-		. --file docker/Dockerfile --tag public.ecr.aws/unocha/ocha-api-site:local \
+		. --file docker/Dockerfile --tag 532768535361.dkr.ecr.us-east-1.amazonaws.com/ocha-api-site:local \
 		2>&1 | tee buildlog.txt
 
 clean:

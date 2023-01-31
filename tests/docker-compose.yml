@@ -17,7 +17,7 @@ services:
 
   site:
     restart: always
-    image: public.ecr.aws/unocha/ocha-api-site:local
+    image: 532768535361.dkr.ecr.us-east-1.amazonaws.com/ocha-api-site:local
     hostname: ocha-api-test
     container_name: ocha-api-site-test
     environment:
@@ -25,6 +25,8 @@ services:
       SYMFONY_DEPRECATIONS_HELPER: 9
       DATABASE_URL: 'mysql://ocha_api:ocha_api@mysql/ocha_api?charset=utf8'
       TEST_SERVER: 'http://localhost:80'
+    volumes:
+      - "../.env.test:/srv/www/.env:ro"
     networks:
       - default
     depends_on:
