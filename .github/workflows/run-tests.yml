@@ -46,20 +46,6 @@ jobs:
         env:
           fail-fast: true
 
-      - name: Config Lint
-        id: symfony
-        uses: cafuego/command-output@main
-        with:
-          run: |
-            composer install --no-scripts
-            ./bin/console lint:yaml config --parse-tags
-            ./bin/console lint:twig templates --env=prod
-            ./bin/console lint:xliff translations
-            ./bin/console lint:container
-            ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-        env:
-          fail-fast: true
-
       - name: Code Lint
         id: lint
         uses: cafuego/command-output@main
@@ -107,7 +93,6 @@ jobs:
         env:
           fail-fast: true
 
-
       - name: Install Environment
         id: install
         uses: cafuego/command-output@main
@@ -118,6 +103,19 @@ jobs:
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:create -n
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console hautelook:fixtures:load -n
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console cache:clear
+        env:
+          fail-fast: true
+
+      - name: Config Lint
+        id: symfony
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:yaml config --parse-tags
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:twig templates --env=prod
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:xliff translations
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:container
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
         env:
           fail-fast: true
 
