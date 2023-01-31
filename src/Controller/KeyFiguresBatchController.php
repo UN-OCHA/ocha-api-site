@@ -60,6 +60,7 @@ class KeyFiguresBatchController extends AbstractController {
           }
         }
         $repository->flush();
+
         return $responses;
     }
 

@@ -25,6 +25,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         'description' => 'description',
         'tags' => 'tags',
         'provider' => 'provider',
+        'archived' => 'archived',
         'extra' => 'extra',
         'data' => 'data',
         'values' => 'values',
