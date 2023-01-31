@@ -134,15 +134,32 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `#### Composer Validate \`${{ steps.validate.outcome }}\`
+            #### PHP Security \`${{ steps.security.outcome }}\`
             #### PHP Lint \`${{ steps.lint.outcome }}\`
             #### Docker Build \`${{ steps.build.outcome }}\`
             #### Environment Setup \`${{ steps.docker.outcome }}\`
             #### Site Install \`${{ steps.install.outcome }}\`
-            #### PHP Code Sniffer \`${{ steps.phpcs.outcome }}\`
+            #### Config Lint \`${{ steps.symfony.outcome }}\`
+            #### Unit Tests \`${{ steps.phpinit.outcome }}\`
 
             <details><summary>Software Versions</summary>
 
             \`\`\`${{ steps.versions.outputs.stdout }}\`\`\`
+
+            </details>
+            <details><summary>PHP Security</summary>
+
+            \`\`\`${{ steps.security.outputs.stdout }}\`\`\`
+
+            </details>
+            <details><summary>Config Lint</summary>
+
+            \`\`\`${{ steps.symfony.outputs.stdout }}\`\`\`
+
+            </details>
+            <details><summary>Unit Tests</summary>
+
+            \`\`\`${{ steps.phpunit.outputs.stdout }}\`\`\`
 
             </details>
 
