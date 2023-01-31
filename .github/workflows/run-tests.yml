@@ -140,7 +140,7 @@ jobs:
             #### Environment Setup \`${{ steps.docker.outcome }}\`
             #### Site Install \`${{ steps.install.outcome }}\`
             #### Config Lint \`${{ steps.symfony.outcome }}\`
-            #### Unit Tests \`${{ steps.phpinit.outcome }}\`
+            #### Unit Tests \`${{ steps.phpunit.outcome }}\`
 
             <details><summary>Software Versions</summary>
 
