@@ -29,7 +29,7 @@ services:
       TEST_SERVER: 'http://localhost:80'
     volumes:
       - "../.env.test:/srv/www/.env:ro"
-      - "../test/:/srv/www/tests:ro"
+      - "../tests/:/srv/www/tests:ro"
     networks:
       - default
     depends_on:
