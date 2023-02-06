@@ -32,8 +32,22 @@ class KeyFiguresBatchController extends AbstractController {
         }
 
         $responses = new BatchResponses;
+
         foreach ($data->data as $k => $item) {
-          if ($existing = $repository->findOneBy(['id' => $item['id']])) {
+          if ($existing = $repository->findNotPersisted($item['id'])) {
+            if ($existing->getProvider() !== $provider) {
+              $responses->failed[$item['id']] = 'Unable to change provider';
+            }
+            try {
+              $existing->fromValues($item);
+              $repository->save($existing);
+              $responses->successful[$item['id']] = 'Updated';
+            }
+            catch (\Exception $e) {
+              $responses->failed[$item['id']] = $e->getMessage();
+            }
+          }
+          elseif ($existing = $repository->findOneBy(['id' => $item['id']])) {
             if ($existing->getProvider() !== $provider) {
               $responses->failed[$item['id']] = 'Unable to change provider';
             }
@@ -60,6 +74,7 @@ class KeyFiguresBatchController extends AbstractController {
           }
         }
         $repository->flush();
+
         return $responses;
     }
 

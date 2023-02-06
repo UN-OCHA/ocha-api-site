@@ -63,6 +63,23 @@ class KeyFiguresRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find not persisted item.
+     */
+    public function findNotPersisted(string $id) : KeyFigures|null {
+      if ($inserts = $this->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions()) {
+        foreach ($inserts as $entity) {
+          if ($entity instanceof KeyFigures) {
+            if ($entity->getId() == $id) {
+              return $entity;
+            }
+          }
+        }
+      }
+
+      return null;
+    }
+
+    /**
      * @return int[] Returns an array of years
      */
     public function getDistinctYears($provider = NULL): array
