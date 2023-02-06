@@ -45,6 +45,7 @@ COPY --from=builder /srv/www/src /srv/www/src
 COPY --from=builder /srv/www/templates /srv/www/templates
 COPY --from=builder /srv/www/translations /srv/www/translations
 COPY --from=builder /srv/www/vendor /srv/www/vendor
+COPY --from=builder /srv/www/phpunit.xml.dist /srv/www/phpunit.xml.dist
 COPY --from=builder /srv/www/composer.json /srv/www/composer.json
 COPY --from=builder /srv/www/composer.lock /srv/www/composer.lock
 COPY --from=builder /srv/www/docker/manifest.json /srv/www/public/build/manifest.json
