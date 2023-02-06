@@ -124,7 +124,7 @@ jobs:
         uses: cafuego/command-output@main
         with:
           run: |
-            docker-compose -f tests/docker-compose.yml exec -u appuser -w /srv/www -T site ./bin/phpunit tests
+            docker-compose -f tests/docker-compose.yml exec -u appuser -w /srv/www -T site ./bin/phpunit --cache-result-file /tmp/phpunit-result-cache tests
         env:
           fail-fast: true
 
