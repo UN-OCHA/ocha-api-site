@@ -1,6 +1,9 @@
 FROM public.ecr.aws/unocha/unified-builder:8.1-stable as builder
 ARG  BRANCH_ENVIRONMENT
 ENV  APP_ENV=PROD \
+     CORS_ALLOW_ORIGIN="^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?" \
+     DATABASE_URL="" \
+     MESSENGER_TRANSPORT_DSN="doctrine://default" \
      PUBLIC_DIR=/srv/www/public \
      COMPOSER_MEMORY_LIMIT=-1
 COPY . /srv/www
