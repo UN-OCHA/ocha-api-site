@@ -2,12 +2,17 @@ FROM public.ecr.aws/unocha/unified-builder:8.1-stable as builder
 ARG  BRANCH_ENVIRONMENT
 ENV  APP_ENV=PROD \
      PUBLIC_DIR=/srv/www/public \
-     COMPOSER_MEMORY_LIMIT=-1
+     COMPOSER_MEMORY_LIMIT=-1 \
+     CORS_ALLOW_ORIGIN="^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?" \
+     DATABASE_URL="" \
+     MESSENGER_TRANSPORT_DSN="doctrine://default"
 COPY . /srv/www
 WORKDIR /srv/www
 RUN apk add -U --no-cache php81-sodium
 RUN composer install --no-scripts --prefer-dist --optimize-autoloader && \
-    bin/console assets:install public -vvv
+    ln -s /srv/www/.env.test /srv/www/.env && \
+    bin/console assets:install public && \
+    rm -f  /srv/www/.env
 
 FROM public.ecr.aws/unocha/php-k8s:8.1-stable
 

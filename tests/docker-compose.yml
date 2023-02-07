@@ -31,6 +31,7 @@ services:
       - "../.env.test:/srv/www/.env.test:ro"
       - "../phpunit.xml.dist:/srv/www/phpunit.xml:ro"
       - "../tests/:/srv/www/tests:ro"
+      - "../fixtures/:/srv/www/fixtures:ro"
     networks:
       - default
     depends_on:
