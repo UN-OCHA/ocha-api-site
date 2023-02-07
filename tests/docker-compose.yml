@@ -27,7 +27,9 @@ services:
       DATABASE_URL: 'mysql://ocha_api:ocha_api@mysql/ocha_api?charset=utf8'
       MESSENGER_TRANSPORT_DSN: "doctrine://default"
     volumes:
-      - "../.env.test:/srv/www/.env:ro"
+      - "../.env:/srv/www/.env:ro"
+      - "../.env.test:/srv/www/.env.test:ro"
+      - "../phpunit.xml.dist:/srv/www/phpunit.xml:ro"
       - "../tests/:/srv/www/tests:ro"
     networks:
       - default
