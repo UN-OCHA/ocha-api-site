@@ -19,6 +19,7 @@ class KeyFiguresSrc3BatchTest extends ApiTestCase
                 'year' => '2022',
                 'name' => 'Indicator',
                 'value' => '777',
+                'dummy' => 'test',
             ],
             [
                 'iso3' => 'afg',
