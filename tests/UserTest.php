@@ -34,6 +34,19 @@ class UserTest extends ApiTestCase
       ]);
     }
 
+    public function testNonExistingMeEndpoint(): void
+    {
+      $response = static::createClient()->request('GET', $this->addPrefix('me'), [
+        'headers' => [
+          'API-KEY' => 'not',
+          'APP-NAME' => 'test',
+          'accept' => 'application/json',
+        ],
+      ]);
+
+      $this->assertEquals($response->getStatusCode(), 401);
+    }
+
     public function testRegister(): void
     {
       $response = static::createClient()->request('POST', $this->addPrefix('register'), [

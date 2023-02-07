@@ -1,0 +1,27 @@
+App\Entity\N8nCollection:
+  col1:
+    id (unique): 1
+    name: 'Collection 1'
+    workflows: []
+  col2:
+    id (unique): 2
+    name: 'Collection 2'
+    workflows: []
+App\Entity\N8nCategory:
+  cat1:
+    id (unique): 1
+    name: 'Category 1'
+    workflows: []
+  cat2:
+    id (unique): 2
+    name: 'Category 2'
+    workflows: []
+App\Entity\N8nWorkflow:
+  work1:
+    id (unique): 1
+    name: 'Workflow 1'
+  work2:
+    id (unique): 2
+    name: 'Workflow 2'
+
+
