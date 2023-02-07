@@ -22,7 +22,7 @@ trait TestTrait {
     }
 
     protected function addPrefix(string $url) : string {
-        return $_ENV['TEST_SERVER'] . rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
+        return rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
     }
 
     protected function getBody(Response $response) {
