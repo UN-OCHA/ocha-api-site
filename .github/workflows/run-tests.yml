@@ -124,9 +124,24 @@ jobs:
         uses: cafuego/command-output@main
         with:
           run: |
-            docker-compose -f tests/docker-compose.yml exec -u appuser -w /srv/www -T site ./bin/phpunit --cache-result-file /tmp/phpunit-result-cache tests
+            docker-compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/html/build/logs
+            docker-compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/html/build/logs
+            docker-compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/coverage
+            docker-compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/coverage
+            docker-compose -f tests/docker-compose.yml exec -u appuser -T -w /srv/www -e XDEBUG_MODE=coverage -e BROWSERTEST_OUTPUT_DIRECTORY=/srv/www/html/sites/default/files/browser_output -e DTT_BASE_URL=http://127.0.0.1 site ./bin/phpunit --coverage-clover /srv/www/html/build/logs/clover.xml --cache-result-file /tmp/phpunit-result-cache --debug
+            docker cp "$(docker-compose -f tests/docker-compose.yml ps -q site)":/srv/www/html/build/logs/clover.xml .
         env:
           fail-fast: true
+
+      - name: Monitor coverage
+        uses: slavcodev/coverage-monitor-action@v1
+        if: ! contains(github.event.pull_request.user.login, 'dependabot[bot]')
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          coverage_path: "clover.xml"
+          threshold_alert: 10
+          threshold_warning: 50
+          threshold_metric: "lines"
 
       - name: Post Comment
         uses: actions/github-script@v6

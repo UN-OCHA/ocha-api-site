@@ -26,6 +26,8 @@ services:
       CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?'
       DATABASE_URL: 'mysql://ocha_api:ocha_api@mysql/ocha_api?charset=utf8'
       MESSENGER_TRANSPORT_DSN: "doctrine://default"
+      PHP_ENVIRONMENT: 'dev'
+      PHP_XDEBUG: 'true'
     volumes:
       - "../.env:/srv/www/.env:ro"
       - "../.env.test:/srv/www/.env.test:ro"
