@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Repository\UserRepository;
 use App\State\User\MeStateProvider;
 use App\State\User\RegisterStateProvider;
@@ -27,24 +28,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_USER')",
             uriTemplate: '/me',
             provider: MeStateProvider::class,
-            openapiContext: [
-                'summary' => 'Get profile',
-                'description' => 'Get profile',
-                'tags' => [
-                    'User',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get profile',
+              description: 'Get profile',
+              tags: [
+                  'User',
+              ],
+            ),
         ),
         new Post(
             uriTemplate: '/register',
             processor: RegisterStateProvider::class,
-            openapiContext: [
-                'summary' => 'Create an account',
-                'description' => 'Create an account',
-                'tags' => [
-                    'User',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Create an account',
+              description: 'Create an account',
+              tags: [
+                  'User',
+              ],
+            ),
         ),
     ]
 )]
@@ -92,6 +93,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     #[Groups(['read'])]
     private array $can_write = [];
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $webhook = null;
 
     public function getId(): ?int
     {
@@ -231,6 +235,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCanWrite(?array $can_write): self
     {
         $this->can_write = $can_write;
+
+        return $this;
+    }
+
+    public function getWebhook(): ?string
+    {
+        return $this->webhook;
+    }
+
+    public function setWebhook(?string $webhook): self
+    {
+        $this->webhook = $webhook;
 
         return $this;
     }

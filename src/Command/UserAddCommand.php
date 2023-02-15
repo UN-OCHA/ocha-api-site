@@ -58,6 +58,7 @@ class UserAddCommand extends Command
             ->addArgument('full-name', InputArgument::OPTIONAL, 'The full name of the new user')
             ->addArgument('can-read', InputArgument::OPTIONAL, 'Grant read access')
             ->addArgument('can-write', InputArgument::OPTIONAL, 'Grant write access')
+            ->addArgument('webhook', InputArgument::OPTIONAL, 'Webhook')
             ->addOption('admin', null, InputOption::VALUE_NONE, 'If set, the user is created as an administrator')
         ;
     }
@@ -142,6 +143,14 @@ class UserAddCommand extends Command
             $canWrite = $this->io->ask('Can write', null);
             $input->setArgument('can-write', $canWrite);
         }
+
+        $webhook = $input->getArgument('webhook');
+        if (null !== $webhook) {
+            $this->io->text(' > <info>Webhook</info>: '.$webhook);
+        } else {
+            $webhook = $this->io->ask('Webhook', null);
+            $input->setArgument('webhook', $webhook);
+        }
     }
 
     /**
@@ -160,6 +169,7 @@ class UserAddCommand extends Command
 
         $can_read = $input->getArgument('can-read') ?? '';
         $can_write = $input->getArgument('can-write') ?? '';
+        $webhook = $input->getArgument('webhook') ?? '';
 
         $isAdmin = $input->getOption('admin');
 
@@ -193,6 +203,7 @@ class UserAddCommand extends Command
         $user->setProviders([]);
         $user->setCanRead(explode(',', $can_read));
         $user->setCanWrite(explode(',', $can_write));
+        $user->setWebhook($webhook);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

@@ -1,0 +1,242 @@
+name: Run tests
+
+on: [pull_request]
+
+jobs:
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: composer
+        env:
+          fail-fast: true
+
+      - name: Software versions
+        id: versions
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            php --version && composer --version
+
+      - name: Checkout Code
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Composer Validate
+        id: validate
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            composer validate --no-check-version --strict
+        env:
+          fail-fast: true
+
+      - name: Package Security
+        id: security
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            curl -L -o ./bin/local-php-security-checker https://github.com/fabpot/local-php-security-checker/releases/download/v1.0.0/local-php-security-checker_1.0.0_linux_amd64
+            chmod +x ./bin/local-php-security-checker
+            ./bin/local-php-security-checker
+        env:
+          fail-fast: true
+
+      - name: Code Lint
+        id: lint
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            test ! -d ./src || find -L ./src -iregex '.*\.\(php\)$' -print0 | xargs -0 -n 1 -P 4 php -l
+        env:
+          fail-fast: true
+
+      - name: Configure AWS Credentials
+        id: aws
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Public ECR
+        id: aws-login
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+        env:
+          AWS_REGION: us-east-1
+
+      - name: Build Image
+        id: build
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            make
+        env:
+          fail-fast: true
+
+      - name: Setup Environment
+        id: docker
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            docker-compose -f tests/docker-compose.yml up -d
+            sleep 4
+            docker ps -a
+        env:
+          fail-fast: true
+
+      - name: Install Environment
+        id: install
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:drop --force
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:create --if-not-exists -n
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:create -n
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console hautelook:fixtures:load -n
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console cache:clear
+        env:
+          fail-fast: true
+
+      - name: Config Lint
+        id: symfony
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:yaml config --parse-tags
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:twig templates --env=prod
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:xliff translations
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:container
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+        env:
+          fail-fast: true
+
+      - name: Unit Tests
+        id: phpunit
+        uses: cafuego/command-output@main
+        with:
+          run: |
+            docker-compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/html/build/logs
+            docker-compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/html/build/logs
+            docker-compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/coverage
+            docker-compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/coverage
+            docker-compose -f tests/docker-compose.yml exec -u appuser -T -w /srv/www -e XDEBUG_MODE=coverage -e BROWSERTEST_OUTPUT_DIRECTORY=/srv/www/html/sites/default/files/browser_output -e DTT_BASE_URL=http://127.0.0.1 site ./bin/phpunit --coverage-clover /srv/www/html/build/logs/clover.xml --cache-result-file /tmp/phpunit-result-cache --debug
+            docker cp "$(docker-compose -f tests/docker-compose.yml ps -q site)":/srv/www/html/build/logs/clover.xml .
+        env:
+          fail-fast: true
+
+      - name: Monitor coverage
+        uses: slavcodev/coverage-monitor-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          coverage_path: "clover.xml"
+          threshold_alert: 10
+          threshold_warning: 50
+          threshold_metric: "lines"
+
+      - name: Post Comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Composer Validate \`${{ steps.validate.outcome }}\`
+            #### PHP Security \`${{ steps.security.outcome }}\`
+            #### PHP Lint \`${{ steps.lint.outcome }}\`
+            #### Docker Build \`${{ steps.build.outcome }}\`
+            #### Environment Setup \`${{ steps.docker.outcome }}\`
+            #### Site Install \`${{ steps.install.outcome }}\`
+            #### Config Lint \`${{ steps.symfony.outcome }}\`
+            #### Unit Tests \`${{ steps.phpunit.outcome }}\`
+
+            <details><summary>Software Versions</summary>
+
+            \`\`\`${{ steps.versions.outputs.stdout }}\`\`\`
+
+            </details>
+            <details><summary>PHP Security</summary>
+
+            \`\`\`${{ steps.security.outputs.stdout }}\`\`\`
+
+            </details>
+            <details><summary>Config Lint</summary>
+
+            \`\`\`${{ steps.symfony.outputs.stdout }}\`\`\`
+
+            </details>
+            <details><summary>Unit Tests</summary>
+
+            \`\`\`${{ steps.phpunit.outputs.stdout }}\`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Slack Success Notification
+        id: slack_success
+        if: success()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          channel-id: '${{ secrets.SLACK_CHANNEL }}'
+          payload: |
+            {
+              "text": "Tests passed for a pull request on ${{ github.repository }}",
+              "attachments": [
+                {
+                  "color": "#00FF00",
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "Pull request by @${{ github.triggering_actor }} to merge _${{ github.head_ref }}_ into _${{ github.base_ref }}_ on <${{ github.repositoryUrl }}|${{ github.repository }}> passed tests (<${{ github.event.pull_request.html_url }}|Review>)"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Slack Failure Notification
+        id: slack_failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          channel-id: '${{ secrets.SLACK_CHANNEL }}'
+          payload: |
+            {
+              "text": "Tests failed for a pull request on ${{ github.repository }}",
+              "attachments": [
+                {
+                  "color": "#FF0000",
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "Pull request by @${{ github.triggering_actor }} to merge _${{ github.head_ref }}_ into _${{ github.base_ref }}_ on <${{ github.repositoryUrl }}|${{ github.repository }}> failed tests (<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Review>)"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

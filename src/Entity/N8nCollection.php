@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Controller\N8nCollectionsController;
 use App\Repository\N8nCollectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,26 +17,26 @@ use Doctrine\ORM\Mapping as ORM;
         // Get.
         new Get(
             uriTemplate: '/n8n/templates/collections/{id}',
-            openapiContext: [
-                'summary' => 'Get an n8n collection',
-                'description' => 'Get an n8n collection',
-                'tags' => [
-                    'n8n',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get an n8n collection',
+              description: 'Get an n8n collection',
+              tags: [
+                  'n8n',
+              ],
+            ),
         ),
         // Get.
         new GetCollection(
             uriTemplate: '/n8n/templates/collections',
             controller: N8nCollectionsController::class,
             read: false,
-            openapiContext: [
-                'summary' => 'Get n8n collections',
-                'description' => 'Get n8n collections',
-                'tags' => [
-                    'n8n',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get an n8n collections',
+              description: 'Get an n8n collections',
+              tags: [
+                  'n8n',
+              ],
+            ),
         ),
     ]
 )]
@@ -64,6 +65,13 @@ class N8nCollection
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string

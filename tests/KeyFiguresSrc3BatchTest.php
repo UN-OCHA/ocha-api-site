@@ -2,11 +2,11 @@
 
 namespace App\Tests;
 
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class KeyFiguresSrc3BatchTest extends WebTestCase
+class KeyFiguresSrc3BatchTest extends ApiTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
@@ -19,6 +19,7 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
                 'year' => '2022',
                 'name' => 'Indicator',
                 'value' => '777',
+                'dummy' => 'test',
             ],
             [
                 'iso3' => 'afg',
@@ -32,8 +33,7 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
 
     public function testOnSource3AsAdmin(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
+        $response = static::createClient()->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token1',
                 'APP-NAME' => 'test',
@@ -53,8 +53,7 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
 
     public function testOnSource3AsUser1(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
+        $response = static::createClient()->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token2',
                 'APP-NAME' => 'test',
@@ -63,20 +62,13 @@ class KeyFiguresSrc3BatchTest extends WebTestCase
             'json' => $this->data,
         ]);
 
-        // User 1 does not have access to source 2.
-        $this->assertEquals(201, $response->getStatusCode());
-
-        $body = json_decode($response->getContent(), TRUE);
-        $this->assertCount(0, $body['successful']);
-        $this->assertCount(2, $body['failed']);
-        $this->assertArrayHasKey('src3_afg_2021_Indicator', $body['failed']);
-        $this->assertArrayHasKey('src3_afg_2022_Indicator', $body['failed']);
+        // User 1 does not have access to source 3.
+        $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testOnSource3AsUser3(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('POST', $this->addPrefix('source-3') . '/batch', [
+        $response = static::createClient()->request('POST', $this->addPrefix('source-3') . '/batch', [
             'headers' => [
                 'API-KEY' => 'token4',
                 'APP-NAME' => 'test',

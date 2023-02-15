@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use ApiPlatform\Metadata\Operation;
-use App\Dto\BatchCollection;
+use App\Dto\ArchiveInput;
 use App\Dto\BatchResponses;
 use App\Entity\KeyFigures;
 use App\Repository\KeyFiguresRepository;
@@ -14,13 +14,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class KeyFiguresBatchController extends AbstractController {
+class KeyFiguresArchiveController extends AbstractController {
 
     public function __construct(private HttpKernelInterface $kernel)
     {
     }
 
-    public function __invoke(Request $request, BatchCollection $data, KeyFiguresRepository $repository, TokenStorageInterface $tokenStorage): BatchResponses
+    public function __invoke(Request $request, ArchiveInput $data, KeyFiguresRepository $repository, TokenStorageInterface $tokenStorage): BatchResponses
     {
 
         $operation = $request->attributes->get('_api_operation');
@@ -31,50 +31,38 @@ class KeyFiguresBatchController extends AbstractController {
             throw new BadRequestException('Provider not initialized.');
         }
 
-        $responses = new BatchResponses;
+        $criteria = [
+          'provider' => $provider,
+          'archived' => 0,
+        ];
+        if (isset($data->iso3) && !empty($data->iso3)) {
+          $criteria['iso3'] = $data->iso3;
+        }
+        if (isset($data->year) && !empty($data->year)) {
+          $criteria['year'] = $data->year;
+        }
 
-        foreach ($data->data as $k => $item) {
-          if ($existing = $repository->findNotPersisted($item['id'])) {
+        $records = $repository->findBy($criteria);
+        $responses = new BatchResponses;
+        foreach ($records as $record) {
+          if ($existing = $repository->findOneBy(['id' => $record->getId()])) {
             if ($existing->getProvider() !== $provider) {
-              $responses->failed[$item['id']] = 'Unable to change provider';
+              $responses->failed[$record->getId()] = 'Unable to change provider';
             }
             try {
-              $existing->fromValues($item);
+              $existing->setArchived(TRUE);
               $repository->save($existing);
-              $responses->successful[$item['id']] = 'Updated';
+              $responses->successful[$record->getId()] = 'Updated';
             }
             catch (\Exception $e) {
-              $responses->failed[$item['id']] = $e->getMessage();
-            }
-          }
-          elseif ($existing = $repository->findOneBy(['id' => $item['id']])) {
-            if ($existing->getProvider() !== $provider) {
-              $responses->failed[$item['id']] = 'Unable to change provider';
-            }
-            try {
-              $existing->fromValues($item);
-              $repository->save($existing);
-              $responses->successful[$item['id']] = 'Updated';
-            }
-            catch (\Exception $e) {
-              $responses->failed[$item['id']] = $e->getMessage();
+              $responses->failed[$record->getId()] = $e->getMessage();
             }
           }
           else {
-            $new = new KeyFigures();
-
-            try {
-              $new->fromValues($item);
-              $repository->save($new);
-              $responses->successful[$item['id']] = 'Created';
-            }
-            catch (\Exception $e) {
-              $responses->failed[$item['id']] = $e->getMessage();
-            }
+            $responses->failed[$record->getId()] = 'Not found';
           }
         }
         $repository->flush();
-
         return $responses;
     }
 

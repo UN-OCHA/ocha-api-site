@@ -67,7 +67,15 @@ class UserListCommand extends Command
         $users = $this->users->findAll();
 
         $table = new Table($output);
-        $table->setHeaders(['Username', 'Email', 'Roles', 'Token', 'Read', 'Write']);
+        $table->setHeaders([
+          'Username',
+          'Email',
+          'Roles',
+          'Token',
+          'Read',
+          'Write',
+          'Webhook',
+        ]);
 
         foreach ($users as $user) {
             /** @var \App\Entity\User $user */
@@ -78,6 +86,7 @@ class UserListCommand extends Command
                 $user->getToken(),
                 implode(', ', $user->getCanRead()),
                 implode(', ', $user->getCanWrite()),
+                $user->getWebhook(),
             ]);
         }
         $table->render();

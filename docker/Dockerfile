@@ -6,8 +6,8 @@ ENV  APP_ENV=PROD \
 COPY . /srv/www
 WORKDIR /srv/www
 RUN apk add -U --no-cache php81-sodium
-RUN composer install --no-scripts --prefer-dist --optimize-autoloader
-RUN bin/console assets:install public
+RUN composer install --no-scripts --prefer-dist --optimize-autoloader && \
+    bin/console assets:install public
 
 FROM public.ecr.aws/unocha/php-k8s:8.1-stable
 
@@ -58,5 +58,6 @@ RUN  wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=
      rm -f /tmp/apm-agent-php_1.6.1_all.apk && \
      mv -f /tmp/99-elastic-apm-custom.ini /etc/php81/conf.d/99-elastic-apm-custom.ini
 
+COPY --from=builder /srv/www/docker/etc/nginx/map_block_http_methods.conf /etc/nginx/map_block_http_methods.conf
 COPY --from=builder /srv/www/docker/etc/nginx/apps/drupal/drupal.conf /etc/nginx/apps/drupal/drupal.conf
 COPY --from=builder /srv/www/docker/etc/nginx/custom/headers.conf /etc/nginx/custom/headers.conf

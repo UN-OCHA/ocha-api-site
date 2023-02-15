@@ -39,6 +39,11 @@ class KeyFiguresRepository extends ServiceEntityRepository
         }
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     /**
      * @return KeyFigures[]
      */
@@ -55,6 +60,23 @@ class KeyFiguresRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * Find not persisted item.
+     */
+    public function findNotPersisted(string $id) : KeyFigures|null {
+      if ($inserts = $this->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions()) {
+        foreach ($inserts as $entity) {
+          if ($entity instanceof KeyFigures) {
+            if ($entity->getId() == $id) {
+              return $entity;
+            }
+          }
+        }
+      }
+
+      return null;
     }
 
     /**
@@ -90,7 +112,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
             $qb->where($qb->expr()->eq('f.provider', ':provider'))
                 ->setParameter(':provider', $provider);
         }
-    
+
         return $qb->getQuery()
             ->getArrayResult()
         ;

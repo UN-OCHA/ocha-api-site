@@ -20,7 +20,7 @@ class KeyFiguresFutureTest extends ApiTestCase
         ],
       ]);
 
-      $this->assertResponseStatusCodeSame(404);
+      $this->assertResponseStatusCodeSame(200);
     }
 
 }

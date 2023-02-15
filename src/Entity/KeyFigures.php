@@ -10,7 +10,10 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\Controller\KeyFiguresArchiveController;
 use App\Controller\KeyFiguresBatchController;
+use App\Dto\ArchiveInput;
 use App\Dto\BatchCollection;
 use App\Dto\BatchResponses;
 use App\Dto\SimpleStringObject;
@@ -30,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     security: "is_granted('ROLE_USER')",
     extraProperties: [
         'expand' => 'key_figures',
+        'standard_put' => false,
     ],
     operations: [
         // Years.
@@ -37,36 +41,36 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/key_figures/years',
             output: SimpleStringObject::class,
             provider: KeyFiguresYearsStateProvider::class,
-            openapiContext: [
-                'summary' => 'Get a list years',
-                'description' => 'Get a list of years',
-                'tags' => [
-                    'Key Figures',
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Array of years keyed by year',
-                    ],
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a list years',
+              description: 'Get a list of years',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of years keyed by year',
+                  ],
+              ],
+            ),
         ),
         // Countries.
         new GetCollection(
             uriTemplate: '/key_figures/countries',
             output: SimpleStringObject::class,
             provider: KeyFiguresCountriesStateProvider::class,
-            openapiContext: [
-                'summary' => 'Get a list of countries',
-                'description' => 'Get a list of iso3 codes and names',
-                'tags' => [
-                    'Key Figures',
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Array of countries keyed by iso3 code',
-                    ],
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a list countries',
+              description: 'Get a list of countries',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of countries keyed by year',
+                  ],
+              ],
+            ),
         ),
         // Create or update.
         new Put(
@@ -76,13 +80,13 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: [
                 'groups' => ['write'],
             ],
-            openapiContext: [
-                'summary' => 'Create or update a key figure',
-                'description' => 'Create or update a key figure',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Create or update a key figure',
+              description: 'Create or update a key figure',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
         ),
         // Batch update.
         new Post(
@@ -92,41 +96,57 @@ use Symfony\Component\Validator\Constraints as Assert;
             processor: KeyFiguresBatchProcessor::class,
             controller: KeyFiguresBatchController::class,
             output: BatchResponses::class,
-            openapiContext: [
-                'summary' => 'Create or update a key figures in batch',
-                'description' => 'Create or update a key figures in batch, the code example below is not correct, you need to pass an array of objects like you would do for the Put command.',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Create or update a key figures in batch',
+              description: 'Create or update a key figures in batch, the code example below is not correct, you need to pass an array of objects like you would do for the Put command.',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
+        ),
+        // Archive.
+        new Post(
+          securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')",
+          uriTemplate: '/key_figures/archive',
+          input: ArchiveInput::class,
+          read: false,
+          controller: KeyFiguresArchiveController::class,
+          output: SimpleStringObject::class,
+          openapi: new OpenApiOperation(
+            summary: 'Archive records by country and/or year',
+            description: 'Archive records by country and/or year',
+            tags: [
+                'Key Figures',
+            ],
+          ),
         ),
         // Get.
         new Get(
             provider: KeyFiguresLimitByProviderStateProvider::class,
             uriTemplate: '/key_figures/{id}',
-            openapiContext: [
-                'summary' => 'Get a key figure',
-                'description' => 'Get a key figure',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a key figure',
+              description: 'Get a key figure',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
         ),
         // Get.
         new GetCollection(
             uriTemplate: '/key_figures',
             provider: KeyFiguresLimitByProviderStateProvider::class,
-            openapiContext: [
-                'summary' => 'Get a list of key figures',
-                'description' => 'Get a list of key figures',
-                'tags' => [
-                    'Key Figures',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get a list of key figures',
+              description: 'Get a list of key figures',
+              tags: [
+                  'Key Figures',
+              ],
+            ),
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['iso3' => 'exact', 'year' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
 class KeyFigures
 {
@@ -192,6 +212,10 @@ class KeyFigures
     #[ORM\Column(nullable: true)]
     #[Groups(['write', 'with_meta'])]
     private array $extra = [];
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['write', 'with_meta'])]
+    private ?bool $archived = null;
 
     public function getId(): ?string
     {
@@ -356,15 +380,55 @@ class KeyFigures
         $this->year = $values['year'];
         $this->name = $values['name'];
         $this->value = $values['value'];
-        $this->updated = $values['updated'] ?? NULL;
-        $this->url = $values['url'];
-        $this->source = $values['source'];
+        $this->url = $values['url'] ?? '';
+        $this->source = $values['source'] ?? '';
         $this->description = $values['description'] ?? '';
         $this->tags = $values['tags'] ?? [];
         $this->provider = $values['provider'];
         $this->extra = $values['extra'] ?? [];
+        $this->archived = $values['archived'] ?? FALSE;
+
+        if (!isset($values['updated'])) {
+          $this->updated = NULL;
+        }
+        elseif (is_string($values['updated'])) {
+          $this->updated = new \DateTime($values['updated']);
+        }
+        else {
+          $this->updated = $values['updated'] ?? NULL;
+        }
 
         return $this;
     }
 
+    public function extractValues(): array {
+      return [
+        'id' => $this->id,
+        'iso3' => $this->iso3,
+        'country' => $this->country,
+        'year' => $this->year,
+        'name' => $this->name,
+        'value' => $this->value,
+        'updated' => $this->updated ?? NULL,
+        'url' => $this->url,
+        'source' => $this->source,
+        'description' => $this->description ?? '',
+        'tags' => $this->tags ?? [],
+        'provider' => $this->provider,
+        'extra' => $this->extra ?? [],
+        'archived' => $this->archived ?? FALSE,
+      ];
+  }
+
+    public function isArchived(): ?bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(?bool $archived): self
+    {
+        $this->archived = $archived;
+
+        return $this;
+    }
 }

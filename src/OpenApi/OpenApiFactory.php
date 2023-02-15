@@ -18,8 +18,9 @@ class OpenApiFactory implements OpenApiFactoryInterface
     {
         $openApi = $this->decorated->__invoke($context);
 
-        // @todo get version from composer.jons
-        $openApi = $openApi->withInfo((new Model\Info($openApi->getInfo()->getTitle(), 'v0.0.1', $openApi->getInfo()->getDescription())));
+        // Get version from composer.json
+        $version = \Composer\InstalledVersions::getPrettyVersion('unocha/ocha-api');
+        $openApi = $openApi->withInfo((new Model\Info($openApi->getInfo()->getTitle(), $version, $openApi->getInfo()->getDescription())));
 
         // Hide useless get operations.
         $paths = $openApi->getPaths()->getPaths();
@@ -33,6 +34,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
             $filteredPaths->addPath($path, $pathItem);
         }
 
-        return $openApi->withPaths($filteredPaths);        
+        return $openApi->withPaths($filteredPaths);
     }
 }

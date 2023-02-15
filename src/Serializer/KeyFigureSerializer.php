@@ -2,6 +2,7 @@
 
 namespace App\Serializer;
 
+use App\Dto\ArchiveInput;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -24,8 +25,10 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         'description' => 'description',
         'tags' => 'tags',
         'provider' => 'provider',
+        'archived' => 'archived',
         'extra' => 'extra',
         'data' => 'data',
+        'values' => 'values',
     ];
 
     public function __construct(NormalizerInterface $decorated)
@@ -46,6 +49,9 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
+        if (isset($data['values'])) {
+        //  unset($data['values']);
+        }
         if (isset($data['extra'])) {
             if (is_array($data['extra'])) {
                 $data += array_diff_key($data['extra'], $this->defaultFields);
@@ -68,8 +74,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           return $this->decorated->denormalize($data, $type, $format, $context);
       }
 
-      // Get extra properties.
+      /** @var \ApiPlatform\Metadata\Operation $operation */
       $operation = $context['operation'];
+      $input = $operation->getInput();
+
+      // Use default denormalizer for archive.
+      if ($input && $input['class'] == ArchiveInput::class) {
+        return $this->decorated->denormalize($data, $type, $format, $context);
+      }
+
+      // Get extra properties.
       $properties = $operation->getExtraProperties() ?? [];
 
       // Check if we need to do something.
@@ -77,7 +91,6 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         return $this->decorated->denormalize($data, $type, $format, $context);
       }
 
-      /** @var ApiPlatform\Metadata\Operations $operations */
       $provider = $properties['provider'] ?? NULL;
 
       // Multiple records.

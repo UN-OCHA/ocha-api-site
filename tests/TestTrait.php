@@ -1,13 +1,12 @@
-<?php 
+<?php
 
 namespace App\Tests;
 
-use Symfony\Component\HttpClient\CurlHttpClient;
-use Symfony\Component\HttpClient\Response\CurlResponse;
+use ApiPlatform\Symfony\Bundle\Test\Client;
+use ApiPlatform\Symfony\Bundle\Test\Response;
 
 trait TestTrait {
     private $prefix = '/api/v1/';
-    private $http;
 
     /**
      * This method is called before each test.
@@ -15,20 +14,23 @@ trait TestTrait {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->http = new CurlHttpClient();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        $this->http = NULL;
     }
 
     protected function addPrefix(string $url) : string {
-        return $_ENV['TEST_SERVER'] . rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
+        return rtrim($this->prefix, '/') . '/' . ltrim($url, '/');
     }
 
-    protected function getBody(CurlResponse $response) {
+    protected function getBody(Response $response) {
         return json_decode($response->getContent());
+    }
+
+    protected function createClientWithCredentials($headers): Client
+    {
+        return static::createClient([], ['headers' => $headers]);
     }
 }

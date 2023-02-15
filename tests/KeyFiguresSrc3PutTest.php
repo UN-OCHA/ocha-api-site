@@ -1,12 +1,12 @@
-<?php 
+<?php
 
 namespace App\Tests;
 
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class KeyFiguresSrc3PutTest extends WebTestCase
+class KeyFiguresSrc3PutTest extends ApiTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
@@ -21,8 +21,7 @@ class KeyFiguresSrc3PutTest extends WebTestCase
 
     public function testOnSource3AsAdmin(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('PUT', $this->addPrefix('source-3') . '/1', [
+        $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/1', [
             'headers' => [
                 'API-KEY' => 'token1',
                 'APP-NAME' => 'test',
@@ -31,7 +30,7 @@ class KeyFiguresSrc3PutTest extends WebTestCase
             'json' => $this->data,
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(201, $response->getStatusCode());
 
         $body = json_decode($response->getContent());
         $this->assertEquals('1', $body->id);
@@ -46,8 +45,7 @@ class KeyFiguresSrc3PutTest extends WebTestCase
 
     public function testOnSource3AsUser1(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('PUT', $this->addPrefix('source-3') . '/2', [
+        $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/2', [
             'headers' => [
                 'API-KEY' => 'token2',
                 'APP-NAME' => 'test',
@@ -62,8 +60,7 @@ class KeyFiguresSrc3PutTest extends WebTestCase
 
     public function testOnSource3AsUser3(): void
     {
-        /** @var \Symfony\Component\HttpClient\Response\CurlResponse $response */
-        $response = $this->http->request('PUT', $this->addPrefix('source-3') . '/3', [
+        $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/3', [
             'headers' => [
                 'API-KEY' => 'token4',
                 'APP-NAME' => 'test',
@@ -72,7 +69,7 @@ class KeyFiguresSrc3PutTest extends WebTestCase
             'json' => $this->data,
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(201, $response->getStatusCode());
 
         $body = json_decode($response->getContent());
         $this->assertEquals('3', $body->id);

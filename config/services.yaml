@@ -52,3 +52,9 @@ services:
     App\Serializer\KeyFigureSerializer:
         # By default .inner is passed as argument
         decorates: 'api_platform.serializer.normalizer.item'
+
+    App\EventListener\DatabaseOnFlushListener:
+        tags:
+            -
+                name: 'doctrine.event_listener'
+                event: 'onFlush'

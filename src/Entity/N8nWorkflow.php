@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Controller\N8nWorkflowController;
 use App\Controller\N8nWorkflowsController;
 use App\Repository\N8nWorkflowRepository;
@@ -24,38 +23,38 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/n8n/templates/workflows/{id}',
             controller: N8nWorkflowController::class,
             read: false,
-            openapiContext: [
-                'summary' => 'Get an n8n workflow',
-                'description' => 'Get an n8n workflow',
-                'tags' => [
-                    'n8n',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get an n8n workflow',
+              description: 'Get an n8n workflow',
+              tags: [
+                  'n8n',
+              ],
+            ),
         ),
         new Get(
             uriTemplate: '/n8n/workflows/templates/{id}',
             controller: N8nWorkflowController::class,
             read: false,
-            openapiContext: [
-                'summary' => 'Get an n8n workflow',
-                'description' => 'Get an n8n workflow',
-                'tags' => [
-                    'n8n',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get an n8n workflow',
+              description: 'Get an n8n workflow',
+              tags: [
+                  'n8n',
+              ],
+            ),
         ),
         // Get.
         new GetCollection(
             uriTemplate: '/n8n/templates/workflows',
             controller: N8nWorkflowsController::class,
             read: false,
-            openapiContext: [
-                'summary' => 'Get n8n workflows',
-                'description' => 'Get n8n workflows',
-                'tags' => [
-                    'n8n',
-                ],
-            ]
+            openapi: new OpenApiOperation(
+              summary: 'Get an n8n workflows',
+              description: 'Get an n8n workflows',
+              tags: [
+                  'n8n',
+              ],
+            ),
         ),
     ]
 )]
@@ -108,6 +107,13 @@ class N8nWorkflow
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string

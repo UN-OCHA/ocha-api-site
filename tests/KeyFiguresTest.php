@@ -1,33 +1,33 @@
-<?php 
+<?php
 
 namespace App\Tests;
 
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class KeyFiguresTest extends WebTestCase
+class KeyFiguresTest extends ApiTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
 
     public function testGetCollectionAsAdmin(): void
     {
-        $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
-            'headers' => [
-                'API-KEY' => 'token1',
-                'APP-NAME' => 'test',
-                'accept' => 'application/json',
-            ]
-        ]);
+        $response = static::createClientWithCredentials(
+          [
+            'API-KEY' => 'token1',
+            'APP-NAME' => 'test',
+            'accept' => 'application/json',
+          ]
+        )->request('GET', $this->addPrefix('key_figures'));
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseStatusCodeSame(200);
         $this->assertGreaterThan(40, $this->getBody($response));
     }
 
     public function testGetCollectionAsUser1(): void
     {
-        $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
+        $response = static::createClient()->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token2',
                 'APP-NAME' => 'test',
@@ -35,13 +35,13 @@ class KeyFiguresTest extends WebTestCase
             ]
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseStatusCodeSame(200);
         $this->assertCount(30, $this->getBody($response));
     }
 
     public function testGetCollectionAsUser2(): void
     {
-        $response = $this->http->request('GET', $this->addPrefix('key_figures'), [
+        $response = static::createClient()->request('GET', $this->addPrefix('key_figures'), [
             'headers' => [
                 'API-KEY' => 'token3',
                 'APP-NAME' => 'test',
@@ -49,7 +49,7 @@ class KeyFiguresTest extends WebTestCase
             ]
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseStatusCodeSame(200);
         $this->assertCount(40, $this->getBody($response));
     }
 
