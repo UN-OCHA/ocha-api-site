@@ -19,6 +19,10 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         'year' => 'year',
         'name' => 'name',
         'value' => 'value',
+        'valueString' => 'valueString',
+        'valueType' => 'valueType',
+        'value_string' => 'value_string',
+        'value_type' => 'value_type',
         'updated' => 'updated',
         'url' => 'url',
         'source' => 'source',
@@ -49,9 +53,13 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     {
         $data = $this->decorated->normalize($object, $format, $context);
 
-        if (isset($data['values'])) {
-        //  unset($data['values']);
+        // Add textual values if needed.
+        if (isset($data['valueString']) && $data['value'] == '0.00') {
+            $data['value'] = $data['valueString'];
         }
+        unset($data['valueString']);
+
+        // Add extra fields.
         if (isset($data['extra'])) {
             if (is_array($data['extra'])) {
                 $data += array_diff_key($data['extra'], $this->defaultFields);
@@ -118,6 +126,17 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                   $row['year'] = (string) $row['year'];
                   $row['value'] = (string) $row['value'];
 
+                  // Check input type, map to string_value
+                  if (!is_numeric($row['value'])) {
+                    $row['valueString'] = $row['value'];
+                    $row['valueType'] = 'string';
+                    $row['value'] = '0';
+                  }
+                  else {
+                    $row['valueString'] = NULL;
+                    $row['valueType'] = 'numeric';
+                  }
+
                   // Check for any extra keys.
                   if (!empty(array_diff_key($row, $this->defaultFields))) {
                       // Move them into extra.
@@ -137,6 +156,17 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           // Type conversion.
           $data['year'] = (string) $data['year'];
           $data['value'] = (string) $data['value'];
+
+          // Check input type, map to string_value
+          if (!is_numeric($data['value'])) {
+            $data['valueString'] = $data['value'];
+            $data['valueType'] = 'string';
+            $data['value'] = '0';
+          }
+          else {
+            $data['valueString'] = NULL;
+            $data['valueType'] = 'numeric';
+          }
 
           // Check for any extra keys.
           if (!empty(array_diff_key($data, $this->defaultFields))) {
