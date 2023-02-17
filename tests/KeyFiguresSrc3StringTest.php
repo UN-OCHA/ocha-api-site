@@ -68,7 +68,7 @@ class KeyFiguresSrc3StringTest extends ApiTestCase
         $this->assertEquals('2022', $body->year);
         $this->assertEquals('Indicator', $body->name);
         $this->assertEquals('666.66', $body->value);
-        $this->assertEquals('string', $body->valueType);
+        $this->assertEquals('numeric', $body->valueType);
         $this->assertEquals([], $body->tags);
         $this->assertEquals('src3', $body->provider);
     }
