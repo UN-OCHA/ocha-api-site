@@ -61,8 +61,13 @@ console cache:clear
 ### Reset data of a provider
 
 ```bash
-console doctrine:query:sql "delete from key_figures where provider = \"cbpf\""
+console dbal:run-sql "delete from key_figures where provider = \"rw_crisis\""
+console dbal:run-sql "select id, value from key_figures where year=2022 and iso3=\"afg\" and provider = \"rw_crisis\""
+console dbal:run-sql "select * from key_figures where id = \"rw_crisis_AFG_2021_PeopleinNeed\""
 ```
+
+console dbal:run-sql "update user set webhook = \"https://numbers.reliefweb.int/webhook/listen\" where Username = \"numbers\""
+console dbal:run-sql "update user set webhook = \"http://numbers.docksal.site/webhook/listen\" where Username = \"numbers\""
 
 ## Resources
 
@@ -100,10 +105,10 @@ console make:command
 ## Testing
 
 ```bash
-console doctrine:database:drop --env=test --force
-console doctrine:database:create --env=test --if-not-exists -n
-console doctrine:schema:create --env=test -n
-console hautelook:fixtures:load --env=test -n
+fin console doctrine:database:drop --env=test --force
+fin console doctrine:database:create --env=test --if-not-exists -n
+fin console doctrine:schema:create --env=test -n
+fin console hautelook:fixtures:load --env=test -n
 phpunit
 ```
 
@@ -177,3 +182,33 @@ console import:rw-crisis --all
 
 - `/api/relief_web_crisis_figures/countries`
 - `/api/relief_web_crisis_figures/country/{iso3}`
+
+## Conventional changelog
+
+- `composer run changelog` to create changelog
+- `composer run release` to create new release
+- `composer run release:patch` to create new release and bump patch version
+- `composer run release:minor` to create new release and bump minor version
+- `composer run release:major` to create new release and bump major version
+
+## New release
+
+On develop branch run the following
+
+```sh {name=changelog}
+git fetch --all
+today=$(date +%d-%m-%Y)
+git checkout -b $today-prep-release
+composer run release:patch
+git add composer.json
+git add CHANGELOG.md
+git commit -m "chore: $today prep release"
+git push origin $today-prep-release
+gh_pr
+```
+
+- Merge to dev
+- [create PR to merge to main](https://github.com/UN-OCHA/numbers-site/compare/main...develop)
+- Merge to main
+- [Tag a new release](./gh_release)
+- Deploy
