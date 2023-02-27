@@ -21,3 +21,5 @@
 ###> unocha/docker ###
 buildlog.txt
 ###< unocha/docker ###
+
+/coverage

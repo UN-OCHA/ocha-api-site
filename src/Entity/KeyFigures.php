@@ -179,7 +179,6 @@ class KeyFigures
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
-    #[Assert\NotBlank]
     #[Assert\Regex("/^-?\d+(\.\d+)?$/")]
     #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $value = null;
@@ -216,6 +215,14 @@ class KeyFigures
     #[ORM\Column(nullable: true)]
     #[Groups(['write', 'with_meta'])]
     private ?bool $archived = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['write', 'with_meta'])]
+    private ?string $valueString = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['write', 'with_meta'])]
+    private ?string $valueType = null;
 
     public function getId(): ?string
     {
@@ -380,6 +387,8 @@ class KeyFigures
         $this->year = $values['year'];
         $this->name = $values['name'];
         $this->value = $values['value'];
+        $this->valueString = $values['valueString'] ?? NULL;
+        $this->valueType = $values['valueType'] ?? 'numeric';
         $this->url = $values['url'] ?? '';
         $this->source = $values['source'] ?? '';
         $this->description = $values['description'] ?? '';
@@ -408,7 +417,8 @@ class KeyFigures
         'country' => $this->country,
         'year' => $this->year,
         'name' => $this->name,
-        'value' => $this->value,
+        'value' => $this->valueString ?? $this->value,
+        'valueType' => $this->valueType ?? 'numeric',
         'updated' => $this->updated ?? NULL,
         'url' => $this->url,
         'source' => $this->source,
@@ -428,6 +438,30 @@ class KeyFigures
     public function setArchived(?bool $archived): self
     {
         $this->archived = $archived;
+
+        return $this;
+    }
+
+    public function getValueString(): ?string
+    {
+        return $this->valueString;
+    }
+
+    public function setValueString(?string $valueString): self
+    {
+        $this->valueString = $valueString;
+
+        return $this;
+    }
+
+    public function getValueType(): ?string
+    {
+        return $this->valueType;
+    }
+
+    public function setValueType(?string $valueType): self
+    {
+        $this->valueType = $valueType;
 
         return $this;
     }

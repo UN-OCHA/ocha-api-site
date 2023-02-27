@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.2.1](https://github.com/UN-OCHA/ocha-api-site/compare/v0.2.0...v0.2.1) (2023-02-27)
+
+### Features
+
+* Allow string data [#OHA-30](https://https://humanitarian.atlassian.net/browse/OHA-30) ([f9c674](https://github.com/UN-OCHA/ocha-api-site/commit/f9c6742b2580e74e275b8218d2b67ba664e3e266))
+
 ## [0.1.2](https://github.com/UN-OCHA/ocha-api-site/compare/v0.1.1...v0.1.2) (2022-12-16)
 
 ### Features
