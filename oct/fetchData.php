@@ -14,7 +14,7 @@ function main() {
     foreach ($result as $project) {
       $iso3 = getProjectCountry($project['id']);
       if ($iso3) {
-        GetContributionSummaryForOCHAOnline($year, $project['id'], $iso3);
+        GetContributionSummaryForOCHAOnline($year, $project, $iso3);
       }
     }
   }
@@ -56,7 +56,9 @@ function getProjects() {
   file_put_contents($filename, json_encode($data, JSON_PRETTY_PRINT));
 }
 
-function GetContributionSummaryForOCHAOnline($year = 2022, $project_id = 2310, $iso3) {
+function GetContributionSummaryForOCHAOnline($year = 2022, $project, $iso3) {
+  $project_id = $project['id'];
+
   print "Processing project $project_id for $year\n";
 
   $name = 'GetContributionSummaryForOCHAOnline';
@@ -132,7 +134,7 @@ function GetContributionSummaryForOCHAOnline($year = 2022, $project_id = 2310, $
 
   $openingBalance = round($openingBalance);
 
-  $data = [
+  $data = $project + [
     'year' => $year,
     'iso3' => $iso3,
     'totalRequirements' => $totalRequirements,
