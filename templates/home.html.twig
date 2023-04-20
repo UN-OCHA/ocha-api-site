@@ -32,6 +32,7 @@
 <p>You can request an API key by doing an API call to <code>{{ url('_api_/register_post') }}</code>
 <pre class="code"><code>curl -X 'POST' '{{ url('_api_/register_post') }}' \
     -H 'accept: application/json' \
+    -H 'APP-NAME: UNOCHA' \
     -H 'Content-Type: application/json' \
     -d '{
         "email": "info@example.com",
