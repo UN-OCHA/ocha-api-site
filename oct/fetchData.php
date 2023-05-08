@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * 1. Get a list of projects with iso code and country name.
+ * 2. For each year get the breakdown.
+ * 3. For each project get the contribution summary.
+ *
+ * Skip countries with an iso code.
+ */
+
 function main() {
   // Needed to get country for a project.
   getProjects();
