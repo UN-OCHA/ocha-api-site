@@ -4,6 +4,26 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [0.3.0](https://github.com/UN-OCHA/ocha-api-site/compare/v0.2.0...v0.3.0) (2023-05-16)
+
+### Features
+
+* Add endpoint to get providers [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42) ([bb66f0](https://github.com/UN-OCHA/ocha-api-site/commit/bb66f06cec38bfdc61ec36f6b7b9d7b9573ed3ef))
+* Add unit to figures [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42), [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42) ([fb98a5](https://github.com/UN-OCHA/ocha-api-site/commit/fb98a531b10ad9e82566bf227b087b790117d229), [de2cda](https://github.com/UN-OCHA/ocha-api-site/commit/de2cdaa12648d50b6422272ddc8ca725c5bba2a9))
+* Allow string data [#OHA-30](https://https://humanitarian.atlassian.net/browse/OHA-30) ([f9c674](https://github.com/UN-OCHA/ocha-api-site/commit/f9c6742b2580e74e275b8218d2b67ba664e3e266))
+
+### Chores
+
+* 27-02-2023 prep release ([d580de](https://github.com/UN-OCHA/ocha-api-site/commit/d580de906be7454cc7bf4963586096fb265be232), [04debe](https://github.com/UN-OCHA/ocha-api-site/commit/04debe676a0f516d836480a38f8e09accf81ac75))
+* Add info ([2a0d52](https://github.com/UN-OCHA/ocha-api-site/commit/2a0d52d8959c8739ec1e2b942c6da4bd279cfe04))
+* Composer updates ([9b39cc](https://github.com/UN-OCHA/ocha-api-site/commit/9b39cc9800bdb806e145090f449579503b971d94))
+* Fix serializer [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42) ([1c295f](https://github.com/UN-OCHA/ocha-api-site/commit/1c295fbc72b6bea721d6fd784ec9c3718244b9df))
+* Use the Node16 AWS credential action. ([7be16c](https://github.com/UN-OCHA/ocha-api-site/commit/7be16c3c34077d88883107266abef31ac622f132))
+
+##### Deps
+
+* Bump api-platform/core from 3.1.2 to 3.1.3 ([f059bc](https://github.com/UN-OCHA/ocha-api-site/commit/f059bcd2ea6a78303afaf847172622a2234282ba))
+
 ## [0.2.1](https://github.com/UN-OCHA/ocha-api-site/compare/v0.2.0...v0.2.1) (2023-02-27)
 
 ### Features
