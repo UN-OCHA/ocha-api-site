@@ -130,14 +130,14 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                   // Check input type, map to string_value
                   if (!is_numeric($row['value'])) {
                     $row['valueString'] = $row['value'];
-                    if (empty($row['valueType'])) {
+                    if (!isset($row['valueType']) || empty($row['valueType'])) {
                       $row['valueType'] = 'string';
                     }
                     $row['value'] = '0';
                   }
                   else {
                     $row['valueString'] = NULL;
-                    if (empty($row['valueType'])) {
+                    if (!isset($row['valueType']) || empty($row['valueType'])) {
                       $row['valueType'] = 'numeric';
                     }
                   }
@@ -165,14 +165,14 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           // Check input type, map to string_value
           if (!is_numeric($data['value'])) {
             $data['valueString'] = $data['value'];
-            if (empty($row['valueType'])) {
+            if (!isset($row['valueType']) || empty($row['valueType'])) {
               $row['valueType'] = 'string';
             }
             $data['value'] = '0';
           }
           else {
             $data['valueString'] = NULL;
-            if (empty($row['valueType'])) {
+            if (!isset($row['valueType']) || empty($row['valueType'])) {
               $data['valueType'] = 'numeric';
             }
           }
