@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Repository\UserRepository;
+use App\State\User\MeProvidersStateProvider;
 use App\State\User\MeStateProvider;
 use App\State\User\RegisterStateProvider;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,6 +32,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
             openapi: new OpenApiOperation(
               summary: 'Get profile',
               description: 'Get profile',
+              tags: [
+                  'User',
+              ],
+            ),
+        ),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            uriTemplate: '/me/providers',
+            provider: MeProvidersStateProvider::class,
+            openapi: new OpenApiOperation(
+              summary: 'Get list of providers',
+              description: 'Get list of providers',
               tags: [
                   'User',
               ],
