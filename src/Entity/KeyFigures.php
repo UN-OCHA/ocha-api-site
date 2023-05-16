@@ -224,6 +224,10 @@ class KeyFigures
     #[Groups(['write', 'with_meta'])]
     private ?string $valueType = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
+    private ?string $unit = null;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -396,6 +400,7 @@ class KeyFigures
         $this->provider = $values['provider'];
         $this->extra = $values['extra'] ?? [];
         $this->archived = $values['archived'] ?? FALSE;
+        $this->unit = $values['unit'] ?? '';
 
         if (!isset($values['updated'])) {
           $this->updated = NULL;
@@ -427,6 +432,7 @@ class KeyFigures
         'provider' => $this->provider,
         'extra' => $this->extra ?? [],
         'archived' => $this->archived ?? FALSE,
+        'unit' => $this->unit ?? '',
       ];
   }
 
@@ -462,6 +468,18 @@ class KeyFigures
     public function setValueType(?string $valueType): self
     {
         $this->valueType = $valueType;
+
+        return $this;
+    }
+
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?string $unit): self
+    {
+        $this->unit = $unit;
 
         return $this;
     }
