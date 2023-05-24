@@ -33,6 +33,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         'extra' => 'extra',
         'data' => 'data',
         'values' => 'values',
+        'unit' => 'unit',
     ];
 
     public function __construct(NormalizerInterface $decorated)
@@ -129,12 +130,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                   // Check input type, map to string_value
                   if (!is_numeric($row['value'])) {
                     $row['valueString'] = $row['value'];
-                    $row['valueType'] = 'string';
+                    if (!isset($row['valueType']) || empty($row['valueType'])) {
+                      $row['valueType'] = 'string';
+                    }
                     $row['value'] = '0';
                   }
                   else {
                     $row['valueString'] = NULL;
-                    $row['valueType'] = 'numeric';
+                    if (!isset($row['valueType']) || empty($row['valueType'])) {
+                      $row['valueType'] = 'numeric';
+                    }
                   }
 
                   // Check for any extra keys.
@@ -160,12 +165,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           // Check input type, map to string_value
           if (!is_numeric($data['value'])) {
             $data['valueString'] = $data['value'];
-            $data['valueType'] = 'string';
+            if (!isset($data['valueType']) || empty($data['valueType'])) {
+              $data['valueType'] = 'string';
+            }
             $data['value'] = '0';
           }
           else {
             $data['valueString'] = NULL;
-            $data['valueType'] = 'numeric';
+            if (!isset($data['valueType']) || empty($data['valueType'])) {
+              $data['valueType'] = 'numeric';
+            }
           }
 
           // Check for any extra keys.
