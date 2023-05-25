@@ -121,5 +121,5 @@
         "symfony/stopwatch": "6.1.*",
         "symfony/web-profiler-bundle": "6.1.*"
     },
-    "version": "0.2.1"
+    "version": "0.3.0"
 }
