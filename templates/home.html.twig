@@ -32,6 +32,7 @@
 <p>You can request an API key by doing an API call to <code>{{ url('_api_/register_post') }}</code>
 <pre class="code"><code>curl -X 'POST' '{{ url('_api_/register_post') }}' \
     -H 'accept: application/json' \
+    -H 'APP-NAME: UNOCHA' \
     -H 'Content-Type: application/json' \
     -d '{
         "email": "info@example.com",
@@ -53,6 +54,7 @@
       <li><strong>Financial Tracking Service</strong>: Data from <a rel="noopener noreferrer" target="_blank" href="https://fts.unocha.org">https://fts.unocha.org</a></li>
       <li><strong>INFORM Index</strong>: Data from <a rel="noopener noreferrer" target="_blank" href="https://drmkc.jrc.ec.europa.eu/inform-index">https://drmkc.jrc.ec.europa.eu/inform-index</a></li>
       <li><strong>ReliefWeb Crisis Figures</strong>: Data from <a rel="noopener noreferrer" target="_blank" href="https://github.com/reliefweb/crisis-app-data/tree/v2/edition/world/countries">https://github.com/reliefweb/crisis-app-data/tree/v2/edition/world/countries</a></li>
+      <li><strong>OCHA Contribution Tracking (OCT)</strong>: Data from <a rel="noopener noreferrer" target="_blank" href="https://oct.unocha.org">https://github.com/reliefweb/crisis-app-data/tree/v2/edition/world/countries</a></li>
     </ul>
   </li>
 </ul>

@@ -208,7 +208,7 @@ gh_pr
 ```
 
 - Merge to dev
-- [create PR to merge to main](https://github.com/UN-OCHA/numbers-site/compare/main...develop)
+- [create PR to merge to main](https://github.com/UN-OCHA/ocha-api-site/compare/main...develop)
 - Merge to main
 - [Tag a new release](./gh_release)
 - Deploy
