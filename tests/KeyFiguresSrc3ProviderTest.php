@@ -99,7 +99,7 @@ class KeyFiguresSrc3ProviderTest extends ApiTestCase
         'json' => $this->data,
       ]);
 
-      $this->assertEquals(201, $response->getStatusCode());
+      $this->assertEquals(200, $response->getStatusCode());
       $body = json_decode($response->getContent());
       $this->assertEqualsIgnoringCase($id, $body->id);
       $this->assertEquals($body->provider, 'src3');
