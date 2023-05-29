@@ -73,4 +73,33 @@ class UserTest extends ApiTestCase
       ]);
     }
 
+    public function testMeEndpointPatch(): void
+    {
+      $response = static::createClient()->request('PATCH', $this->addPrefix('me'), [
+        'headers' => [
+          'API-KEY' => 'token1',
+          'APP-NAME' => 'test',
+          'accept' => 'application/json',
+          'content-type' => 'application/merge-patch+json',
+        ],
+        'json' => [
+          'email' => 'patchy@example',
+          'webhook' => 'https://api.example/api/v42/webhook'
+        ],
+      ]);
+
+      $this->assertResponseIsSuccessful();
+      $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+      $this->assertJsonContains([
+        'email' => 'patchy@example',
+        'username' => 'admin',
+        'FullName' => 'admin',
+        'token' => 'token1',
+        'can_read' => [],
+        'can_write' => [],
+        'webhook' => 'https://api.example/api/v42/webhook',
+      ]);
+    }
+
 }
