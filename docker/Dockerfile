@@ -1,11 +1,10 @@
-FROM public.ecr.aws/unocha/unified-builder:8.1-stable as builder
+FROM public.ecr.aws/unocha/php-k8s:8.1-stable as builder
 ARG  BRANCH_ENVIRONMENT
 ENV  APP_ENV=PROD \
      PUBLIC_DIR=/srv/www/public \
      COMPOSER_MEMORY_LIMIT=-1
 COPY . /srv/www
 WORKDIR /srv/www
-RUN apk add -U --no-cache php81-sodium
 RUN composer install --no-scripts --prefer-dist --optimize-autoloader && \
     bin/console assets:install public
 

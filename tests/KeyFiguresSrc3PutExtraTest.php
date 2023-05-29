@@ -31,7 +31,7 @@ class KeyFiguresSrc3PutExtraTest extends ApiTestCase
             'json' => $this->data,
         ]);
 
-        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
 
         $body = json_decode($response->getContent());
         $this->assertEquals('1', $body->id);

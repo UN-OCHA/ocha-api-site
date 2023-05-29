@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\Controller\MePatchController;
 use App\Repository\UserRepository;
 use App\State\User\MeProvidersStateProvider;
 use App\State\User\MeStateProvider;
@@ -36,6 +38,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
                   'User',
               ],
             ),
+        ),
+        new Patch(
+          securityPostDenormalize: "is_granted('ROLE_USER')",
+          controller: MePatchController::class,
+          uriTemplate: '/me',
+          denormalizationContext: [
+              'groups' => ['write'],
+          ],
+          openapi: new OpenApiOperation(
+            summary: 'Update user info',
+            description: 'Update user info',
+            tags: [
+                'User',
+            ],
+          ),
         ),
         new Get(
             security: "is_granted('ROLE_USER')",
@@ -108,6 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $can_write = [];
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $webhook = null;
 
     public function getId(): ?int
