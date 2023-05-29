@@ -1,12 +1,11 @@
 # Variables. Yes.
 DOCKER=docker
-DOCKER_BUILDKIT=0
 TAG=8.1-stable
 NODE_ENV=dev
 
 # The main build recipe.
 build:	clean
-	DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) $(DOCKER) build \
+	$(DOCKER) build \
 				--build-arg BRANCH_ENVIRONMENT=$(NODE_ENV) \
 				--build-arg TAG=$(TAG) \
 				--build-arg VCS_REF=`git rev-parse --short HEAD` \
