@@ -21,6 +21,7 @@ use App\Repository\KeyFiguresRepository;
 use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
 use App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider;
+use App\State\KeyFigures\KeyFiguresOchaPresencesStateProvider;
 use App\State\KeyFigures\KeyFiguresPutStateProvider;
 use App\State\KeyFigures\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
@@ -71,6 +72,24 @@ use Symfony\Component\Validator\Constraints as Assert;
                   ],
               ],
             ),
+        ),
+        // OCHA Presences.
+        new GetCollection(
+          uriTemplate: '/key_figures/ocha-presences',
+          output: SimpleStringObject::class,
+          provider: KeyFiguresOchaPresencesStateProvider::class,
+          openapi: new OpenApiOperation(
+            summary: 'Get a list OCHA presences',
+            description: 'Get a list of OCHA presences',
+            tags: [
+                'Key Figures',
+            ],
+            responses: [
+                '200' => [
+                    'description' => 'Array of OCHA presences',
+                ],
+            ],
+          ),
         ),
         // Create or update.
         new Put(

@@ -118,4 +118,25 @@ class KeyFiguresRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return array Returns an array of iso3
+     */
+    public function getDistinctOchaPresences($provider = NULL): array
+    {
+        $qb = $this->createQueryBuilder('f')
+            ->innerJoin('Country', 'Country', 'WITH', 'country.id = f.iso3')
+            ->innerJoin('OchaPresence', 'ocha_presence', 'WITH', 'ocha_presence.id = f.ocha_presence_id')
+            ->orderBy('ocha_presence_id.name', 'ASC')
+            ->select('DISTINCT(LOWER(ocha_presence_id.id)) as value, ocha_presence_id.name as label');
+
+        if (!empty($provider)) {
+            $qb->where($qb->expr()->eq('f.provider', ':provider'))
+                ->setParameter(':provider', $provider);
+        }
+
+        return $qb->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
 }
