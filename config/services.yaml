@@ -53,6 +53,10 @@ services:
         # By default .inner is passed as argument
         decorates: 'api_platform.serializer.normalizer.item'
 
+    App\Serializer\OchaPresenceDenormalizer:
+        tags:
+            - { name: serializer.normalizer}
+
     App\EventListener\DatabaseOnFlushListener:
         tags:
             -
