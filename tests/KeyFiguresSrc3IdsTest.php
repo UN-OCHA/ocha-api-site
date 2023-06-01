@@ -62,7 +62,7 @@ class KeyFiguresSrc3IdsTest extends ApiTestCase
 
         $body = json_decode($response->getContent());
         $this->assertEqualsIgnoringCase($this->data['id'], $body->id);
-        $this->assertEquals($this->data['iso3'], $body->iso3);
+        $this->assertEquals(strtolower($this->data['iso3']), $body->iso3);
         $this->assertEquals($this->data['country'], $body->country);
         $this->assertEquals($this->data['year'], $body->year);
         $this->assertEquals($this->data['name'], $body->name);
@@ -85,7 +85,7 @@ class KeyFiguresSrc3IdsTest extends ApiTestCase
 
         $body = json_decode($response->getContent());
         $this->assertEquals($this->data['id'], $body->id);
-        $this->assertEquals($this->data['iso3'], $body->iso3);
+        $this->assertEquals(strtolower($this->data['iso3']), $body->iso3);
         $this->assertEquals($this->data['country'], $body->country);
         $this->assertEquals($this->data['year'], $body->year);
         $this->assertEquals($this->data['name'], $body->name);
@@ -109,7 +109,7 @@ class KeyFiguresSrc3IdsTest extends ApiTestCase
 
         $body = json_decode($response->getContent());
         $this->assertEqualsIgnoringCase($this->data['id'], $body->id);
-        $this->assertEquals($this->data['iso3'], $body->iso3);
+        $this->assertEquals(strtolower($this->data['iso3']), $body->iso3);
         $this->assertEquals($this->data['country'], $body->country);
         $this->assertEquals($this->data['year'], $body->year);
         $this->assertEquals($this->data['name'], $body->name);
@@ -131,7 +131,7 @@ class KeyFiguresSrc3IdsTest extends ApiTestCase
 
         $body = json_decode($response->getContent());
         $this->assertEqualsIgnoringCase($this->data['id'], $body->id);
-        $this->assertEquals($this->data['iso3'], $body->iso3);
+        $this->assertEquals(strtolower($this->data['iso3']), $body->iso3);
         $this->assertEquals($this->data['country'], $body->country);
         $this->assertEquals($this->data['year'], $body->year);
         $this->assertEquals($this->data['name'], $body->name);
@@ -153,7 +153,7 @@ class KeyFiguresSrc3IdsTest extends ApiTestCase
 
         $body = json_decode($response->getContent());
         $this->assertEqualsIgnoringCase($this->data['id'], $body->id);
-        $this->assertEquals($this->data['iso3'], $body->iso3);
+        $this->assertEquals(strtolower($this->data['iso3']), $body->iso3);
         $this->assertEquals($this->data['country'], $body->country);
         $this->assertEquals($this->data['year'], $body->year);
         $this->assertEquals($this->data['name'], $body->name);

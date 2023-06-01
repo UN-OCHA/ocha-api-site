@@ -247,7 +247,7 @@ class KeyFigures
 
     public function setIso3(string $iso3): self
     {
-        $this->iso3 = $iso3;
+        $this->iso3 = strtolower($iso3);
 
         return $this;
     }
@@ -386,7 +386,7 @@ class KeyFigures
 
     public function fromValues(array $values): self {
         $this->id = $values['id'];
-        $this->iso3 = $values['iso3'];
+        $this->iso3 = strtolower($values['iso3']);
         $this->country = $values['country'];
         $this->year = $values['year'];
         $this->name = $values['name'];
@@ -418,7 +418,7 @@ class KeyFigures
     public function extractValues(): array {
       return [
         'id' => $this->id,
-        'iso3' => $this->iso3,
+        'iso3' => strtolower($this->iso3),
         'country' => $this->country,
         'year' => $this->year,
         'name' => $this->name,
