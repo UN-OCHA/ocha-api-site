@@ -117,19 +117,12 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
                   // Set Id if not set.
                   if (!isset($row['id'])) {
-                      $row['id'] = implode('_', [
-                          $row['provider'],
-                          $row['iso3'],
-                          $row['year'],
-                          $row['name'],
-                      ]);
-
-                      $row['id'] = preg_replace('/[^A-Za-z0-9\-_]/', '', $row['id']);
+                      $row['id'] = $this->buildId($row);
                   }
 
                   // Force figure Id.
                   if (!isset($row['figure_id']) || empty($row['figure_id'])) {
-                    $row['figure_id'] = strtolower(preg_replace('/[^A-Za-z0-9\-_]/', '-', $row['name']));
+                    $row['figure_id'] = $this->buildFigureId($row['name']);
                   }
 
                   // Type conversion.
@@ -167,9 +160,14 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
               $data['provider'] = $provider;
           }
 
+          // Set Id if not set.
+          if (!isset($data['id'])) {
+              $data['id'] = $this->buildId($data);
+          }
+
           // Force figure Id.
           if (!isset($data['figure_id']) || empty($data['figure_id'])) {
-            $data['figure_id'] = strtolower(preg_replace('/[^A-Za-z0-9\-_]/', '', $data['name']));
+            $data['figure_id'] = $this->buildFigureId($data['name']);
           }
 
           // Type conversion.
@@ -209,4 +207,22 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
             $this->decorated->setSerializer($serializer);
         }
     }
+
+    protected function buildId($item) : string {
+      $id = implode('_', [
+        strtolower($item['provider']),
+        strtolower($item['iso3']),
+        $item['year'],
+        $this->buildFigureId($item['name']),
+      ]);
+
+      $id = preg_replace('/[^A-Za-z0-9\-_]/', '', $id);
+
+      return $id;
+    }
+
+    protected function buildFigureId($name) : string {
+      return strtolower(preg_replace('/[^A-Za-z0-9\-_]/', '-', $name));
+    }
+
 }
