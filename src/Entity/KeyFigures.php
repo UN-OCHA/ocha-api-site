@@ -165,7 +165,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['figure_id' => 'exact', 'iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
 class KeyFigures
 {
@@ -246,6 +246,9 @@ class KeyFigures
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $unit = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $figure_id = null;
 
     public function getId(): ?string
     {
@@ -405,6 +408,7 @@ class KeyFigures
 
     public function fromValues(array $values): self {
         $this->id = $values['id'];
+        $this->figure_id = $values['figure_id'];
         $this->iso3 = strtolower($values['iso3']);
         $this->country = $values['country'];
         $this->year = $values['year'];
@@ -437,6 +441,7 @@ class KeyFigures
     public function extractValues(): array {
       return [
         'id' => $this->id,
+        'figure_id' => $this->figure_id ?? '',
         'iso3' => strtolower($this->iso3),
         'country' => $this->country,
         'year' => $this->year,
@@ -499,6 +504,18 @@ class KeyFigures
     public function setUnit(?string $unit): self
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getFigureId(): ?string
+    {
+        return $this->figure_id;
+    }
+
+    public function setFigureId(?string $figure_id): self
+    {
+        $this->figure_id = $figure_id;
 
         return $this;
     }

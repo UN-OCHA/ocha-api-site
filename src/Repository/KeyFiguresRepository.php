@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Country;
 use App\Entity\KeyFigures;
+use App\Entity\OchaPresence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -124,10 +126,10 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctOchaPresences($provider = NULL): array
     {
         $qb = $this->createQueryBuilder('f')
-            ->innerJoin('Country', 'Country', 'WITH', 'country.id = f.iso3')
-            ->innerJoin('OchaPresence', 'ocha_presence', 'WITH', 'ocha_presence.id = f.ocha_presence_id')
-            ->orderBy('ocha_presence_id.name', 'ASC')
-            ->select('DISTINCT(LOWER(ocha_presence_id.id)) as value, ocha_presence_id.name as label');
+            ->innerJoin(Country::class, 'c', 'WITH', 'c.id = f.iso3')
+            ->innerJoin(OchaPresence::class, 'o', 'WITH', 'o.id = c.ochaPresence')
+            ->orderBy('o.name', 'ASC')
+            ->select('DISTINCT(LOWER(o.id)) as value, o.name as label');
 
         if (!empty($provider)) {
             $qb->where($qb->expr()->eq('f.provider', ':provider'))

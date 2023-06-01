@@ -14,6 +14,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
     private $defaultFields = [
         'id' => 'id',
+        'figure_id' => 'figure_id',
         'iso3' => 'iso3',
         'country' => 'country',
         'year' => 'year',
@@ -59,6 +60,9 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
             $data['value'] = $data['valueString'];
         }
         unset($data['valueString']);
+
+        // Hide figureId.
+        unset($data['figureId']);
 
         // Add extra fields.
         if (isset($data['extra'])) {
@@ -123,6 +127,11 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                       $row['id'] = preg_replace('/[^A-Za-z0-9\-_]/', '', $row['id']);
                   }
 
+                  // Force figure Id.
+                  if (!isset($row['figure_id']) || empty($row['figure_id'])) {
+                    $row['figure_id'] = strtolower(preg_replace('/[^A-Za-z0-9\-_]/', '-', $row['name']));
+                  }
+
                   // Type conversion.
                   $row['year'] = (string) $row['year'];
                   $row['value'] = (string) $row['value'];
@@ -156,6 +165,11 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           // Force provider.
           if ($provider) {
               $data['provider'] = $provider;
+          }
+
+          // Force figure Id.
+          if (!isset($data['figure_id']) || empty($data['figure_id'])) {
+            $data['figure_id'] = strtolower(preg_replace('/[^A-Za-z0-9\-_]/', '', $data['name']));
           }
 
           // Type conversion.
