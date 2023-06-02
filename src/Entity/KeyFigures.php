@@ -6,6 +6,7 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -141,15 +142,28 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         // Get.
         new Get(
-            provider: KeyFiguresLimitByProviderStateProvider::class,
-            uriTemplate: '/key_figures/{id}',
-            openapi: new OpenApiOperation(
-              summary: 'Get a key figure',
-              description: 'Get a key figure',
-              tags: [
-                  'Key Figures',
-              ],
-            ),
+          provider: KeyFiguresLimitByProviderStateProvider::class,
+          uriTemplate: '/key_figures/{id}',
+          openapi: new OpenApiOperation(
+            summary: 'Get a key figure',
+            description: 'Get a key figure',
+            tags: [
+                'Key Figures',
+            ],
+          ),
+        ),
+        // Delete.
+        new Delete(
+          securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_DELETE', object)",
+          provider: KeyFiguresLimitByProviderStateProvider::class,
+          uriTemplate: '/key_figures/{id}',
+          openapi: new OpenApiOperation(
+            summary: 'Delete a key figure',
+            description: 'Delete a key figure',
+            tags: [
+                'Key Figures',
+            ],
+          ),
         ),
         // Get.
         new GetCollection(

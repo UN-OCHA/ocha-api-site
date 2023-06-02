@@ -22,6 +22,7 @@ class KeyFiguresProviderVoter extends Voter
         $supportsAttribute = in_array($attribute, [
             'KEY_FIGURES_UPSERT',
             'KEY_FIGURES_BATCH',
+            'KEY_FIGURES_DELETE',
         ]);
         $supportsSubject = $subject instanceof KeyFigures;
 
@@ -42,8 +43,9 @@ class KeyFiguresProviderVoter extends Voter
         }
 
         switch ($attribute) {
-            case 'KEY_FIGURES_UPSERT':
-                /** @var \App\Entity\KeyFigures $subject */
+          case 'KEY_FIGURES_UPSERT':
+          case 'KEY_FIGURES_DELETE':
+              /** @var \App\Entity\KeyFigures $subject */
                 if (in_array($subject->getProvider(), $user->getCanWrite())) {
                     return true;
                 }
