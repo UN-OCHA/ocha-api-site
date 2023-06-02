@@ -107,14 +107,14 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
         // Multiple records.
         if (isset($data['data']) && $method == 'POST') {
-            if (is_array($data['data'])) {
-                foreach ($data['data'] as &$row) {
-                    $row = $this->checkAndCleanData($row, $provider, $method);
-                }
+            if (!is_array($data['data'])) {
+                // Fail hard.
+                throw new \InvalidArgumentException('The data property has to be an array for batch updates');
             }
 
-            // Fail hard.
-            throw new \InvalidArgumentException('The data property has to be an array for batch updates');
+            foreach ($data['data'] as &$row) {
+                $row = $this->checkAndCleanData($row, $provider, $method);
+            }
         }
         elseif (isset($data['data'])) {
             // Not allowed with other methods.
