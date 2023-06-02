@@ -47,8 +47,8 @@ class KeyFiguresSrc3BatchTest extends ApiTestCase
         $body = json_decode($response->getContent(), TRUE);
         $this->assertCount(2, $body['successful']);
         $this->assertCount(0, $body['failed']);
-        $this->assertArrayHasKey('src3_afg_2021_Indicator', $body['successful']);
-        $this->assertArrayHasKey('src3_afg_2022_Indicator', $body['successful']);
+        $this->assertArrayHasKey(strtolower('src3_afg_2021_Indicator'), $body['successful']);
+        $this->assertArrayHasKey(strtolower('src3_afg_2022_Indicator'), $body['successful']);
     }
 
     public function testOnSource3AsUser1(): void
@@ -82,8 +82,8 @@ class KeyFiguresSrc3BatchTest extends ApiTestCase
         $body = json_decode($response->getContent(), TRUE);
         $this->assertCount(2, $body['successful']);
         $this->assertCount(0, $body['failed']);
-        $this->assertArrayHasKey('src3_afg_2021_Indicator', $body['successful']);
-        $this->assertArrayHasKey('src3_afg_2022_Indicator', $body['successful']);
+        $this->assertArrayHasKey(strtolower('src3_afg_2021_Indicator'), $body['successful']);
+        $this->assertArrayHasKey(strtolower('src3_afg_2022_Indicator'), $body['successful']);
    }
 
 }
