@@ -24,7 +24,6 @@ use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
 use App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider;
 use App\State\KeyFigures\KeyFiguresOchaPresencesStateProvider;
-use App\State\KeyFigures\KeyFiguresPutStateProvider;
 use App\State\KeyFigures\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -97,7 +96,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(
             securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
             uriTemplate: '/key_figures/{id}',
-            processor: KeyFiguresPutStateProvider::class,
             denormalizationContext: [
                 'groups' => ['write'],
             ],
