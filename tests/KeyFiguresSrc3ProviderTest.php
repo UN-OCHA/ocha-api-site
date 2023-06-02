@@ -90,7 +90,7 @@ class KeyFiguresSrc3ProviderTest extends ApiTestCase
       $this->assertEqualsIgnoringCase($id, $body->id);
       $this->assertEquals($body->provider, 'src3');
 
-      $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/src3_afg_2021_indicator', [
+      $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/' . $id, [
         'headers' => [
             'API-KEY' => 'token1',
             'APP-NAME' => 'test',
@@ -104,7 +104,7 @@ class KeyFiguresSrc3ProviderTest extends ApiTestCase
       $this->assertEqualsIgnoringCase($id, $body->id);
       $this->assertEquals($body->provider, 'src3');
 
-      $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/src3_afg_2021_indicator', [
+      $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/' . $id, [
         'headers' => [
             'API-KEY' => 'token1',
             'APP-NAME' => 'test',
