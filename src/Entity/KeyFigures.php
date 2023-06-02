@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
@@ -107,6 +108,21 @@ use Symfony\Component\Validator\Constraints as Assert;
                   'Key Figures',
               ],
             ),
+        ),
+        // Partial update.
+        new Patch(
+          securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
+          uriTemplate: '/key_figures/{id}',
+          denormalizationContext: [
+              'groups' => ['write'],
+          ],
+          openapi: new OpenApiOperation(
+            summary: 'Update a key figure',
+            description: 'Partially update a key figure',
+            tags: [
+                'Key Figures',
+            ],
+          ),
         ),
         // Batch update.
         new Post(
