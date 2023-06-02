@@ -13,11 +13,11 @@ class Country
 {
     #[ORM\Id]
     #[ORM\Column(length: 3)]
-    #[Groups('ochapresence')]
+    #[Groups(['ochapresence_read'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('ochapresence')]
+    #[Groups(['ochapresence_read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 2)]

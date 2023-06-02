@@ -107,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
-    private ?string $FullName = null;
+    private ?string $fullName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read'])]
@@ -118,11 +118,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read'])]
-    private array $can_read = [];
+    private array $canRead = [];
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read'])]
-    private array $can_write = [];
+    private array $canWrite = [];
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
@@ -212,12 +212,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getFullName(): ?string
     {
-        return $this->FullName;
+        return $this->fullName;
     }
 
-    public function setFullName(?string $FullName): self
+    public function setFullName(?string $fullName): self
     {
-        $this->FullName = $FullName;
+        $this->fullName = $fullName;
 
         return $this;
     }
@@ -248,24 +248,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getCanRead(): array
     {
-        return $this->can_read;
+        return $this->canRead;
     }
 
-    public function setCanRead(?array $can_read): self
+    public function setCanRead(?array $canRead): self
     {
-        $this->can_read = $can_read;
+        $this->canRead = $canRead;
 
         return $this;
     }
 
     public function getCanWrite(): array
     {
-        return $this->can_write;
+        return $this->canWrite;
     }
 
-    public function setCanWrite(?array $can_write): self
+    public function setCanWrite(?array $canWrite): self
     {
-        $this->can_write = $can_write;
+        $this->canWrite = $canWrite;
 
         return $this;
     }

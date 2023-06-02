@@ -278,7 +278,7 @@ class KeyFigures
     private ?string $unit = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $figure_id = null;
+    private ?string $figureId = null;
 
     public function getId(): ?string
     {
@@ -540,12 +540,12 @@ class KeyFigures
 
     public function getFigureId(): ?string
     {
-        return $this->figure_id;
+        return $this->figureId;
     }
 
-    public function setFigureId(?string $figure_id): self
+    public function setFigureId(?string $figureId): self
     {
-        $this->figure_id = $figure_id;
+        $this->figureId = $figureId;
 
         return $this;
     }

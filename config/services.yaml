@@ -62,3 +62,5 @@ services:
             -
                 name: 'doctrine.event_listener'
                 event: 'onFlush'
+
+    Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter: ~

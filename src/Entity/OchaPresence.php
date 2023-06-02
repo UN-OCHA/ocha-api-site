@@ -10,28 +10,28 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-  normalizationContext: ['groups' => ['ochapresence']],
-  denormalizationContext: ['groups' => ['ochapresence']],
+  normalizationContext: ['groups' => ['ochapresence_read']],
+  denormalizationContext: ['groups' => ['ochapresence_write']],
 )]
 #[ORM\Entity(repositoryClass: OchaPresenceRepository::class)]
 class OchaPresence
 {
     #[ORM\Id]
     #[ORM\Column(length: 10)]
-    #[Groups('ochapresence')]
+    #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('ochapresence')]
+    #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: Country::class)]
-    #[Groups('ochapresence')]
-    private Collection $countries;
-
     #[ORM\Column(length: 255)]
-    #[Groups('ochapresence')]
-    private ?string $office_type = null;
+    #[Groups(['ochapresence_read', 'ochapresence_write'])]
+    private ?string $officeType = null;
+
+    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: Country::class)]
+    #[Groups(['ochapresence_read'])]
+    private Collection $countries;
 
     public function __construct()
     {
@@ -58,6 +58,18 @@ class OchaPresence
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getOfficeType(): ?string
+    {
+        return $this->officeType;
+    }
+
+    public function setOfficeType(string $officeType): self
+    {
+        $this->officeType = $officeType;
 
         return $this;
     }
@@ -89,15 +101,4 @@ class OchaPresence
         return $this;
     }
 
-    public function getOfficeType(): ?string
-    {
-        return $this->office_type;
-    }
-
-    public function setOfficeType(string $office_type): self
-    {
-        $this->office_type = $office_type;
-
-        return $this;
-    }
 }

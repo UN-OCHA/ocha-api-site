@@ -14,6 +14,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
     private $defaultFields = [
         'id' => 'id',
+        'figureId' => 'figureId',
         'figure_id' => 'figure_id',
         'iso3' => 'iso3',
         'country' => 'country',
@@ -56,13 +57,10 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         $data = $this->decorated->normalize($object, $format, $context);
 
         // Add textual values if needed.
-        if (isset($data['valueString']) && $data['value'] == '0.00') {
-            $data['value'] = $data['valueString'];
+        if (isset($data['value_string']) && $data['value'] == '0.00') {
+            $data['value'] = $data['value_string'];
         }
-        unset($data['valueString']);
-
-        // Hide figureId.
-        unset($data['figureId']);
+        unset($data['value_string']);
 
         // Add extra fields.
         if (isset($data['extra'])) {
@@ -165,16 +163,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
           // Check input type, map to string_value
           if (!is_numeric($data['value'])) {
-            $data['valueString'] = $data['value'];
-            if (!isset($data['valueType']) || empty($data['valueType'])) {
-              $data['valueType'] = 'string';
+            $data['value_string'] = $data['value'];
+            if (!isset($data['value_type']) || empty($data['value_type'])) {
+              $data['value_type'] = 'string';
             }
             $data['value'] = '0';
           }
           else {
-            $data['valueString'] = NULL;
-            if (!isset($data['valueType']) || empty($data['valueType'])) {
-              $data['valueType'] = 'numeric';
+            $data['value_string'] = NULL;
+            if (!isset($data['value_type']) || empty($data['value_type'])) {
+              $data['value_type'] = 'numeric';
             }
           }
         }

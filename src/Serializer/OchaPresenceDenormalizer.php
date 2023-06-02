@@ -23,7 +23,7 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
     /**
      * {@inheritdoc}
      */
-    public function denormalize($data, $class, $format = null, array $context = [])
+    public function denormalize($data, $class, $format = null, array $context = []) : mixed
     {
       $data['countries'] = array_map(function ($iso3) {
         return $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $iso3]]);
