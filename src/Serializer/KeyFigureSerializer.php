@@ -112,6 +112,13 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
                     $row = $this->checkAndCleanData($row, $provider, $method);
                 }
             }
+
+            // Fail hard.
+            throw new \InvalidArgumentException('The data property has to be an array for batch updates');
+        }
+        elseif (isset($data['data'])) {
+            // Not allowed with other methods.
+            throw new \InvalidArgumentException('The data property can not be used');
         }
         else {
           $data = $this->checkAndCleanData($data, $provider, $method);
