@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     security: "is_granted('ROLE_USER')",
     extraProperties: [
         'expand' => 'key_figures',
-        'standard_put' => false,
+        'standard_put' => TRUE,
     ],
     operations: [
         // Years.
