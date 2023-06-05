@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\OchaPresenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -32,6 +33,13 @@ class OchaPresence
     #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: Country::class)]
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $countries;
+
+    #[ORM\ManyToOne(inversedBy: 'ochaPresences')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Provider $provider = null;
+
+    #[ORM\Column(type: Types::ARRAY)]
+    private array $externalIds = [];
 
     public function __construct()
     {
@@ -97,6 +105,30 @@ class OchaPresence
                 $country->setOchaPresence(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProvider(): ?Provider
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(?Provider $provider): self
+    {
+        $this->provider = $provider;
+
+        return $this;
+    }
+
+    public function getExternalIds(): array
+    {
+        return $this->externalIds;
+    }
+
+    public function setExternalIds(array $externalIds): self
+    {
+        $this->externalIds = $externalIds;
 
         return $this;
     }

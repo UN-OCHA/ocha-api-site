@@ -78,8 +78,7 @@ final class JsonFilter extends AbstractFilter implements JsonFilterInterface
      */
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []) : void {
         $jsonColumn = $this->getJsonColumn($property);
-trigger_deprecation('v', 'v1', $property);
-trigger_deprecation('v', 'v1', $jsonColumn);
+
         // check - standard checks
         // check - is valid type
         // check - is valid value
@@ -382,7 +381,7 @@ trigger_deprecation('v', 'v1', $jsonColumn);
             $condition = implode(' OR ', array_map(function ($value) use ($alias, $jsonColumn, $jsonKey) {
                 return "JSON_EXTRACT({$alias}.{$jsonColumn}, '$.{$jsonKey}') = {$value}";
             }, $values));
-trigger_deprecation('or', 'numeric', $condition);
+
             $queryBuilder
                 ->andWhere("({$condition})");
         }
@@ -482,7 +481,6 @@ trigger_deprecation('or', 'numeric', $condition);
         $jsonColumnWithAlias = $wrapCase("{$alias}.{$jsonColumn}");
 
         $condition = '';
-        trigger_deprecation('or', 'values', print_r($values, TRUE));
 
         // forge condition
         foreach ($values as $index => $value) {
@@ -495,7 +493,7 @@ trigger_deprecation('or', 'numeric', $condition);
 
             $queryBuilder->setParameter($valueParameter, $value, Types::STRING);
         }
-        trigger_deprecation('or', 'string', $condition);
+
         $queryBuilder->andWhere("({$condition})");
     }
 
