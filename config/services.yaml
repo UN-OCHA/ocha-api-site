@@ -63,4 +63,7 @@ services:
                 name: 'doctrine.event_listener'
                 event: 'onFlush'
 
+    # JSON Filter
+    App\Filter\JsonFilter:
+
     Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter: ~
