@@ -30,7 +30,7 @@ class OchaPresence
     private ?string $officeType = null;
 
     #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: Country::class)]
-    #[Groups(['ochapresence_read'])]
+    #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $countries;
 
     public function __construct()

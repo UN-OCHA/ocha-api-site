@@ -19,6 +19,7 @@ use App\Dto\ArchiveInput;
 use App\Dto\BatchCollection;
 use App\Dto\BatchResponses;
 use App\Dto\SimpleStringObject;
+use App\Filter\JsonFilter;
 use App\Repository\KeyFiguresRepository;
 use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
@@ -195,7 +196,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['figure_id' => 'exact', 'iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['figureId' => 'exact', 'iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(JsonFilter::class, properties: [
+    "extra.*" =>  ["type" => "string", "strategy" => "exact"]
+])]
 #[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
 class KeyFigures
 {
@@ -438,14 +442,14 @@ class KeyFigures
 
     public function fromValues(array $values): self {
         $this->id = $values['id'];
-        $this->figure_id = $values['figure_id'];
+        $this->figureId = $values['figure_id'];
         $this->iso3 = strtolower($values['iso3']);
         $this->country = $values['country'];
         $this->year = $values['year'];
         $this->name = $values['name'];
         $this->value = $values['value'];
-        $this->valueString = $values['valueString'] ?? NULL;
-        $this->valueType = $values['valueType'] ?? 'numeric';
+        $this->valueString = $values['value_string'] ?? NULL;
+        $this->valueType = $values['value_type'] ?? 'numeric';
         $this->url = $values['url'] ?? '';
         $this->source = $values['source'] ?? '';
         $this->description = $values['description'] ?? '';
@@ -471,13 +475,13 @@ class KeyFigures
     public function extractValues(): array {
       return [
         'id' => $this->id,
-        'figure_id' => $this->figure_id ?? '',
+        'figure_id' => $this->figureId ?? '',
         'iso3' => strtolower($this->iso3),
         'country' => $this->country,
         'year' => $this->year,
         'name' => $this->name,
         'value' => $this->valueString ?? $this->value,
-        'valueType' => $this->valueType ?? 'numeric',
+        'value_type' => $this->valueType ?? 'numeric',
         'updated' => $this->updated ?? NULL,
         'url' => $this->url,
         'source' => $this->source,

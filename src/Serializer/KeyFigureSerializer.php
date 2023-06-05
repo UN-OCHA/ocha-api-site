@@ -7,6 +7,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 
 final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
@@ -41,7 +42,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     public function __construct(NormalizerInterface $decorated)
     {
         if (!$decorated instanceof DenormalizerInterface) {
-            throw new \InvalidArgumentException(sprintf('The decorated normalizer must implement the %s.', DenormalizerInterface::class));
+            throw new InvalidArgumentException(sprintf('The decorated normalizer must implement the %s.', DenormalizerInterface::class));
         }
 
         $this->decorated = $decorated;
@@ -107,7 +108,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         if (isset($data['data']) && $method == 'POST') {
             if (!is_array($data['data'])) {
                 // Fail hard.
-                throw new \InvalidArgumentException('The data property has to be an array for batch updates');
+                throw new InvalidArgumentException('The data property has to be an array for batch updates');
             }
 
             foreach ($data['data'] as &$row) {
@@ -116,7 +117,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         }
         elseif (isset($data['data'])) {
             // Not allowed with other methods.
-            throw new \InvalidArgumentException('The data property can not be used');
+            throw new InvalidArgumentException('The data property can not be used');
         }
         else {
           $data = $this->checkAndCleanData($data, $provider, $method);
