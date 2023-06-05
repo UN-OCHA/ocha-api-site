@@ -382,7 +382,7 @@ trigger_deprecation('v', 'v1', $jsonColumn);
             $condition = implode(' OR ', array_map(function ($value) use ($alias, $jsonColumn, $jsonKey) {
                 return "JSON_EXTRACT({$alias}.{$jsonColumn}, '$.{$jsonKey}') = {$value}";
             }, $values));
-
+trigger_deprecation('or', 'numeric', $condition);
             $queryBuilder
                 ->andWhere("({$condition})");
         }
@@ -482,10 +482,11 @@ trigger_deprecation('v', 'v1', $jsonColumn);
         $jsonColumnWithAlias = $wrapCase("{$alias}.{$jsonColumn}");
 
         $condition = '';
+        trigger_deprecation('or', 'values', print_r($values, TRUE));
 
         // forge condition
         foreach ($values as $index => $value) {
-            $condition = $this->addOperatorToQueryCondition($condition, $index);
+            $condition .= $this->addOperatorToQueryCondition($condition, $index);
 
             $valueParameter = $queryNameGenerator->generateParameterName($jsonColumn . $index);
             $condition .= "JSON_EXTRACT({$jsonColumnWithAlias}, '$.{$jsonKey}') = :{$valueParameter}";
@@ -494,7 +495,7 @@ trigger_deprecation('v', 'v1', $jsonColumn);
 
             $queryBuilder->setParameter($valueParameter, $value, Types::STRING);
         }
-
+        trigger_deprecation('or', 'string', $condition);
         $queryBuilder->andWhere("({$condition})");
     }
 
