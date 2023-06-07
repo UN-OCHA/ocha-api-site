@@ -135,9 +135,54 @@ class KeyFiguresRepository extends ServiceEntityRepository
             ->select('DISTINCT(op.id) as value, op.name as label');
 
         if (!empty($provider)) {
-            $qb->where($qb->expr()->eq('opei.Provider', ':provider'))
+            $qb->andWhere($qb->expr()->eq('opei.Provider', ':provider'))
                 ->setParameter(':provider', $provider);
         }
+
+        return $qb->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    /**
+     * @return array Returns an array of years.
+     */
+    public function getDistinctOchaPresenceYears($provider, $ocha_presence_id): array
+    {
+        $qb = $this->createQueryBuilder('kf')
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin('el.ochaPresenceExternalIds', 'opei')
+            ->select('DISTINCT(opei.year) as value, opei.year as label');
+
+        $qb->andWhere($qb->expr()->eq('opei.Provider', ':provider'))
+            ->setParameter(':provider', $provider);
+
+        $qb->andWhere($qb->expr()->eq('opei.OchaPresence', ':ocha_presence_id'))
+            ->setParameter(':ocha_presence_id', $ocha_presence_id);
+
+        return $qb->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    /**
+     * @return array Returns an array of figures.
+     */
+    public function getOchaPresenceFigures($provider, $ocha_presence_id, $year): array
+    {
+        $qb = $this->createQueryBuilder('kf')
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin('el.ochaPresenceExternalIds', 'opei')
+            ->select('kf');
+
+        $qb->andWhere($qb->expr()->eq('opei.Provider', ':provider'))
+            ->setParameter(':provider', $provider);
+
+        $qb->andWhere($qb->expr()->eq('opei.OchaPresence', ':ocha_presence_id'))
+            ->setParameter(':ocha_presence_id', $ocha_presence_id);
+
+        $qb->andWhere($qb->expr()->eq('opei.year', ':year'))
+            ->setParameter(':year', $year);
 
         return $qb->getQuery()
             ->getArrayResult()

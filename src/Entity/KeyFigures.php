@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -24,7 +25,9 @@ use App\Repository\KeyFiguresRepository;
 use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
 use App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider;
+use App\State\KeyFigures\KeyFiguresOchaPresenceFiguresStateProvider;
 use App\State\KeyFigures\KeyFiguresOchaPresencesStateProvider;
+use App\State\KeyFigures\KeyFiguresOchaPresenceYearsStateProvider;
 use App\State\KeyFigures\KeyFiguresPutStateProvider;
 use App\State\KeyFigures\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
@@ -93,6 +96,58 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ],
           ),
+        ),
+        // OCHA Presence years.
+        new GetCollection(
+            uriTemplate: '/key_figures/ocha-presences/{ocha_presence_id}/years',
+            uriVariables: [
+                'ocha_presence_id' => new Link(
+                    fromClass: OchaPresence::class,
+                    fromProperty: 'id'
+                )
+            ],
+            output: SimpleStringObject::class,
+            provider: KeyFiguresOchaPresenceYearsStateProvider::class,
+            openapi: new OpenApiOperation(
+              summary: 'Get a list of years for an OCHA presences',
+              description: 'Get a list of years for an OCHA presences',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of years for an OCHA presences',
+                  ],
+              ],
+            ),
+        ),
+        // OCHA Presence years.
+        new GetCollection(
+            uriTemplate: '/key_figures/ocha-presences/{ocha_presence_id}/{year}/figures',
+            uriVariables: [
+                'ocha_presence_id' => new Link(
+                    fromClass: OchaPresence::class,
+                    fromProperty: 'id'
+                ),
+                'year' => new Link(
+                    fromClass: OchaPresenceExternalId::class,
+                    fromProperty: 'year'
+                )
+            ],
+            output: SimpleStringObject::class,
+            provider: KeyFiguresOchaPresenceFiguresStateProvider::class,
+            openapi: new OpenApiOperation(
+              summary: 'Get a list figures for an OCHA presences',
+              description: 'Get a list figures for an OCHA presences',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of figures for an OCHA presences',
+                  ],
+              ],
+            ),
         ),
         // Create or update.
         new Put(
