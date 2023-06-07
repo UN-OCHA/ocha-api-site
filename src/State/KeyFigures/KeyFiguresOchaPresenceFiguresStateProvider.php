@@ -24,8 +24,22 @@ class KeyFiguresOchaPresenceFiguresStateProvider implements ProviderInterface
     {
         $this->checkProviderAccess($operation, $context);
 
+        $figure_ids = [];
+
+        $uri = $context['uri'] ?? '';
+        if (!empty($uri)) {
+            $query = parse_url($uri, PHP_URL_QUERY);
+            parse_str($query, $parsed);
+            if (isset($parsed['figure_id'])) {
+                $figure_ids = $parsed['figure_id'];
+                if (!is_array($figure_ids)) {
+                    $figure_ids = [$figure_ids];
+                }
+            }
+        }
+
         $provider = $this->getProvider($operation, $context);
-        return $this->repository->getOchaPresenceFigures($provider, $uriVariables['ocha_presence_id'], $uriVariables['year']);
+        return $this->repository->getOchaPresenceFigures($provider, $uriVariables['ocha_presence_id'], $uriVariables['year'], $figure_ids);
     }
 }
 

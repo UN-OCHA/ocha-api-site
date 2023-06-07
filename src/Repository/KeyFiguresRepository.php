@@ -166,9 +166,10 @@ class KeyFiguresRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array Returns an array of figures.
+     * @return KeyFigures[]
+     * Returns an array of figures.
      */
-    public function getOchaPresenceFigures($provider, $ocha_presence_id, $year): array
+    public function getOchaPresenceFigures($provider, $ocha_presence_id, $year, $figure_ids = []): array
     {
         $qb = $this->createQueryBuilder('kf')
             ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
@@ -184,8 +185,13 @@ class KeyFiguresRepository extends ServiceEntityRepository
         $qb->andWhere($qb->expr()->eq('opei.year', ':year'))
             ->setParameter(':year', $year);
 
+        if (!empty($figure_ids)) {
+            $qb->andWhere($qb->expr()->in('kf.figureId', ':figure_ids'))
+                ->setParameter(':figure_ids', $figure_ids);
+        }
+
         return $qb->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 

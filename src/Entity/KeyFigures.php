@@ -22,6 +22,7 @@ use App\Dto\BatchResponses;
 use App\Dto\SimpleStringObject;
 use App\Filter\JsonFilter;
 use App\Repository\KeyFiguresRepository;
+use App\Serializer\KeyFigureSerializer;
 use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
 use App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider;
@@ -121,7 +122,7 @@ use Symfony\Component\Validator\Constraints as Assert;
               ],
             ),
         ),
-        // OCHA Presence years.
+        // OCHA Presence figures.
         new GetCollection(
             uriTemplate: '/key_figures/ocha-presences/{ocha_presence_id}/{year}/figures',
             uriVariables: [
@@ -134,7 +135,8 @@ use Symfony\Component\Validator\Constraints as Assert;
                     fromProperty: 'year'
                 )
             ],
-            output: SimpleStringObject::class,
+            output: KeyFigures::class,
+            serialize: KeyFigureSerializer::class,
             provider: KeyFiguresOchaPresenceFiguresStateProvider::class,
             openapi: new OpenApiOperation(
               summary: 'Get a list figures for an OCHA presences',
