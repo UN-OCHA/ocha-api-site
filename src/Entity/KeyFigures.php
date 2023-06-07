@@ -198,7 +198,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(SearchFilter::class, properties: ['figureId' => 'exact', 'iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
 #[ApiFilter(JsonFilter::class, properties: [
-    "extra.*" =>  ["type" => "string", "strategy" => "exact"]
+    "extra.external_id" =>  ["type" => "string", "strategy" => "exact"],
+    "extra.*" =>  ["type" => "string", "strategy" => "exact"],
 ])]
 #[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
 class KeyFigures

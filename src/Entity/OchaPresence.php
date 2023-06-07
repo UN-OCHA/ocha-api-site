@@ -6,7 +6,6 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\OchaPresenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -34,16 +33,13 @@ class OchaPresence
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $countries;
 
-    #[ORM\ManyToOne(inversedBy: 'ochaPresences')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Provider $provider = null;
-
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $externalIds = [];
+    #[ORM\OneToMany(mappedBy: 'OchaPresence', targetEntity: OchaPresenceExternalId::class)]
+    private Collection $ochaPresenceExternalIds;
 
     public function __construct()
     {
         $this->countries = new ArrayCollection();
+        $this->ochaPresenceExternalIds = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -109,26 +105,32 @@ class OchaPresence
         return $this;
     }
 
-    public function getProvider(): ?Provider
+    /**
+     * @return Collection<int, OchaPresenceExternalId>
+     */
+    public function getOchaPresenceExternalIds(): Collection
     {
-        return $this->provider;
+        return $this->ochaPresenceExternalIds;
     }
 
-    public function setProvider(?Provider $provider): self
+    public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
     {
-        $this->provider = $provider;
+        if (!$this->ochaPresenceExternalIds->contains($ochaPresenceExternalId)) {
+            $this->ochaPresenceExternalIds->add($ochaPresenceExternalId);
+            $ochaPresenceExternalId->setOchaPresence($this);
+        }
 
         return $this;
     }
 
-    public function getExternalIds(): array
+    public function removeOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
     {
-        return $this->externalIds;
-    }
-
-    public function setExternalIds(array $externalIds): self
-    {
-        $this->externalIds = $externalIds;
+        if ($this->ochaPresenceExternalIds->removeElement($ochaPresenceExternalId)) {
+            // set the owning side to null (unless already changed)
+            if ($ochaPresenceExternalId->getOchaPresence() === $this) {
+                $ochaPresenceExternalId->setOchaPresence(null);
+            }
+        }
 
         return $this;
     }

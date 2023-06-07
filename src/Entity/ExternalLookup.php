@@ -7,6 +7,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ExternalLookupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource()]
@@ -33,6 +35,14 @@ class ExternalLookup
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\ManyToMany(targetEntity: OchaPresenceExternalId::class, mappedBy: 'ExternalIds')]
+    private Collection $ochaPresenceExternalIds;
+
+    public function __construct()
+    {
+        $this->ochaPresenceExternalIds = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {
@@ -105,4 +115,32 @@ class ExternalLookup
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, OchaPresenceExternalId>
+     */
+    public function getOchaPresenceExternalIds(): Collection
+    {
+        return $this->ochaPresenceExternalIds;
+    }
+
+    public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
+    {
+        if (!$this->ochaPresenceExternalIds->contains($ochaPresenceExternalId)) {
+            $this->ochaPresenceExternalIds->add($ochaPresenceExternalId);
+            $ochaPresenceExternalId->addExternalId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
+    {
+        if ($this->ochaPresenceExternalIds->removeElement($ochaPresenceExternalId)) {
+            $ochaPresenceExternalId->removeExternalId($this);
+        }
+
+        return $this;
+    }
+
 }

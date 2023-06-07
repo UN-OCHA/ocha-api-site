@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Country;
+use App\Entity\ExternalLookup;
 use App\Entity\KeyFigures;
 use App\Entity\OchaPresence;
+use App\Entity\OchaPresenceExternalId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -121,18 +123,19 @@ class KeyFiguresRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array Returns an array of iso3
+     * @return array Returns an array of ocha presences.
      */
     public function getDistinctOchaPresences($provider = NULL): array
     {
-        $qb = $this->createQueryBuilder('f')
-            ->innerJoin(Country::class, 'c', 'WITH', 'c.id = f.iso3')
-            ->innerJoin(OchaPresence::class, 'o', 'WITH', 'o.id = c.ochaPresence')
-            ->orderBy('o.name', 'ASC')
-            ->select('DISTINCT(LOWER(o.id)) as value, o.name as label');
+        $qb = $this->createQueryBuilder('kf')
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin('el.ochaPresenceExternalIds', 'opei')
+            ->innerJoin(OchaPresence::class, 'op', 'WITH', 'op.id = opei.OchaPresence')
+            ->orderBy('op.name', 'ASC')
+            ->select('DISTINCT(op.id) as value, op.name as label');
 
         if (!empty($provider)) {
-            $qb->where($qb->expr()->eq('f.provider', ':provider'))
+            $qb->where($qb->expr()->eq('opei.Provider', ':provider'))
                 ->setParameter(':provider', $provider);
         }
 

@@ -26,9 +26,13 @@ class Provider
     #[ORM\OneToMany(mappedBy: 'provider', targetEntity: OchaPresence::class)]
     private Collection $ochaPresences;
 
+    #[ORM\OneToMany(mappedBy: 'Provider', targetEntity: OchaPresenceExternalId::class)]
+    private Collection $ochaPresenceExternalIds;
+
     public function __construct()
     {
         $this->ochaPresences = new ArrayCollection();
+        $this->ochaPresenceExternalIds = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -103,6 +107,36 @@ class Provider
             // set the owning side to null (unless already changed)
             if ($ochaPresence->getProvider() === $this) {
                 $ochaPresence->setProvider(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OchaPresenceExternalId>
+     */
+    public function getOchaPresenceExternalIds(): Collection
+    {
+        return $this->ochaPresenceExternalIds;
+    }
+
+    public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
+    {
+        if (!$this->ochaPresenceExternalIds->contains($ochaPresenceExternalId)) {
+            $this->ochaPresenceExternalIds->add($ochaPresenceExternalId);
+            $ochaPresenceExternalId->setProvider($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
+    {
+        if ($this->ochaPresenceExternalIds->removeElement($ochaPresenceExternalId)) {
+            // set the owning side to null (unless already changed)
+            if ($ochaPresenceExternalId->getProvider() === $this) {
+                $ochaPresenceExternalId->setProvider(null);
             }
         }
 
