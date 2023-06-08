@@ -7,28 +7,37 @@ use App\Repository\OchaPresenceExternalIdRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource()]
+#[ApiResource(
+    normalizationContext: ['groups' => ['ochapresence_external_read']],
+    denormalizationContext: ['groups' => ['ochapresence_external_write']],
+  )]
 #[ORM\Entity(repositoryClass: OchaPresenceExternalIdRepository::class)]
 class OchaPresenceExternalId
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds')]
+    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['all'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?OchaPresence $OchaPresence = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds')]
+    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['all'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?Provider $Provider = null;
 
     #[ORM\Column(length: 4)]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?string $year = null;
 
-    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, inversedBy: 'ochaPresenceExternalIds')]
+    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, mappedBy: 'ochaPresenceExternalIds', cascade: ['all'])]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private Collection $ExternalIds;
 
     public function __construct()
@@ -77,12 +86,16 @@ class OchaPresenceExternalId
         return $this;
     }
 
-    /**
-     * @return Collection<int, ExternalLookup>
-     */
-    public function getExternalIds(): Collection
+    public function getExternalIds()
     {
-        return $this->ExternalIds;
+        return $this->ExternalIds->getValues();
+    }
+
+    public function setExternalIds(array $external_ids): self
+    {
+        $this->ExternalIds = $external_ids;
+
+        return $this;
     }
 
     public function addExternalId(ExternalLookup $externalId): self

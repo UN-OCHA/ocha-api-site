@@ -18,11 +18,11 @@ class OchaPresence
 {
     #[ORM\Id]
     #[ORM\Column(length: 10)]
-    #[Groups(['ochapresence_read', 'ochapresence_write'])]
+    #[Groups(['ochapresence_read', 'ochapresence_write', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['ochapresence_read', 'ochapresence_write'])]
+    #[Groups(['ochapresence_read', 'ochapresence_write', 'ochapresence_external_read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -34,6 +34,7 @@ class OchaPresence
     private Collection $countries;
 
     #[ORM\OneToMany(mappedBy: 'OchaPresence', targetEntity: OchaPresenceExternalId::class)]
+    #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $ochaPresenceExternalIds;
 
     public function __construct()
@@ -105,12 +106,9 @@ class OchaPresence
         return $this;
     }
 
-    /**
-     * @return Collection<int, OchaPresenceExternalId>
-     */
-    public function getOchaPresenceExternalIds(): Collection
+    public function getOchaPresenceExternalIds()
     {
-        return $this->ochaPresenceExternalIds;
+        return $this->ochaPresenceExternalIds->getValues();
     }
 
     public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self

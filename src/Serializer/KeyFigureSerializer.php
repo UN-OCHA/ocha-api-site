@@ -3,6 +3,7 @@
 namespace App\Serializer;
 
 use App\Dto\ArchiveInput;
+use App\Entity\KeyFigures;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -56,6 +57,9 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     public function normalize($object, $format = null, array $context = []) : array|string|int|float|bool|\ArrayObject|null
     {
         $data = $this->decorated->normalize($object, $format, $context);
+        if (!is_array($data)) {
+            return $data;
+        }
 
         // Add textual values if needed.
         if (isset($data['value_string']) && $data['value'] == '0.00') {
@@ -75,6 +79,10 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     }
 
     public function supportsDenormalization($data, $type, $format = null, array $context = []) : bool {
+        if (!is_a($type, KeyFigures::class, true)) {
+            return FALSE;
+        }
+
         return $this->decorated->supportsDenormalization($data, $type, $format);
     }
 

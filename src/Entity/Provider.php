@@ -6,15 +6,18 @@ use App\Repository\ProviderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
 class Provider
 {
     #[ORM\Id]
     #[ORM\Column]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -23,15 +26,11 @@ class Provider
     #[ORM\Column(length: 255)]
     private ?string $expand = null;
 
-    #[ORM\OneToMany(mappedBy: 'provider', targetEntity: OchaPresence::class)]
-    private Collection $ochaPresences;
-
     #[ORM\OneToMany(mappedBy: 'Provider', targetEntity: OchaPresenceExternalId::class)]
     private Collection $ochaPresenceExternalIds;
 
     public function __construct()
     {
-        $this->ochaPresences = new ArrayCollection();
         $this->ochaPresenceExternalIds = new ArrayCollection();
     }
 
@@ -83,42 +82,9 @@ class Provider
         return $this;
     }
 
-    /**
-     * @return Collection<int, OchaPresence>
-     */
-    public function getOchaPresences(): Collection
+    public function getOchaPresenceExternalIds()
     {
-        return $this->ochaPresences;
-    }
-
-    public function addOchaPresence(OchaPresence $ochaPresence): self
-    {
-        if (!$this->ochaPresences->contains($ochaPresence)) {
-            $this->ochaPresences->add($ochaPresence);
-            $ochaPresence->setProvider($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOchaPresence(OchaPresence $ochaPresence): self
-    {
-        if ($this->ochaPresences->removeElement($ochaPresence)) {
-            // set the owning side to null (unless already changed)
-            if ($ochaPresence->getProvider() === $this) {
-                $ochaPresence->setProvider(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, OchaPresenceExternalId>
-     */
-    public function getOchaPresenceExternalIds(): Collection
-    {
-        return $this->ochaPresenceExternalIds;
+        return $this->ochaPresenceExternalIds->getValues();
     }
 
     public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self

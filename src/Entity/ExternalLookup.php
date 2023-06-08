@@ -10,6 +10,7 @@ use App\Repository\ExternalLookupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource()]
 #[ApiFilter(SearchFilter::class, properties: ['provider' => 'exact', 'iso3' => 'exact', 'year' => 'exact'])]
@@ -19,6 +20,7 @@ class ExternalLookup
 {
     #[ORM\Id]
     #[ORM\Column]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
@@ -31,12 +33,14 @@ class ExternalLookup
     private ?string $iso3 = null;
 
     #[ORM\Column]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $external_id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: OchaPresenceExternalId::class, mappedBy: 'ExternalIds')]
+    #[ORM\ManyToMany(targetEntity: OchaPresenceExternalId::class, inversedBy: 'ExternalIds')]
     private Collection $ochaPresenceExternalIds;
 
     public function __construct()
@@ -116,12 +120,9 @@ class ExternalLookup
         return $this;
     }
 
-    /**
-     * @return Collection<int, OchaPresenceExternalId>
-     */
-    public function getOchaPresenceExternalIds(): Collection
+    public function getOchaPresenceExternalIds()
     {
-        return $this->ochaPresenceExternalIds;
+        return $this->ochaPresenceExternalIds->getValues();
     }
 
     public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self

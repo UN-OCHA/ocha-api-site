@@ -25,11 +25,15 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
      */
     public function denormalize($data, $class, $format = null, array $context = []) : mixed
     {
-      $data['countries'] = array_map(function ($iso3) {
-        return $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $iso3]]);
-      }, $data['countries']);
+        $data['countries'] = array_map(function ($id) {
+            return $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $id]]);
+        }, $data['countries']);
 
-      return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
+//        $data['ocha_presence_external_ids'] = array_map(function ($id) {
+//            return $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $id]]);
+//        }, $data['ocha_presence_external_ids']);
+
+        return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
     }
 
     /**

@@ -57,6 +57,10 @@ services:
         tags:
             - { name: serializer.normalizer}
 
+    App\Serializer\OchaPresenceExternalIdDenormalizer:
+        tags:
+            - { name: serializer.normalizer}
+
     App\EventListener\DatabaseOnFlushListener:
         tags:
             -
