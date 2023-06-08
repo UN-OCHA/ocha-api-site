@@ -23,6 +23,7 @@ class OchaPresenceExternalIdRepository extends ServiceEntityRepository
 
     public function save(OchaPresenceExternalId $entity, bool $flush = false): void
     {
+        trigger_deprecation(__CLASS__, __FUNCTION__, 'called');
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {

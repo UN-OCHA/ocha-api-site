@@ -29,11 +29,11 @@ class OchaPresence
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private ?string $officeType = null;
 
-    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: Country::class)]
+    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: Country::class, cascade: ['persist'])]
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $countries;
 
-    #[ORM\OneToMany(mappedBy: 'OchaPresence', targetEntity: OchaPresenceExternalId::class)]
+    #[ORM\OneToMany(mappedBy: 'OchaPresence', targetEntity: OchaPresenceExternalId::class, cascade: ['persist'])]
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $ochaPresenceExternalIds;
 

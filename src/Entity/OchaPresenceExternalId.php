@@ -22,12 +22,12 @@ class OchaPresenceExternalId
     #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['all'])]
+    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?OchaPresence $OchaPresence = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['all'])]
+    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?Provider $Provider = null;
@@ -36,7 +36,7 @@ class OchaPresenceExternalId
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?string $year = null;
 
-    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, mappedBy: 'ochaPresenceExternalIds', cascade: ['all'])]
+    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, inversedBy: 'ochaPresenceExternalIds', cascade: ['persist'])]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private Collection $ExternalIds;
 
