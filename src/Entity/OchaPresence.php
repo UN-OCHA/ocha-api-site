@@ -3,6 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\OchaPresenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,15 +15,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
+  security: "is_granted('ROLE_USER')",
   normalizationContext: ['groups' => ['ochapresence_read']],
   denormalizationContext: ['groups' => ['ochapresence_write']],
 )]
+#[Get()]
+#[GetCollection()]
+#[Post(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Put(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
 #[ORM\Entity(repositoryClass: OchaPresenceRepository::class)]
 class OchaPresence
 {
     #[ORM\Id]
     #[ORM\Column(length: 10)]
-    #[Groups(['ochapresence_read', 'ochapresence_write', 'ochapresence_external_read', 'ochapresence_external_write'])]
+    #[Groups(['ochapresence_read', 'ochapresence_write', 'ochapresence_external_read'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
@@ -33,7 +44,7 @@ class OchaPresence
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $countries;
 
-    #[ORM\OneToMany(mappedBy: 'OchaPresence', targetEntity: OchaPresenceExternalId::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: OchaPresenceExternalId::class, cascade: ['persist'])]
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $ochaPresenceExternalIds;
 

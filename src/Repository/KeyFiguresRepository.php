@@ -128,14 +128,14 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctOchaPresences($provider = NULL): array
     {
         $qb = $this->createQueryBuilder('kf')
-            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
             ->innerJoin('el.ochaPresenceExternalIds', 'opei')
-            ->innerJoin(OchaPresence::class, 'op', 'WITH', 'op.id = opei.OchaPresence')
+            ->innerJoin(OchaPresence::class, 'op', 'WITH', 'op.id = opei.ochaPresence')
             ->orderBy('op.name', 'ASC')
             ->select('DISTINCT(op.id) as value, op.name as label');
 
         if (!empty($provider)) {
-            $qb->andWhere($qb->expr()->eq('opei.Provider', ':provider'))
+            $qb->andWhere($qb->expr()->eq('opei.provider', ':provider'))
                 ->setParameter(':provider', $provider);
         }
 
@@ -150,14 +150,14 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctOchaPresenceYears($provider, $ocha_presence_id): array
     {
         $qb = $this->createQueryBuilder('kf')
-            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
             ->innerJoin('el.ochaPresenceExternalIds', 'opei')
             ->select('DISTINCT(opei.year) as value, opei.year as label');
 
-        $qb->andWhere($qb->expr()->eq('opei.Provider', ':provider'))
+        $qb->andWhere($qb->expr()->eq('opei.provider', ':provider'))
             ->setParameter(':provider', $provider);
 
-        $qb->andWhere($qb->expr()->eq('opei.OchaPresence', ':ocha_presence_id'))
+        $qb->andWhere($qb->expr()->eq('opei.ochaPresence', ':ocha_presence_id'))
             ->setParameter(':ocha_presence_id', $ocha_presence_id);
 
         return $qb->getQuery()
@@ -172,14 +172,14 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getOchaPresenceFigures($provider, $ocha_presence_id, $year, $figure_ids = []): array
     {
         $qb = $this->createQueryBuilder('kf')
-            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
             ->innerJoin('el.ochaPresenceExternalIds', 'opei')
             ->select('kf');
 
-        $qb->andWhere($qb->expr()->eq('opei.Provider', ':provider'))
+        $qb->andWhere($qb->expr()->eq('opei.provider', ':provider'))
             ->setParameter(':provider', $provider);
 
-        $qb->andWhere($qb->expr()->eq('opei.OchaPresence', ':ocha_presence_id'))
+        $qb->andWhere($qb->expr()->eq('opei.ochaPresence', ':ocha_presence_id'))
             ->setParameter(':ocha_presence_id', $ocha_presence_id);
 
         $qb->andWhere($qb->expr()->eq('opei.year', ':year'))

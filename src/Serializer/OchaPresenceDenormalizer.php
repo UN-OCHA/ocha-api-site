@@ -5,6 +5,7 @@ namespace App\Serializer;
 use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Country;
 use App\Entity\OchaPresence;
+use App\Entity\OchaPresenceExternalId;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -25,13 +26,22 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
      */
     public function denormalize($data, $class, $format = null, array $context = []) : mixed
     {
-        $data['countries'] = array_map(function ($id) {
-            return $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $id]]);
-        }, $data['countries']);
+        if (isset($data['countries']) && is_array($data['countries'])) {
+            foreach ($data['countries'] as &$country) {
+                if (is_array($country)) {
+                    if (isset($country['@id'])) {
+                        $country['@id'] = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country['@id']]]);
+                    }
+                }
+                else {
+                    $country = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country]]);
+                }
+            }
+        }
 
-//        $data['ocha_presence_external_ids'] = array_map(function ($id) {
-//            return $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $id]]);
-//        }, $data['ocha_presence_external_ids']);
+        $data['ocha_presence_external_ids'] = array_map(function ($id) {
+            return $this->iriConverter->getIriFromResource(resource: OchaPresenceExternalId::class, context: ['uri_variables' => ['id' => $id]]);
+        }, $data['ocha_presence_external_ids']);
 
         return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
     }

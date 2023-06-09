@@ -1,0 +1,20 @@
+App\Entity\Country:
+  afg:
+    id: 'afg'
+    name: 'Afghanistan'
+    iso2: 'af'
+    iso3: 'afg'
+    code: '4'
+  yem:
+    id: 'yem'
+    name: 'Yemen'
+    iso2: 'ye'
+    iso3: 'yem'
+    code: '887'
+  zaf:
+    id: 'zaf'
+    name: 'South Africa'
+    iso2: 'za'
+    iso3: 'zaf'
+    code: '71'
+

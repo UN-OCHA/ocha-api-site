@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Doctrine\Orm\State\ItemProvider;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['ochapresence_external_read']],
@@ -22,27 +23,27 @@ class OchaPresenceExternalId
     #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['persist'])]
+    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
-    private ?OchaPresence $OchaPresence = null;
+    private ?OchaPresence $ochaPresence = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds', cascade: ['persist'])]
+    #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
-    private ?Provider $Provider = null;
+    private ?Provider $provider = null;
 
     #[ORM\Column(length: 4)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?string $year = null;
 
-    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, inversedBy: 'ochaPresenceExternalIds', cascade: ['persist'])]
+    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, cascade: ['persist'])]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
-    private Collection $ExternalIds;
+    private Collection $externalIds;
 
     public function __construct()
     {
-        $this->ExternalIds = new ArrayCollection();
+        $this->externalIds = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -52,24 +53,24 @@ class OchaPresenceExternalId
 
     public function getOchaPresence(): ?OchaPresence
     {
-        return $this->OchaPresence;
+        return $this->ochaPresence;
     }
 
     public function setOchaPresence(?OchaPresence $OchaPresence): self
     {
-        $this->OchaPresence = $OchaPresence;
+        $this->ochaPresence = $OchaPresence;
 
         return $this;
     }
 
     public function getProvider(): ?Provider
     {
-        return $this->Provider;
+        return $this->provider;
     }
 
     public function setProvider(?Provider $Provider): self
     {
-        $this->Provider = $Provider;
+        $this->provider = $Provider;
 
         return $this;
     }
@@ -88,20 +89,13 @@ class OchaPresenceExternalId
 
     public function getExternalIds()
     {
-        return $this->ExternalIds->getValues();
-    }
-
-    public function setExternalIds(array $external_ids): self
-    {
-        $this->ExternalIds = $external_ids;
-
-        return $this;
+        return $this->externalIds->getValues();
     }
 
     public function addExternalId(ExternalLookup $externalId): self
     {
-        if (!$this->ExternalIds->contains($externalId)) {
-            $this->ExternalIds->add($externalId);
+        if (!$this->externalIds->contains($externalId)) {
+            $this->externalIds->add($externalId);
         }
 
         return $this;
@@ -109,7 +103,7 @@ class OchaPresenceExternalId
 
     public function removeExternalId(ExternalLookup $externalId): self
     {
-        $this->ExternalIds->removeElement($externalId);
+        $this->externalIds->removeElement($externalId);
 
         return $this;
     }

@@ -23,7 +23,6 @@ class OchaPresenceExternalIdRepository extends ServiceEntityRepository
 
     public function save(OchaPresenceExternalId $entity, bool $flush = false): void
     {
-        trigger_deprecation(__CLASS__, __FUNCTION__, 'called');
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
@@ -40,28 +39,4 @@ class OchaPresenceExternalIdRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return OchaPresenceExternalId[] Returns an array of OchaPresenceExternalId objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?OchaPresenceExternalId
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

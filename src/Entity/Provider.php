@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProviderRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource()]
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
 class Provider
 {
@@ -25,14 +25,6 @@ class Provider
 
     #[ORM\Column(length: 255)]
     private ?string $expand = null;
-
-    #[ORM\OneToMany(mappedBy: 'Provider', targetEntity: OchaPresenceExternalId::class)]
-    private Collection $ochaPresenceExternalIds;
-
-    public function __construct()
-    {
-        $this->ochaPresenceExternalIds = new ArrayCollection();
-    }
 
     public function getId(): ?string
     {
@@ -78,33 +70,6 @@ class Provider
     public function setExpand(string $expand): self
     {
         $this->expand = $expand;
-
-        return $this;
-    }
-
-    public function getOchaPresenceExternalIds()
-    {
-        return $this->ochaPresenceExternalIds->getValues();
-    }
-
-    public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
-    {
-        if (!$this->ochaPresenceExternalIds->contains($ochaPresenceExternalId)) {
-            $this->ochaPresenceExternalIds->add($ochaPresenceExternalId);
-            $ochaPresenceExternalId->setProvider($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self
-    {
-        if ($this->ochaPresenceExternalIds->removeElement($ochaPresenceExternalId)) {
-            // set the owning side to null (unless already changed)
-            if ($ochaPresenceExternalId->getProvider() === $this) {
-                $ochaPresenceExternalId->setProvider(null);
-            }
-        }
 
         return $this;
     }

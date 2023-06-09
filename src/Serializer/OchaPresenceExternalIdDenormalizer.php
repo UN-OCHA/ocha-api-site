@@ -29,18 +29,18 @@ class OchaPresenceExternalIdDenormalizer implements DenormalizerInterface, Denor
     {
         if (isset($data['external_ids'])) {
             $data['external_ids'] = array_map(function ($id) {
-              if (strpos($id, '/') !== FALSE) {
+              if (!is_string($id) || strpos($id, '/') !== FALSE) {
                   return $id;
               }
               return $this->iriConverter->getIriFromResource(resource: ExternalLookup::class, context: ['uri_variables' => ['id' => $id]]);
             }, $data['external_ids']);
         }
 
-        if (isset($data['provider']) && strpos($data['provider'], '/') === FALSE) {
+        if (isset($data['provider']) && is_string($data['provider']) && strpos($data['provider'], '/') === FALSE) {
             $data['provider'] = $this->iriConverter->getIriFromResource(resource: Provider::class, context: ['uri_variables' => ['id' => $data['provider']]]);
         }
 
-        if (isset($data['ocha_presence']) && strpos($data['ocha_presence'], '/') === FALSE) {
+        if (isset($data['ocha_presence']) && is_string($data['ocha_presence']) && strpos($data['ocha_presence'], '/') === FALSE) {
             $data['ocha_presence'] = $this->iriConverter->getIriFromResource(resource: OchaPresence::class, context: ['uri_variables' => ['id' => $data['ocha_presence']]]);
         }
 

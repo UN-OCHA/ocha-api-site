@@ -34,13 +34,13 @@ class ExternalLookup
 
     #[ORM\Column]
     #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
-    private ?string $external_id = null;
+    private ?string $externalId = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: OchaPresenceExternalId::class, mappedBy: 'ExternalIds')]
+    #[ORM\ManyToMany(targetEntity: OchaPresenceExternalId::class, mappedBy: 'externalIds')]
     private Collection $ochaPresenceExternalIds;
 
     public function __construct()
@@ -98,12 +98,12 @@ class ExternalLookup
 
     public function getExternalId(): ?string
     {
-        return $this->external_id;
+        return $this->externalId;
     }
 
     public function setExternalId(string $external_id): self
     {
-        $this->external_id = $external_id;
+        $this->externalId = $external_id;
 
         return $this;
     }
