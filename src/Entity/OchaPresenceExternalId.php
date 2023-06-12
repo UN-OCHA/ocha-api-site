@@ -47,7 +47,7 @@ class OchaPresenceExternalId
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?string $year = null;
 
-    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, cascade: ['persist'])]
+    #[ORM\ManyToMany(targetEntity: ExternalLookup::class, inversedBy: 'ochaPresenceExternalIds', cascade: ['persist'])]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private Collection $externalIds;
 
