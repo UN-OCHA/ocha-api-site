@@ -58,7 +58,7 @@ class ExternalLookup
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: OchaPresenceExternalId::class, mappedBy: 'externalIds')]
-    #[Groups(['external_lookup_read', 'external_lookup_write'])]
+    #[Groups(['external_lookup_read'])]
     private Collection $ochaPresenceExternalIds;
 
     public function __construct()

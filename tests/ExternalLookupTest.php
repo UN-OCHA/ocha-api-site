@@ -103,4 +103,171 @@ class ExternalLookupTest extends ApiTestCase
         $this->assertEquals($body['id'], $this->data['id']);
     }
 
+    public function testPutAsUser2(): void
+    {
+        $client = static::createClient();
+        $client->disableReboot();
+
+        $response = $client->request('POST', $this->addPrefix('external_lookups'), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+
+        $response = $client->request('PUT', $this->addPrefix('external_lookups/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+
+        $this->data['name'] = $this->data['name'] . ' - updated';
+        $response = $client->request('PUT', $this->addPrefix('external_lookups/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['name'], $this->data['name']);
+    }
+
+    public function testPatchAsUser2(): void
+    {
+        $client = static::createClient();
+        $client->disableReboot();
+
+        $response = $client->request('POST', $this->addPrefix('external_lookups'), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+
+        $response = $client->request('PATCH', $this->addPrefix('external_lookups/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json',
+            ],
+            'json' => [
+                'name' => $this->data['name'],
+            ],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+
+        $this->data['name'] = $this->data['name'] . ' - updated';
+        $response = $client->request('PATCH', $this->addPrefix('external_lookups/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json',
+            ],
+            'json' => [
+                'name' => $this->data['name'],
+            ],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['name'], $this->data['name']);
+    }
+
+    public function testPatchAsUser2(): void
+    {
+        $client = static::createClient();
+        $client->disableReboot();
+
+        $response = $client->request('POST', $this->addPrefix('external_lookups'), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+
+        $response = $client->request('PATCH', $this->addPrefix('external_lookups/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json',
+            ],
+            'json' => [
+                'name' => $this->data['name'],
+            ],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+
+        $this->data['name'] = $this->data['name'] . ' - updated';
+        $response = $client->request('PATCH', $this->addPrefix('external_lookups/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => 'token3',
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json',
+            ],
+            'json' => [
+                'name' => $this->data['name'],
+            ],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['name'], $this->data['name']);
+    }
+
 }
