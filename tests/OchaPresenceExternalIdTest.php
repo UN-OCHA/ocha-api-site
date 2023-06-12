@@ -6,7 +6,7 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
-class OchaPresenceTest extends ApiTestCase
+class OchaPresenceExternalIdTest extends ApiTestCase
 {
     use RefreshDatabaseTrait;
     use TestTrait;
@@ -15,14 +15,13 @@ class OchaPresenceTest extends ApiTestCase
     protected $user_token = 'token2';
 
     protected $data = [
-        'id' => 'afg',
-        'name' => 'Indicator',
-        'office_type' => 'Afghanistan',
-        'countries' => [
-            'afg',
-            'yem',
+        'ocha_presence' => 'roap',
+        'provider' => 'src2',
+        'year' => '2000',
+        'external_ids' => [
+            'fts_1116',
+            'fts_1117',
         ],
-        'ocha_presence_external_ids' => [],
     ];
 
     public function testCreateJson(): void
@@ -30,7 +29,7 @@ class OchaPresenceTest extends ApiTestCase
         $client = static::createClient();
         $client->disableReboot();
 
-        $response = $client->request('POST', $this->addPrefix('ocha_presences'), [
+        $response = $client->request('POST', $this->addPrefix('ocha_presence_external_ids'), [
             'headers' => [
                 'API-KEY' => $this->token,
                 'APP-NAME' => 'test',
@@ -48,7 +47,7 @@ class OchaPresenceTest extends ApiTestCase
         $client = static::createClient();
         $client->disableReboot();
 
-        $response = $client->request('POST', $this->addPrefix('ocha_presences'), [
+        $response = $client->request('POST', $this->addPrefix('ocha_presence_external_ids'), [
             'headers' => [
                 'API-KEY' => $this->token,
                 'APP-NAME' => 'test',
@@ -62,8 +61,8 @@ class OchaPresenceTest extends ApiTestCase
 
         $body = json_decode($response->getContent(), TRUE);
 
-        $this->assertEquals($body['id'], $this->data['id']);
-        $this->assertEquals($body['countries'][0]['id'], $this->data['countries'][0]);
+        $this->assertEquals($body['ocha_presence']['id'], $this->data['ocha_presence']);
+        $this->assertEquals($body['year'], $this->data['year']);
     }
 
     public function testCreateAsUser1(): void
@@ -71,7 +70,7 @@ class OchaPresenceTest extends ApiTestCase
         $client = static::createClient();
         $client->disableReboot();
 
-        $response = $client->request('POST', $this->addPrefix('ocha_presences'), [
+        $response = $client->request('POST', $this->addPrefix('ocha_presence_external_ids'), [
             'headers' => [
                 'API-KEY' => $this->user_token,
                 'APP-NAME' => 'test',

@@ -39,9 +39,11 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
             }
         }
 
-        $data['ocha_presence_external_ids'] = array_map(function ($id) {
-            return $this->iriConverter->getIriFromResource(resource: OchaPresenceExternalId::class, context: ['uri_variables' => ['id' => $id]]);
-        }, $data['ocha_presence_external_ids']);
+        if (isset($data['ocha_presence_external_ids'])) {
+            $data['ocha_presence_external_ids'] = array_map(function ($id) {
+                return $this->iriConverter->getIriFromResource(resource: OchaPresenceExternalId::class, context: ['uri_variables' => ['id' => $id]]);
+            }, $data['ocha_presence_external_ids']);
+        }
 
         return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
     }
@@ -51,6 +53,6 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
      */
     public function supportsDenormalization($data, $type, $format = null, array $context = []): bool
     {
-        return \in_array($format, ['json', 'jsonld'], true) && is_a($type, OchaPresence::class, true) && !empty($data['countries']) && !isset($context[__CLASS__]);
+        return \in_array($format, ['json', 'jsonld'], true) && is_a($type, OchaPresence::class, true) && !isset($context[__CLASS__]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\ExternalLookup;
 use App\Entity\KeyFigures;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -24,7 +25,7 @@ class KeyFiguresProviderVoter extends Voter
             'KEY_FIGURES_BATCH',
             'KEY_FIGURES_DELETE',
         ]);
-        $supportsSubject = $subject instanceof KeyFigures;
+        $supportsSubject = $subject instanceof KeyFigures || $subject instanceof ExternalLookup;
 
         return $supportsAttribute && $supportsSubject;
     }
@@ -45,7 +46,7 @@ class KeyFiguresProviderVoter extends Voter
         switch ($attribute) {
           case 'KEY_FIGURES_UPSERT':
           case 'KEY_FIGURES_DELETE':
-              /** @var \App\Entity\KeyFigures $subject */
+              /** @var \App\Entity\KeyFigures|\App\Entity\ExternalLookup $subject */
                 if (in_array($subject->getProvider(), $user->getCanWrite())) {
                     return true;
                 }

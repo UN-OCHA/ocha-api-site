@@ -52,6 +52,6 @@ class OchaPresenceExternalIdDenormalizer implements DenormalizerInterface, Denor
      */
     public function supportsDenormalization($data, $type, $format = null, array $context = []): bool
     {
-        return \in_array($format, ['json', 'jsonld'], true) && is_a($type, OchaPresenceExternalId::class, true) && !empty($data['external_ids']) && !isset($context[__CLASS__]);
+        return \in_array($format, ['json', 'jsonld'], true) && is_a($type, OchaPresenceExternalId::class, true) && !isset($context[__CLASS__]);
     }
 }

@@ -1,0 +1,14 @@
+App\Entity\OchaPresence:
+  yem:
+    id: 'yem'
+    name: 'Yemen office'
+    office_type: 'Country Office'
+    countries:
+      - '@yem'
+  roap:
+    id: 'roap'
+    name: 'Asia and the Pacific (ROAP)'
+    office_type: 'Regional Office'
+    countries:
+      - '@afg'
+      - '@yem'

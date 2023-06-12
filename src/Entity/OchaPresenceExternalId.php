@@ -8,19 +8,29 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Doctrine\Orm\State\ItemProvider;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 
 #[ApiResource(
+    security: "is_granted('ROLE_USER')",
     normalizationContext: ['groups' => ['ochapresence_external_read']],
     denormalizationContext: ['groups' => ['ochapresence_external_write']],
   )]
+#[Get()]
+#[GetCollection()]
+#[Post(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Put(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
 #[ORM\Entity(repositoryClass: OchaPresenceExternalIdRepository::class)]
 class OchaPresenceExternalId
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'external_lookup_read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds')]
