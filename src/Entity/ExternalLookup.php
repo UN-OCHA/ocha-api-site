@@ -28,7 +28,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[GetCollection()]
 #[Post(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)")]
 #[Put(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)")]
-#[Patch(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)")]
+#[Patch(
+    inputFormats: [
+        'jsonld' => ['application/merge-patch+json'],
+    ],
+    securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)"
+)]
 #[ORM\Entity(repositoryClass: ExternalLookupRepository::class)]
 class ExternalLookup
 {

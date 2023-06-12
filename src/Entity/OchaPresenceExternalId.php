@@ -23,7 +23,12 @@ use ApiPlatform\Metadata\Put;
 #[GetCollection()]
 #[Post(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
 #[Put(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
-#[Patch(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Patch(
+    inputFormats: [
+        'jsonld' => ['application/merge-patch+json'],
+    ],
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')"
+)]
 #[ORM\Entity(repositoryClass: OchaPresenceExternalIdRepository::class)]
 class OchaPresenceExternalId
 {

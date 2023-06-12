@@ -26,11 +26,15 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
      */
     public function denormalize($data, $class, $format = null, array $context = []) : mixed
     {
+        trigger_deprecation('denorm','v1', print_r($data,TRUE));
         if (isset($data['countries']) && is_array($data['countries'])) {
             foreach ($data['countries'] as &$country) {
                 if (is_array($country)) {
                     if (isset($country['@id'])) {
                         $country['@id'] = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country['@id']]]);
+                    }
+                    if (isset($country['id'])) {
+                        $country['id'] = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country['id']]]);
                     }
                 }
                 else {
@@ -45,6 +49,7 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
             }, $data['ocha_presence_external_ids']);
         }
 
+        trigger_deprecation('denorm','v2', print_r($data,TRUE));
         return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
     }
 

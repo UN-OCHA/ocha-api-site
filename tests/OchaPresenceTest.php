@@ -84,4 +84,126 @@ class OchaPresenceTest extends ApiTestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
+    public function testPutLdJson(): void
+    {
+        $client = static::createClient();
+        $client->disableReboot();
+
+        $response = $client->request('POST', $this->addPrefix('ocha_presences'), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['countries'][0]['id'], $this->data['countries'][0]);
+
+        $response = $client->request('PUT', $this->addPrefix('ocha_presences/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['countries'][0]['id'], $this->data['countries'][0]);
+
+        $new_data = $this->data;
+        $new_data['countries'][] = 'zaf';
+        $response = $client->request('PUT', $this->addPrefix('ocha_presences/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $new_data,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+
+        $this->assertEquals($body['id'], $new_data['id']);
+        $this->assertEquals($body['countries'][0]['id'], $new_data['countries'][0]);
+        $this->assertEquals($body['countries'][2]['id'], $new_data['countries'][2]);
+    }
+
+    public function testPatchLdJson(): void
+    {
+        $client = static::createClient();
+        $client->disableReboot();
+
+        $response = $client->request('POST', $this->addPrefix('ocha_presences'), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/ld+json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['countries'][0]['id'], $this->data['countries'][0]);
+
+        $response = $client->request('PATCH', $this->addPrefix('ocha_presences/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json',
+            ],
+            'json' => [
+                'name' => 'new name',
+            ],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['countries'][0]['id'], $this->data['countries'][0]);
+
+        // PATCH on arrays will do a replace not a merge!
+        $response = $client->request('PATCH', $this->addPrefix('ocha_presences/' . $this->data['id']), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json',
+            ],
+            'json' => [
+                'countries' => ['zaf'],
+            ],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getContent(), TRUE);
+
+        $this->assertEquals($body['id'], $this->data['id']);
+        $this->assertEquals($body['countries'][0]['id'], 'zaf');
+    }
+
 }

@@ -169,6 +169,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         // Partial update.
         new Patch(
+          inputFormats: [
+            'jsonld' => ['application/merge-patch+json'],
+          ],
           securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
           uriTemplate: '/key_figures/{id}',
           denormalizationContext: [
