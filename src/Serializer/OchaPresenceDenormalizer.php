@@ -28,17 +28,7 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
     {
         if (isset($data['countries']) && is_array($data['countries'])) {
             foreach ($data['countries'] as &$country) {
-                if (is_array($country)) {
-                    if (isset($country['@id'])) {
-                        $country['@id'] = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country['@id']]]);
-                    }
-                    if (isset($country['id'])) {
-                        $country['id'] = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country['id']]]);
-                    }
-                }
-                else {
-                    $country = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country]]);
-                }
+                $country = $this->iriConverter->getIriFromResource(resource: Country::class, context: ['uri_variables' => ['id' => $country]]);
             }
         }
 
