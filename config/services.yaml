@@ -61,6 +61,10 @@ services:
         tags:
             - { name: serializer.normalizer}
 
+    App\Serializer\ExternalLookupDenormalizer:
+        tags:
+            - { name: serializer.normalizer}
+
     App\EventListener\DatabaseOnFlushListener:
         tags:
             -
