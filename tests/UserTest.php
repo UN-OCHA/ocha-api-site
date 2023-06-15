@@ -27,7 +27,7 @@ class UserTest extends ApiTestCase
         'id' => 1,
         'email' => 'admin@example',
         'username' => 'admin',
-        'FullName' => 'admin',
+        'full_name' => 'admin',
         'token' => 'token1',
         'can_read' => [],
         'can_write' => [],
@@ -57,7 +57,7 @@ class UserTest extends ApiTestCase
         'json' => [
           'email' => 'test@example.com',
           'username' => 'username',
-          'FullName' => 'fullname',
+          'full_name' => 'full_name',
         ],
       ]);
 
@@ -67,9 +67,38 @@ class UserTest extends ApiTestCase
       $this->assertJsonContains([
         'email' => 'test@example.com',
         'username' => 'username',
-        'FullName' => 'fullname',
+        'full_name' => 'full_name',
         'can_read' => [],
         'can_write' => [],
+      ]);
+    }
+
+    public function testMeEndpointPatch(): void
+    {
+      $response = static::createClient()->request('PATCH', $this->addPrefix('me'), [
+        'headers' => [
+          'API-KEY' => 'token1',
+          'APP-NAME' => 'test',
+          'accept' => 'application/json',
+          'content-type' => 'application/merge-patch+json',
+        ],
+        'json' => [
+          'email' => 'patchy@example',
+          'webhook' => 'https://api.example/api/v42/webhook'
+        ],
+      ]);
+
+      $this->assertResponseIsSuccessful();
+      $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+      $this->assertJsonContains([
+        'email' => 'patchy@example',
+        'username' => 'admin',
+        'full_name' => 'admin',
+        'token' => 'token1',
+        'can_read' => [],
+        'can_write' => [],
+        'webhook' => 'https://api.example/api/v42/webhook',
       ]);
     }
 

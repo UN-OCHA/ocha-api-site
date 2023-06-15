@@ -2,17 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProviderRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource()]
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
 class Provider
 {
     #[ORM\Id]
     #[ORM\Column]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]

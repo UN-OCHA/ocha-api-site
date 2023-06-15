@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\Controller\MePatchController;
 use App\Repository\UserRepository;
 use App\State\User\MeProvidersStateProvider;
 use App\State\User\MeStateProvider;
@@ -36,6 +38,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
                   'User',
               ],
             ),
+        ),
+        new Patch(
+          securityPostDenormalize: "is_granted('ROLE_USER')",
+          controller: MePatchController::class,
+          uriTemplate: '/me',
+          denormalizationContext: [
+              'groups' => ['write'],
+          ],
+          openapi: new OpenApiOperation(
+            summary: 'Update user info',
+            description: 'Update user info',
+            tags: [
+                'User',
+            ],
+          ),
         ),
         new Get(
             security: "is_granted('ROLE_USER')",
@@ -90,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read', 'write'])]
-    private ?string $FullName = null;
+    private ?string $fullName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read'])]
@@ -101,13 +118,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read'])]
-    private array $can_read = [];
+    private array $canRead = [];
 
     #[ORM\Column(nullable: true)]
     #[Groups(['read'])]
-    private array $can_write = [];
+    private array $canWrite = [];
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $webhook = null;
 
     public function getId(): ?int
@@ -194,12 +212,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getFullName(): ?string
     {
-        return $this->FullName;
+        return $this->fullName;
     }
 
-    public function setFullName(?string $FullName): self
+    public function setFullName(?string $fullName): self
     {
-        $this->FullName = $FullName;
+        $this->fullName = $fullName;
 
         return $this;
     }
@@ -230,24 +248,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getCanRead(): array
     {
-        return $this->can_read;
+        return $this->canRead;
     }
 
-    public function setCanRead(?array $can_read): self
+    public function setCanRead(?array $canRead): self
     {
-        $this->can_read = $can_read;
+        $this->canRead = $canRead;
 
         return $this;
     }
 
     public function getCanWrite(): array
     {
-        return $this->can_write;
+        return $this->canWrite;
     }
 
-    public function setCanWrite(?array $can_write): self
+    public function setCanWrite(?array $canWrite): self
     {
-        $this->can_write = $can_write;
+        $this->canWrite = $canWrite;
 
         return $this;
     }

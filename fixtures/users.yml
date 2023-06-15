@@ -39,3 +39,10 @@ App\Entity\User:
     providers: '[src1, src3]'
     can_read: '[src1, src3]'
     can_write: '[src1, src3]'
+  user_4:
+    email: 'user4@example'
+    roles: '[ROLE_USER, ROLE_OCHA_PRESENCE]'
+    password: ''
+    username: 'user4'
+    full_name: 'user4'
+    token: 'token-ocha-presence'

@@ -53,8 +53,25 @@ services:
         # By default .inner is passed as argument
         decorates: 'api_platform.serializer.normalizer.item'
 
+    App\Serializer\OchaPresenceDenormalizer:
+        tags:
+            - { name: serializer.normalizer}
+
+    App\Serializer\OchaPresenceExternalIdDenormalizer:
+        tags:
+            - { name: serializer.normalizer}
+
+    App\Serializer\ExternalLookupDenormalizer:
+        tags:
+            - { name: serializer.normalizer}
+
     App\EventListener\DatabaseOnFlushListener:
         tags:
             -
                 name: 'doctrine.event_listener'
                 event: 'onFlush'
+
+    # JSON Filter
+    App\Filter\JsonFilter:
+
+    Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter: ~

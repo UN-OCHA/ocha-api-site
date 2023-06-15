@@ -212,3 +212,39 @@ gh_pr
 - Merge to main
 - [Tag a new release](./gh_release)
 - Deploy
+
+# OCHA Presence
+
+## JSON
+
+`external_id` has to be a string.
+
+```sql
+SELECT *
+FROM key_figures k0_
+WHERE k0_.provider = 'fts' AND k0_.year = '2023' AND JSON_EXTRACT(k0_.extra, '$.external_id') = '1116';
+```
+
+## Distinct presence for provider
+
+```sql
+select distinct op.id, op.name, op.office_type from ocha_presence op inner join ocha_presence_external_id opei on op.id = opei.ocha_presence_id where provider_id = 'fts';
+```
+
+## Distinct years for provider and presence
+
+```sql
+select distinct year from ocha_presence op inner join ocha_presence_external_id opei on op.id = opei.ocha_presence_id where provider_id = 'fts' and op.id = 'yem';
+```
+
+## List of figures
+
+```sql
+select kf.*
+from ocha_presence op
+inner join ocha_presence_external_id opei on op.id = opei.ocha_presence_id
+inner join ocha_presence_external_id_external_lookup mtm on opei.id = mtm.ocha_presence_external_id_id
+inner join external_lookup el on el.id = mtm.external_lookup_id
+inner join key_figures kf on el.external_id = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))
+where provider_id = 'fts' and op.id = 'yem';
+```
