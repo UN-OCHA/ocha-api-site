@@ -56,6 +56,7 @@ class UserGrantCommand extends Command
             ->addArgument('username', InputArgument::OPTIONAL, 'The username of the new user')
             ->addArgument('can-read', InputArgument::OPTIONAL, 'Grant read access')
             ->addArgument('can-write', InputArgument::OPTIONAL, 'Grant write access')
+            ->addArgument('roles', InputArgument::OPTIONAL, 'Roles')
         ;
     }
 
@@ -80,6 +81,7 @@ class UserGrantCommand extends Command
         $username = $input->getArgument('username');
         $can_read = $input->getArgument('can-read') ?? '';
         $can_write = $input->getArgument('can-write') ?? '';
+        $new_roles = $input->getArgument('roles') ?? '';
 
         // Update existing users.
         $user = $this->users->findOneBy(['username' => $username]);
@@ -96,8 +98,13 @@ class UserGrantCommand extends Command
         $write = array_merge($write, explode(',', $can_write));
         array_unique($write);
 
+        $roles = $user->getRoles();
+        $roles = array_merge($roles, explode(',', $new_roles));
+        array_unique($roles);
+
         $user->setCanRead($read);
         $user->setCanWrite($write);
+        $user->setRoles($roles);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -115,9 +122,9 @@ class UserGrantCommand extends Command
     private function getCommandHelp(): string
     {
         return <<<'HELP'
-            The <info>%command.name%</info> allows you to add read/write grants:
+            The <info>%command.name%</info> allows you to add read/write grants and roles:
 
-              <info>php %command.full_name%</info> <comment>username read write</comment>
+              <info>php %command.full_name%</info> <comment>username read write roles</comment>
 
             HELP;
     }
