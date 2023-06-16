@@ -54,9 +54,9 @@ class UserGrantCommand extends Command
         $this
             ->setHelp($this->getCommandHelp())
             ->addArgument('username', InputArgument::OPTIONAL, 'The username of the new user')
-            ->addArgument('can-read', InputArgument::OPTIONAL, 'Grant read access')
-            ->addArgument('can-write', InputArgument::OPTIONAL, 'Grant write access')
-            ->addArgument('roles', InputArgument::OPTIONAL, 'Roles')
+            ->addOption('can-read', '', InputArgument::OPTIONAL, 'Grant read access')
+            ->addOption('can-write', '', InputArgument::OPTIONAL, 'Grant write access')
+            ->addOption('roles', '', InputArgument::OPTIONAL, 'Roles')
         ;
     }
 
@@ -79,9 +79,9 @@ class UserGrantCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
-        $can_read = $input->getArgument('can-read') ?? '';
-        $can_write = $input->getArgument('can-write') ?? '';
-        $new_roles = $input->getArgument('roles') ?? '';
+        $can_read = $input->getOption('can-read') ?? '';
+        $can_write = $input->getOption('can-write') ?? '';
+        $new_roles = $input->getOption('roles') ?? '';
 
         // Update existing users.
         $user = $this->users->findOneBy(['username' => $username]);
@@ -94,7 +94,7 @@ class UserGrantCommand extends Command
         $read = array_merge($read, explode(',', $can_read));
         array_unique($read);
 
-        $write = $user->getCanRead();
+        $write = $user->getCanWrite();
         $write = array_merge($write, explode(',', $can_write));
         array_unique($write);
 
