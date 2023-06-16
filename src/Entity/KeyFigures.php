@@ -266,7 +266,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     'tags' => 'exact',
 ])]
 #[ApiFilter(JsonFilter::class, properties: [
-    "extra.external_id" =>  ["type" => "string", "strategy" => "exact"],
     "extra.*" =>  ["type" => "string", "strategy" => "exact"],
 ])]
 #[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
@@ -515,7 +514,7 @@ class KeyFigures
     public function fromValues(array $values): self {
         $this->id = $values['id'];
         $this->figureId = $values['figure_id'];
-        $this->externalId = $values['external_id'];
+        $this->externalId = $values['external_id'] ?? NULL;
         $this->iso3 = strtolower($values['iso3']);
         $this->country = $values['country'];
         $this->year = $values['year'];
