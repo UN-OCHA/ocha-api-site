@@ -256,7 +256,15 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['figureId' => 'exact', 'iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'figureId' => 'exact',
+    'externalId' => 'exact',
+    'iso3' => 'exact',
+    'year' => 'exact',
+    'archived' => 'exact',
+    'source' => 'exact',
+    'tags' => 'exact',
+])]
 #[ApiFilter(JsonFilter::class, properties: [
     "extra.external_id" =>  ["type" => "string", "strategy" => "exact"],
     "extra.*" =>  ["type" => "string", "strategy" => "exact"],
@@ -344,6 +352,9 @@ class KeyFigures
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $figureId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $externalId = null;
 
     public function getId(): ?string
     {
@@ -504,6 +515,7 @@ class KeyFigures
     public function fromValues(array $values): self {
         $this->id = $values['id'];
         $this->figureId = $values['figure_id'];
+        $this->externalId = $values['external_id'];
         $this->iso3 = strtolower($values['iso3']);
         $this->country = $values['country'];
         $this->year = $values['year'];
@@ -537,6 +549,7 @@ class KeyFigures
       return [
         'id' => $this->id,
         'figure_id' => $this->figureId ?? '',
+        'external_id' => $this->externalId ?? '',
         'iso3' => strtolower($this->iso3),
         'country' => $this->country,
         'year' => $this->year,
@@ -611,6 +624,18 @@ class KeyFigures
     public function setFigureId(?string $figureId): self
     {
         $this->figureId = $figureId;
+
+        return $this;
+    }
+
+    public function getExternalId(): ?string
+    {
+        return $this->externalId;
+    }
+
+    public function setExternalId(?string $externalId): static
+    {
+        $this->externalId = $externalId;
 
         return $this;
     }

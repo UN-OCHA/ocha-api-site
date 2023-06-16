@@ -18,6 +18,8 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         'id' => 'id',
         'figureId' => 'figureId',
         'figure_id' => 'figure_id',
+        'externalId' => 'figureId',
+        'external_id' => 'figure_id',
         'iso3' => 'iso3',
         'country' => 'country',
         'year' => 'year',

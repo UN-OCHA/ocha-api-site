@@ -2,11 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Country;
 use App\Entity\ExternalLookup;
 use App\Entity\KeyFigures;
 use App\Entity\OchaPresence;
-use App\Entity\OchaPresenceExternalId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -128,7 +126,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctOchaPresences($provider = NULL): array
     {
         $qb = $this->createQueryBuilder('kf')
-            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = kf.externalId")
             ->innerJoin('el.ochaPresenceExternalIds', 'opei')
             ->innerJoin(OchaPresence::class, 'op', 'WITH', 'op.id = opei.ochaPresence')
             ->orderBy('op.name', 'ASC')
@@ -150,7 +148,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctOchaPresenceYears($provider, $ocha_presence_id): array
     {
         $qb = $this->createQueryBuilder('kf')
-            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = kf.externalId")
             ->innerJoin('el.ochaPresenceExternalIds', 'opei')
             ->select('DISTINCT(opei.year) as value, opei.year as label');
 
@@ -172,7 +170,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getOchaPresenceFigures($provider, $ocha_presence_id, $year, $figure_ids = []): array
     {
         $qb = $this->createQueryBuilder('kf')
-            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = JSON_UNQUOTE(JSON_EXTRACT(kf.extra, '$.external_id'))")
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = kf.externalId")
             ->innerJoin('el.ochaPresenceExternalIds', 'opei')
             ->select('kf');
 
