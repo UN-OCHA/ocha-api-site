@@ -9,6 +9,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use App\Controller\OchaPresenceReplaceExternalIdsController;
+use App\Dto\BatchResponses;
+use App\Dto\OchaPresenceReplaceExternalIds;
 use App\Repository\OchaPresenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,10 +23,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
   security: "is_granted('ROLE_USER')",
   normalizationContext: ['groups' => ['ochapresence_read']],
   denormalizationContext: ['groups' => ['ochapresence_write']],
+  extraProperties: [
+    'standard_put' => TRUE,
+  ],
 )]
 #[Get()]
 #[GetCollection()]
 #[Post(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Post(
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')",
+    uriTemplate: '/ocha_presences/{id}/external_ids',
+    controller: OchaPresenceReplaceExternalIdsController::class,
+    input: OchaPresenceReplaceExternalIds::class,
+    output: BatchResponses::class,
+    openapi: new OpenApiOperation(
+      summary: 'Adds and replaces external ids for a given provider and year',
+      description: 'Adds and replaces external ids for a given provider and year',
+      tags: [
+          'OchaPresence',
+      ],
+    ),
+)]
 #[Put(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
 #[Delete(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
 #[Patch(
@@ -51,7 +72,7 @@ class OchaPresence
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $countries;
 
-    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: OchaPresenceExternalId::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: OchaPresenceExternalId::class, cascade: ['persist', 'remove'])]
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $ochaPresenceExternalIds;
 
@@ -127,6 +148,26 @@ class OchaPresence
     public function getOchaPresenceExternalIds()
     {
         return $this->ochaPresenceExternalIds->getValues();
+    }
+
+    /**
+     * Only one should ever exist.
+     */
+    public function getOchaPresenceExternalIdByProviderAndYear(string $provider, string $year) : OchaPresenceExternalId|null
+    {
+        /** @var \App\Entity\OchaPresenceExternalId[] $external_ids */
+        $external_ids = $this->ochaPresenceExternalIds->getValues();
+
+        foreach ($external_ids as $external_id) {
+            /** @var \App\Entity\ExternalLookup $external */
+            foreach ($external_id->getExternalIds() as $external) {
+                if ($external->getProvider() == $provider && $external_id->getYear() == $year) {
+                    return $external_id;
+                }
+            }
+        }
+
+        return NULL;
     }
 
     public function addOchaPresenceExternalId(OchaPresenceExternalId $ochaPresenceExternalId): self

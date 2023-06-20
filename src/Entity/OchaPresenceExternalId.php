@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\OchaPresenceExternalIdRepository;
@@ -31,6 +33,11 @@ use ApiPlatform\Metadata\Put;
     ],
     security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')"
 )]
+#[ApiFilter(SearchFilter::class, properties: [
+    'ochaPresence' => 'exact',
+    'provider' => 'exact',
+    'year' => 'exact',
+])]
 #[ORM\Entity(repositoryClass: OchaPresenceExternalIdRepository::class)]
 class OchaPresenceExternalId
 {
