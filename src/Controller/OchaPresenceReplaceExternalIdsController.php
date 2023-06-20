@@ -41,6 +41,11 @@ class OchaPresenceReplaceExternalIdsController extends AbstractController {
         /** @var \App\Dto\OchaPresenceReplaceExternalIds $dto */
         $dto = $this->serializer->deserialize($request->getContent(), OchaPresenceReplaceExternalIds::class, 'json');
 
+        if (empty($dto->externalIds)) {
+            $responses->failed['empty'] = 'no ids provided';
+            return $responses;
+        }
+
         $ocha_presence_external_id = $data->getOchaPresenceExternalIdByProviderAndYear($dto->provider, $dto->year);
         if (!$ocha_presence_external_id) {
             $provider = $this->providerRepository->findOneBy(['id' => $dto->provider]);
@@ -48,7 +53,7 @@ class OchaPresenceReplaceExternalIdsController extends AbstractController {
             $new->setOchaPresence($data);
             $new->setProvider($provider);
             $new->setYear($dto->year);
-            foreach ($dto->data as $external_lookup_id) {
+            foreach ($dto->externalIds as $external_lookup_id) {
                 $external_lookup = $this->externalLookupRepository->findOneBy(['id' => $external_lookup_id]);
                 $new->addExternalId($external_lookup);
                 $responses->successful[$external_lookup_id] = 'added';
@@ -59,18 +64,18 @@ class OchaPresenceReplaceExternalIdsController extends AbstractController {
         else {
             /** @var \App\Entity\ExternalLookup $external */
             foreach ($ocha_presence_external_id->getExternalIds() as $external) {
-                if (!in_array($external->getId(), $dto->data)) {
+                if (!in_array($external->getId(), $dto->externalIds)) {
                     $ocha_presence_external_id->removeExternalId($external);
                     $responses->successful[$external->getId()] = 'removed';
                 }
                 else {
                     $responses->successful[$external->getId()] = 'present';
-                    unset($dto->data[array_search($external->getId(), $dto->data)]);
+                    unset($dto->externalIds[array_search($external->getId(), $dto->externalIds)]);
                 }
             }
 
-            if (!empty($dto->data)) {
-                foreach ($dto->data as $external_lookup_id) {
+            if (!empty($dto->externalIds)) {
+                foreach ($dto->externalIds as $external_lookup_id) {
                     $external_lookup = $this->externalLookupRepository->findOneBy(['id' => $external_lookup_id]);
                     $ocha_presence_external_id->addExternalId($external_lookup);
                     $responses->successful[$external_lookup_id] = 'added';

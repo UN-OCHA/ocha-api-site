@@ -6,5 +6,5 @@ final class OchaPresenceReplaceExternalIds
 {
     public string $provider;
     public string $year;
-    public array $data = [];
+    public array $externalIds = [];
 }
