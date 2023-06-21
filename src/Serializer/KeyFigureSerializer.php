@@ -143,13 +143,19 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     }
 
     protected function buildId($item) : string {
-        $id = implode('_', [
+        $parts = [
             strtolower($item['provider']),
             strtolower($item['iso3']),
             $item['year'],
-            $this->buildFigureId($item['name']),
-        ]);
+        ];
 
+        if (isset($item['external_id']) && !empty(['external_id'])) {
+            $parts[] = $this->buildFigureId($item['external_id']);
+        }
+
+        $parts[] = $this->buildFigureId($item['name']);
+
+        $id = implode('_', $parts);
         $id = preg_replace('/[^A-Za-z0-9\-_]/', '', $id);
 
         return $id;
