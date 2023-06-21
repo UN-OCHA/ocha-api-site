@@ -68,18 +68,18 @@ class OchaPresence
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private ?string $officeType = null;
 
-    #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: Country::class, cascade: ['persist'])]
-    #[Groups(['ochapresence_read', 'ochapresence_write'])]
-    private Collection $countries;
-
     #[ORM\OneToMany(mappedBy: 'ochaPresence', targetEntity: OchaPresenceExternalId::class, cascade: ['persist', 'remove'])]
     #[Groups(['ochapresence_read', 'ochapresence_write'])]
     private Collection $ochaPresenceExternalIds;
 
+    #[ORM\ManyToMany(targetEntity: Country::class, inversedBy: 'ochaPresences')]
+    #[Groups(['ochapresence_read', 'ochapresence_write'])]
+    private Collection $countries;
+
     public function __construct()
     {
-        $this->countries = new ArrayCollection();
         $this->ochaPresenceExternalIds = new ArrayCollection();
+        $this->countries = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -114,33 +114,6 @@ class OchaPresence
     public function setOfficeType(string $officeType): self
     {
         $this->officeType = $officeType;
-
-        return $this;
-    }
-
-    public function getCountries()
-    {
-        return $this->countries->getValues();
-    }
-
-    public function addCountry(Country $country): self
-    {
-        if (!$this->countries->contains($country)) {
-            $this->countries->add($country);
-            $country->setOchaPresence($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCountry(Country $country): self
-    {
-        if ($this->countries->removeElement($country)) {
-            // set the owning side to null (unless already changed)
-            if ($country->getOchaPresence() === $this) {
-                $country->setOchaPresence(null);
-            }
-        }
 
         return $this;
     }
@@ -188,6 +161,30 @@ class OchaPresence
                 $ochaPresenceExternalId->setOchaPresence(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Country>
+     */
+    public function getCountries(): Collection
+    {
+        return $this->countries;
+    }
+
+    public function addCountry(Country $country): static
+    {
+        if (!$this->countries->contains($country)) {
+            $this->countries->add($country);
+        }
+
+        return $this;
+    }
+
+    public function removeCountry(Country $country): static
+    {
+        $this->countries->removeElement($country);
 
         return $this;
     }
