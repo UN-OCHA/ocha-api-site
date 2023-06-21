@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CountryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -13,6 +16,7 @@ class Country
 {
     #[ORM\Id]
     #[ORM\Column(length: 3)]
+    #[ApiProperty(identifier: true)]
     #[Groups(['ochapresence_read'])]
     private ?string $id = null;
 
@@ -29,8 +33,13 @@ class Country
     #[ORM\Column(length: 10)]
     private ?string $code = null;
 
-    #[ORM\ManyToOne(inversedBy: 'countries')]
-    private ?OchaPresence $ochaPresence = null;
+    #[ORM\ManyToMany(targetEntity: OchaPresence::class, mappedBy: 'countries')]
+    private Collection $ochaPresences;
+
+    public function __construct()
+    {
+        $this->ochaPresences = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {
@@ -92,15 +101,31 @@ class Country
         return $this;
     }
 
-    public function getOchaPresence(): ?OchaPresence
+    /**
+     * @return Collection<int, OchaPresence>
+     */
+    public function getOchaPresences(): Collection
     {
-        return $this->ochaPresence;
+        return $this->ochaPresences;
     }
 
-    public function setOchaPresence(?OchaPresence $ochaPresence): self
+    public function addOchaPresence(OchaPresence $ochaPresence): static
     {
-        $this->ochaPresence = $ochaPresence;
+        if (!$this->ochaPresences->contains($ochaPresence)) {
+            $this->ochaPresences->add($ochaPresence);
+            $ochaPresence->addCountry($this);
+        }
 
         return $this;
     }
+
+    public function removeOchaPresence(OchaPresence $ochaPresence): static
+    {
+        if ($this->ochaPresences->removeElement($ochaPresence)) {
+            $ochaPresence->removeCountry($this);
+        }
+
+        return $this;
+    }
+
 }
