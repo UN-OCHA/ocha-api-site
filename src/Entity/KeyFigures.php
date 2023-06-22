@@ -350,9 +350,11 @@ class KeyFigures
     private ?string $unit = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $figureId = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $externalId = null;
 
     public function getId(): ?string
