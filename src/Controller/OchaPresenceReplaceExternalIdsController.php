@@ -77,8 +77,13 @@ class OchaPresenceReplaceExternalIdsController extends AbstractController {
             if (!empty($dto->externalIds)) {
                 foreach ($dto->externalIds as $external_lookup_id) {
                     $external_lookup = $this->externalLookupRepository->findOneBy(['id' => $external_lookup_id]);
-                    $ocha_presence_external_id->addExternalId($external_lookup);
-                    $responses->successful[$external_lookup_id] = 'added';
+                    if ($external_lookup) {
+                        $ocha_presence_external_id->addExternalId($external_lookup);
+                        $responses->successful[$external_lookup_id] = 'added';
+                    }
+                    else {
+                        $responses->successful[$external_lookup_id] = 'does not exist';
+                    }
                 }
             }
 
