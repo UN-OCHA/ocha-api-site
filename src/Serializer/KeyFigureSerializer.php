@@ -205,6 +205,11 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           if (!isset($data['figure_id']) || empty($data['figure_id'])) {
             $data['figure_id'] = $this->buildFigureId($data['name']);
           }
+
+          if (!isset($data['archived'])) {
+            $data['archived'] = FALSE;
+          }
+
         }
 
         // Check for any extra keys.

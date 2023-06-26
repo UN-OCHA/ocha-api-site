@@ -335,7 +335,7 @@ class KeyFigures
 
     #[ORM\Column(nullable: true)]
     #[Groups(['write', 'with_meta'])]
-    private ?bool $archived = null;
+    private ?bool $archived = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['write', 'with_meta'])]
