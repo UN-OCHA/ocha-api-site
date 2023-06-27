@@ -27,7 +27,7 @@ class UserTest extends ApiTestCase
         'id' => 1,
         'email' => 'admin@example',
         'username' => 'admin',
-        'FullName' => 'admin',
+        'full_name' => 'admin',
         'token' => 'token1',
         'can_read' => [],
         'can_write' => [],
@@ -57,7 +57,7 @@ class UserTest extends ApiTestCase
         'json' => [
           'email' => 'test@example.com',
           'username' => 'username',
-          'FullName' => 'fullname',
+          'full_name' => 'full_name',
         ],
       ]);
 
@@ -67,7 +67,7 @@ class UserTest extends ApiTestCase
       $this->assertJsonContains([
         'email' => 'test@example.com',
         'username' => 'username',
-        'FullName' => 'fullname',
+        'full_name' => 'full_name',
         'can_read' => [],
         'can_write' => [],
       ]);
@@ -94,7 +94,7 @@ class UserTest extends ApiTestCase
       $this->assertJsonContains([
         'email' => 'patchy@example',
         'username' => 'admin',
-        'FullName' => 'admin',
+        'full_name' => 'admin',
         'token' => 'token1',
         'can_read' => [],
         'can_write' => [],

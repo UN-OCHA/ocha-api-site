@@ -17,7 +17,7 @@
         "nelmio/cors-bundle": "^2.2",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.11",
-        "sensio/framework-extra-bundle": "^6.1",
+        "scienta/doctrine-json-functions": "^5.2",
         "symfony/amazon-mailer": "6.1.*",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.1.*",
@@ -121,5 +121,5 @@
         "symfony/stopwatch": "6.1.*",
         "symfony/web-profiler-bundle": "6.1.*"
     },
-    "version": "0.3.0"
+    "version": "1.0.1"
 }

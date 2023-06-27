@@ -5,7 +5,6 @@ namespace App\Controller;
 use ApiPlatform\Metadata\Operation;
 use App\Dto\ArchiveInput;
 use App\Dto\BatchResponses;
-use App\Entity\KeyFigures;
 use App\Repository\KeyFiguresRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;

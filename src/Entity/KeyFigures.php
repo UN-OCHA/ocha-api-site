@@ -6,8 +6,11 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
@@ -17,10 +20,15 @@ use App\Dto\ArchiveInput;
 use App\Dto\BatchCollection;
 use App\Dto\BatchResponses;
 use App\Dto\SimpleStringObject;
+use App\Filter\JsonFilter;
 use App\Repository\KeyFiguresRepository;
+use App\Serializer\KeyFigureSerializer;
 use App\State\KeyFigures\KeyFiguresBatchProcessor;
 use App\State\KeyFigures\KeyFiguresCountriesStateProvider;
 use App\State\KeyFigures\KeyFiguresLimitByProviderStateProvider;
+use App\State\KeyFigures\KeyFiguresOchaPresenceFiguresStateProvider;
+use App\State\KeyFigures\KeyFiguresOchaPresencesStateProvider;
+use App\State\KeyFigures\KeyFiguresOchaPresenceYearsStateProvider;
 use App\State\KeyFigures\KeyFiguresPutStateProvider;
 use App\State\KeyFigures\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
@@ -33,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     security: "is_granted('ROLE_USER')",
     extraProperties: [
         'expand' => 'key_figures',
-        'standard_put' => false,
+        'standard_put' => TRUE,
     ],
     operations: [
         // Years.
@@ -72,6 +80,77 @@ use Symfony\Component\Validator\Constraints as Assert;
               ],
             ),
         ),
+        // OCHA Presences.
+        new GetCollection(
+          uriTemplate: '/key_figures/ocha-presences',
+          output: SimpleStringObject::class,
+          provider: KeyFiguresOchaPresencesStateProvider::class,
+          openapi: new OpenApiOperation(
+            summary: 'Get a list OCHA presences',
+            description: 'Get a list of OCHA presences',
+            tags: [
+                'Key Figures',
+            ],
+            responses: [
+                '200' => [
+                    'description' => 'Array of OCHA presences',
+                ],
+            ],
+          ),
+        ),
+        // OCHA Presence years.
+        new GetCollection(
+            uriTemplate: '/key_figures/ocha-presences/{ocha_presence_id}/years',
+            uriVariables: [
+                'ocha_presence_id' => new Link(
+                    fromClass: OchaPresence::class,
+                    fromProperty: 'id'
+                )
+            ],
+            output: SimpleStringObject::class,
+            provider: KeyFiguresOchaPresenceYearsStateProvider::class,
+            openapi: new OpenApiOperation(
+              summary: 'Get a list of years for an OCHA presences',
+              description: 'Get a list of years for an OCHA presences',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of years for an OCHA presences',
+                  ],
+              ],
+            ),
+        ),
+        // OCHA Presence figures.
+        new GetCollection(
+            uriTemplate: '/key_figures/ocha-presences/{ocha_presence_id}/{year}/figures',
+            uriVariables: [
+                'ocha_presence_id' => new Link(
+                    fromClass: OchaPresence::class,
+                    fromProperty: 'id'
+                ),
+                'year' => new Link(
+                    fromClass: OchaPresenceExternalId::class,
+                    fromProperty: 'year'
+                )
+            ],
+            output: KeyFigures::class,
+            serialize: KeyFigureSerializer::class,
+            provider: KeyFiguresOchaPresenceFiguresStateProvider::class,
+            openapi: new OpenApiOperation(
+              summary: 'Get a list figures for an OCHA presences',
+              description: 'Get a list figures for an OCHA presences',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of figures for an OCHA presences',
+                  ],
+              ],
+            ),
+        ),
         // Create or update.
         new Put(
             securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
@@ -87,6 +166,24 @@ use Symfony\Component\Validator\Constraints as Assert;
                   'Key Figures',
               ],
             ),
+        ),
+        // Partial update.
+        new Patch(
+          inputFormats: [
+            'jsonld' => ['application/merge-patch+json'],
+          ],
+          securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
+          uriTemplate: '/key_figures/{id}',
+          denormalizationContext: [
+              'groups' => ['write'],
+          ],
+          openapi: new OpenApiOperation(
+            summary: 'Update a key figure',
+            description: 'Partially update a key figure',
+            tags: [
+                'Key Figures',
+            ],
+          ),
         ),
         // Batch update.
         new Post(
@@ -122,15 +219,28 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         // Get.
         new Get(
-            provider: KeyFiguresLimitByProviderStateProvider::class,
-            uriTemplate: '/key_figures/{id}',
-            openapi: new OpenApiOperation(
-              summary: 'Get a key figure',
-              description: 'Get a key figure',
-              tags: [
-                  'Key Figures',
-              ],
-            ),
+          provider: KeyFiguresLimitByProviderStateProvider::class,
+          uriTemplate: '/key_figures/{id}',
+          openapi: new OpenApiOperation(
+            summary: 'Get a key figure',
+            description: 'Get a key figure',
+            tags: [
+                'Key Figures',
+            ],
+          ),
+        ),
+        // Delete.
+        new Delete(
+          securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_DELETE', object)",
+          provider: KeyFiguresLimitByProviderStateProvider::class,
+          uriTemplate: '/key_figures/{id}',
+          openapi: new OpenApiOperation(
+            summary: 'Delete a key figure',
+            description: 'Delete a key figure',
+            tags: [
+                'Key Figures',
+            ],
+          ),
         ),
         // Get.
         new GetCollection(
@@ -146,7 +256,18 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['iso3' => 'exact', 'year' => 'exact', 'archived' => 'exact', 'source' => 'exact', 'tags' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'figureId' => 'exact',
+    'externalId' => 'exact',
+    'iso3' => 'exact',
+    'year' => 'exact',
+    'archived' => 'exact',
+    'source' => 'exact',
+    'tags' => 'exact',
+])]
+#[ApiFilter(JsonFilter::class, properties: [
+    "extra.*" =>  ["type" => "string", "strategy" => "exact"],
+])]
 #[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
 class KeyFigures
 {
@@ -214,7 +335,7 @@ class KeyFigures
 
     #[ORM\Column(nullable: true)]
     #[Groups(['write', 'with_meta'])]
-    private ?bool $archived = null;
+    private ?bool $archived = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['write', 'with_meta'])]
@@ -227,6 +348,14 @@ class KeyFigures
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['write', 'without_meta', 'with_meta'])]
     private ?string $unit = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
+    private ?string $figureId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['write', 'without_meta', 'with_meta'])]
+    private ?string $externalId = null;
 
     public function getId(): ?string
     {
@@ -386,13 +515,15 @@ class KeyFigures
 
     public function fromValues(array $values): self {
         $this->id = $values['id'];
+        $this->figureId = $values['figure_id'];
+        $this->externalId = $values['external_id'] ?? NULL;
         $this->iso3 = strtolower($values['iso3']);
         $this->country = $values['country'];
         $this->year = $values['year'];
         $this->name = $values['name'];
         $this->value = $values['value'];
-        $this->valueString = $values['valueString'] ?? NULL;
-        $this->valueType = $values['valueType'] ?? 'numeric';
+        $this->valueString = $values['value_string'] ?? NULL;
+        $this->valueType = $values['value_type'] ?? 'numeric';
         $this->url = $values['url'] ?? '';
         $this->source = $values['source'] ?? '';
         $this->description = $values['description'] ?? '';
@@ -418,12 +549,14 @@ class KeyFigures
     public function extractValues(): array {
       return [
         'id' => $this->id,
+        'figure_id' => $this->figureId ?? '',
+        'external_id' => $this->externalId ?? '',
         'iso3' => strtolower($this->iso3),
         'country' => $this->country,
         'year' => $this->year,
         'name' => $this->name,
         'value' => $this->valueString ?? $this->value,
-        'valueType' => $this->valueType ?? 'numeric',
+        'value_type' => $this->valueType ?? 'numeric',
         'updated' => $this->updated ?? NULL,
         'url' => $this->url,
         'source' => $this->source,
@@ -480,6 +613,30 @@ class KeyFigures
     public function setUnit(?string $unit): self
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getFigureId(): ?string
+    {
+        return $this->figureId;
+    }
+
+    public function setFigureId(?string $figureId): self
+    {
+        $this->figureId = $figureId;
+
+        return $this;
+    }
+
+    public function getExternalId(): ?string
+    {
+        return $this->externalId;
+    }
+
+    public function setExternalId(?string $externalId): static
+    {
+        $this->externalId = $externalId;
 
         return $this;
     }

@@ -4,6 +4,51 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.1](https://github.com/UN-OCHA/ocha-api-site/compare/v0.3.0...v1.0.1) (2023-06-26)
+
+### Features
+
+* Add endpoint to get providers [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42) ([bb66f0](https://github.com/UN-OCHA/ocha-api-site/commit/bb66f06cec38bfdc61ec36f6b7b9d7b9573ed3ef))
+* Add figure_id ([b889f9](https://github.com/UN-OCHA/ocha-api-site/commit/b889f9eaa9c226fc8f3c030bbabb151abf8dc6da))
+* Add unit to figures [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42), [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42) ([fb98a5](https://github.com/UN-OCHA/ocha-api-site/commit/fb98a531b10ad9e82566bf227b087b790117d229), [de2cda](https://github.com/UN-OCHA/ocha-api-site/commit/de2cdaa12648d50b6422272ddc8ca725c5bba2a9))
+* Allow string data [#OHA-30](https://https://humanitarian.atlassian.net/browse/OHA-30) ([f9c674](https://github.com/UN-OCHA/ocha-api-site/commit/f9c6742b2580e74e275b8218d2b67ba664e3e266))
+* Allow user to update email and webhook ([7ce8a6](https://github.com/UN-OCHA/ocha-api-site/commit/7ce8a645a58ad1eaf1cd69fe51c67e96595d5a74), [92de3a](https://github.com/UN-OCHA/ocha-api-site/commit/92de3a763d5b1fbea4be998d622074e1d8abb77f))
+* Force iso3 to be lowercase [#OHA-47](https://https://humanitarian.atlassian.net/browse/OHA-47) ([c197af](https://github.com/UN-OCHA/ocha-api-site/commit/c197af240b18071b94bde604b5d157915a812371))
+* Id consistency [#OHA-48](https://https://humanitarian.atlassian.net/browse/OHA-48) ([53354f](https://github.com/UN-OCHA/ocha-api-site/commit/53354fe6a787c7d2c02b9c1bf9abefb86d4d5230))
+* OCHA presence and countries ([3488d6](https://github.com/UN-OCHA/ocha-api-site/commit/3488d679860f36c0c7a0141c3b5cfca7ac06c09c))
+* OCHA presence endpoint ([231525](https://github.com/UN-OCHA/ocha-api-site/commit/2315256b4d6c4ae601b1ac91bf9f7721b6888c3d))
+* Use manytomany for ocha presense and countries ([19764f](https://github.com/UN-OCHA/ocha-api-site/commit/19764f527747a22bb547b975346e2603ff839de7))
+
+### Chores
+
+* 27-02-2023 prep release ([d580de](https://github.com/UN-OCHA/ocha-api-site/commit/d580de906be7454cc7bf4963586096fb265be232), [04debe](https://github.com/UN-OCHA/ocha-api-site/commit/04debe676a0f516d836480a38f8e09accf81ac75))
+* Adapt tests to run locally ([ee461a](https://github.com/UN-OCHA/ocha-api-site/commit/ee461aab0134de666cbde9f84788755cbdf6b70e))
+* Add a test for the me Patch endpoint. ([be3c4c](https://github.com/UN-OCHA/ocha-api-site/commit/be3c4cb86f693f2e5f4f7b7273e5981c1f3a0d59))
+* Add command to manage roles ([3e0370](https://github.com/UN-OCHA/ocha-api-site/commit/3e0370aca302c544f267d25fc7d35ac1dd7d4b8a))
+* Add endpoint to manage external ids ([02745f](https://github.com/UN-OCHA/ocha-api-site/commit/02745f0990f92ca773c65791f695f05aa1cc620e), [0fec90](https://github.com/UN-OCHA/ocha-api-site/commit/0fec90212ee319918f3de70c470e2ff2cd5fd3c0))
+* Add info ([2a0d52](https://github.com/UN-OCHA/ocha-api-site/commit/2a0d52d8959c8739ec1e2b942c6da4bd279cfe04))
+* Allow DELETE ([dafe30](https://github.com/UN-OCHA/ocha-api-site/commit/dafe30110f5952b407436d306771be2fa09338d4))
+* Allow PATCH ([17aa5b](https://github.com/UN-OCHA/ocha-api-site/commit/17aa5b8ab3aea7927d6184bd92324b5cc56a0df7))
+* Allow token when adding users ([e6715e](https://github.com/UN-OCHA/ocha-api-site/commit/e6715efb88c213863f6635704100704d15231e58))
+* Allow update on figureId and externalId ([6b3086](https://github.com/UN-OCHA/ocha-api-site/commit/6b3086f92b92f05ca6fbee361c4f726578294399))
+* Archived defaults to FALSE ([9d4054](https://github.com/UN-OCHA/ocha-api-site/commit/9d405412fa9bb541b5bb5538546c1914f762b89b))
+* Cleanup the build steps. Disable legacy non-buildkit commands. ([8797b5](https://github.com/UN-OCHA/ocha-api-site/commit/8797b590baf2d8a77b2bf13b477e37020119fa8a))
+* Cleanup the build steps. No need for a builder and php-sodium is in our base image. ([3ad6c7](https://github.com/UN-OCHA/ocha-api-site/commit/3ad6c75b258ff24aa9a01baa367f8c76f226a3c4))
+* Composer updates ([9b39cc](https://github.com/UN-OCHA/ocha-api-site/commit/9b39cc9800bdb806e145090f449579503b971d94))
+* Correct docs [#OHA-39](https://https://humanitarian.atlassian.net/browse/OHA-39) ([6c0357](https://github.com/UN-OCHA/ocha-api-site/commit/6c03573c89d11f5c4af301ec44efd3c2fc2bccfe))
+* Fail hard if data property is abused ([6020fd](https://github.com/UN-OCHA/ocha-api-site/commit/6020fd10090a73180a6e62c6ec5ae6cfc9bce7ac))
+* Fix serializer [#OHA-42](https://https://humanitarian.atlassian.net/browse/OHA-42) ([1c295f](https://github.com/UN-OCHA/ocha-api-site/commit/1c295fbc72b6bea721d6fd784ec9c3718244b9df))
+* Make prod log to file, not stderr, so the file can go into ELK. ([3e720c](https://github.com/UN-OCHA/ocha-api-site/commit/3e720cbd9780e55b582592207dcedc005ea453fb))
+* Make sure external id exists ([87a0eb](https://github.com/UN-OCHA/ocha-api-site/commit/87a0eb3702d66c8c521c3fe4743ad64abd06b3c8))
+* Promote externalId to property ([e0f5a5](https://github.com/UN-OCHA/ocha-api-site/commit/e0f5a5516277e8521c51da40636e61556d3dad59), [4267a2](https://github.com/UN-OCHA/ocha-api-site/commit/4267a2b36e0ad97833b7bb48e5bc30aa3783a941))
+* Update one package to get composer.lock up to date ([9eb484](https://github.com/UN-OCHA/ocha-api-site/commit/9eb484f2610c3ff5a1a22a1d846a41753eedc31b))
+* Use build in PUT ([0f0d41](https://github.com/UN-OCHA/ocha-api-site/commit/0f0d4125775570006007956d9e252738487f1ede))
+* Use the Node16 AWS credential action. ([7be16c](https://github.com/UN-OCHA/ocha-api-site/commit/7be16c3c34077d88883107266abef31ac622f132))
+
+##### Deps
+
+* Bump api-platform/core from 3.1.2 to 3.1.3 ([f059bc](https://github.com/UN-OCHA/ocha-api-site/commit/f059bcd2ea6a78303afaf847172622a2234282ba))
+
 ## [0.3.0](https://github.com/UN-OCHA/ocha-api-site/compare/v0.2.0...v0.3.0) (2023-05-16)
 
 ### Features

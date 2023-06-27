@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\ExternalLookup;
 use App\Entity\KeyFigures;
+use App\Entity\OchaPresence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -115,6 +117,79 @@ class KeyFiguresRepository extends ServiceEntityRepository
 
         return $qb->getQuery()
             ->getArrayResult()
+        ;
+    }
+
+    /**
+     * @return array Returns an array of ocha presences.
+     */
+    public function getDistinctOchaPresences($provider = NULL): array
+    {
+        $qb = $this->createQueryBuilder('kf')
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = kf.externalId")
+            ->innerJoin('el.ochaPresenceExternalIds', 'opei')
+            ->innerJoin(OchaPresence::class, 'op', 'WITH', 'op.id = opei.ochaPresence')
+            ->orderBy('op.name', 'ASC')
+            ->select('DISTINCT(op.id) as value, op.name as label');
+
+        if (!empty($provider)) {
+            $qb->andWhere($qb->expr()->eq('opei.provider', ':provider'))
+                ->setParameter(':provider', $provider);
+        }
+
+        return $qb->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    /**
+     * @return array Returns an array of years.
+     */
+    public function getDistinctOchaPresenceYears($provider, $ocha_presence_id): array
+    {
+        $qb = $this->createQueryBuilder('kf')
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = kf.externalId")
+            ->innerJoin('el.ochaPresenceExternalIds', 'opei')
+            ->select('DISTINCT(opei.year) as value, opei.year as label');
+
+        $qb->andWhere($qb->expr()->eq('opei.provider', ':provider'))
+            ->setParameter(':provider', $provider);
+
+        $qb->andWhere($qb->expr()->eq('opei.ochaPresence', ':ocha_presence_id'))
+            ->setParameter(':ocha_presence_id', $ocha_presence_id);
+
+        return $qb->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    /**
+     * @return KeyFigures[]
+     * Returns an array of figures.
+     */
+    public function getOchaPresenceFigures($provider, $ocha_presence_id, $year, $figure_ids = []): array
+    {
+        $qb = $this->createQueryBuilder('kf')
+            ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = kf.externalId")
+            ->innerJoin('el.ochaPresenceExternalIds', 'opei')
+            ->select('kf');
+
+        $qb->andWhere($qb->expr()->eq('opei.provider', ':provider'))
+            ->setParameter(':provider', $provider);
+
+        $qb->andWhere($qb->expr()->eq('opei.ochaPresence', ':ocha_presence_id'))
+            ->setParameter(':ocha_presence_id', $ocha_presence_id);
+
+        $qb->andWhere($qb->expr()->eq('opei.year', ':year'))
+            ->setParameter(':year', $year);
+
+        if (!empty($figure_ids)) {
+            $qb->andWhere($qb->expr()->in('kf.figureId', ':figure_ids'))
+                ->setParameter(':figure_ids', $figure_ids);
+        }
+
+        return $qb->getQuery()
+            ->getResult()
         ;
     }
 

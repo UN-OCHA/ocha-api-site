@@ -56,9 +56,10 @@ class UserAddCommand extends Command
             ->addArgument('username', InputArgument::OPTIONAL, 'The username of the new user')
             ->addArgument('email', InputArgument::OPTIONAL, 'The email of the new user')
             ->addArgument('full-name', InputArgument::OPTIONAL, 'The full name of the new user')
-            ->addArgument('can-read', InputArgument::OPTIONAL, 'Grant read access')
-            ->addArgument('can-write', InputArgument::OPTIONAL, 'Grant write access')
-            ->addArgument('webhook', InputArgument::OPTIONAL, 'Webhook')
+            ->addOption('can-read', '', InputArgument::OPTIONAL, 'Grant read access')
+            ->addOption('can-write', '', InputArgument::OPTIONAL, 'Grant write access')
+            ->addOption('webhook', '', InputArgument::OPTIONAL, 'Webhook')
+            ->addOption('token', '', InputArgument::OPTIONAL, 'Token')
             ->addOption('admin', null, InputOption::VALUE_NONE, 'If set, the user is created as an administrator')
         ;
     }
@@ -167,9 +168,10 @@ class UserAddCommand extends Command
         $email = $input->getArgument('email');
         $fullName = $input->getArgument('full-name');
 
-        $can_read = $input->getArgument('can-read') ?? '';
-        $can_write = $input->getArgument('can-write') ?? '';
-        $webhook = $input->getArgument('webhook') ?? '';
+        $can_read = $input->getOption('can-read') ?? '';
+        $can_write = $input->getOption('can-write') ?? '';
+        $webhook = $input->getOption('webhook') ?? '';
+        $token = $input->getOption('token') ?? '';
 
         $isAdmin = $input->getOption('admin');
 
@@ -203,7 +205,14 @@ class UserAddCommand extends Command
         $user->setProviders([]);
         $user->setCanRead(explode(',', $can_read));
         $user->setCanWrite(explode(',', $can_write));
-        $user->setWebhook($webhook);
+
+        if (!empty($webhook)) {
+            $user->setWebhook($webhook);
+        }
+
+        if (!empty($token)) {
+            $user->setToken($token);
+        }
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
