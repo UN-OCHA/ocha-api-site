@@ -40,9 +40,9 @@ curl -X 'POST' \
 
 ## Admin levels
 
-For now use *`'Content-Type: application/ld+json'`*
+Use `'Content-Type: application/ld+json'`
 
-This can be changed so you can use `"location_ref": "1"` instead of `"location_ref": "/api/v1/hdx_locations/1"`
+You can either use `"location_ref": "1"` or `"location_ref": "/api/v1/hdx_locations/1"`
 
 ```bash
 curl -X 'POST' \
