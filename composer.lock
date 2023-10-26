@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3afd507a43526f3ea5dd68ab8fc9872",
+    "content-hash": "e73db31aca93a3af66d8e110e79a13cb",
     "packages": [
         {
             "name": "api-platform/core",
@@ -2064,6 +2064,67 @@
                 "source": "https://github.com/nelmio/NelmioCorsBundle/tree/2.3.1"
             },
             "time": "2023-02-16T08:49:29+00:00"
+        },
+        {
+            "name": "netbrothers-gmbh/version-bundle",
+            "version": "dev-short-index-names",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/attiks/version-bundle",
+                "reference": "9dc72218281484e8353f2fae894b3cb1711ffccd"
+            },
+            "require": {
+                "doctrine/dbal": "^3.5",
+                "doctrine/orm": "*",
+                "php": ">=7.4",
+                "symfony/console": "*"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.9",
+                "phpstan/phpstan-deprecation-rules": "^1.0"
+            },
+            "bin": [
+                "bin/netbrothers-version"
+            ],
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "NetBrothers\\VersionBundle\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "NetBrothers\\VersionBundle\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "static-analysis": [
+                    "[ $COMPOSER_DEV_MODE -eq 0 ] || phpstan"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stefan Wessel",
+                    "email": "stefan.wessel@netbrothers.de"
+                },
+                {
+                    "name": "Thilo Ratnaweera",
+                    "email": "thilo.ratnaweera@netbrothers.de"
+                }
+            ],
+            "description": "Trigger based version tables with MariaDB/MySQL and Doctrine",
+            "keywords": [
+                "bundle",
+                "database",
+                "doctrine",
+                "mariadb",
+                "mysql",
+                "versioning"
+            ],
+            "time": "2023-10-26T11:36:53+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -10765,7 +10826,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "netbrothers-gmbh/version-bundle": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -85,6 +85,9 @@
             "config/packages/nelmio_cors.yaml"
         ]
     },
+    "netbrothers-gmbh/version-bundle": {
+        "version": "dev-short-index-names"
+    },
     "phpunit/phpunit": {
         "version": "9.5",
         "recipe": {
