@@ -15,6 +15,7 @@ use App\Repository\ExternalLookupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use NetBrothers\VersionBundle\Traits\VersionColumn;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
@@ -37,6 +38,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ExternalLookupRepository::class)]
 class ExternalLookup
 {
+    use VersionColumn;
+
     #[ORM\Id]
     #[ORM\Column]
     #[Groups(['external_lookup_read', 'external_lookup_write', 'ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]

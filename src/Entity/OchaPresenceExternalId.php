@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use NetBrothers\VersionBundle\Traits\VersionColumn;
 
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
@@ -41,6 +42,8 @@ use ApiPlatform\Metadata\Put;
 #[ORM\Entity(repositoryClass: OchaPresenceExternalIdRepository::class)]
 class OchaPresenceExternalId
 {
+    use VersionColumn;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
