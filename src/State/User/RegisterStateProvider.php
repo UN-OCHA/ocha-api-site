@@ -15,7 +15,7 @@ final class RegisterStateProvider implements ProcessorInterface
     {
     }
 
-    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []) : \App\Entity\User
     {
         /** @var \App\Entity\User $data */
         $data->setPassword(bin2hex(random_bytes(32)));

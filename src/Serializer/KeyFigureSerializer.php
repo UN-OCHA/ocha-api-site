@@ -136,7 +136,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         return $this->decorated->denormalize($data, $type, $format, $context);
     }
 
-    public function setSerializer(SerializerInterface $serializer) {
+    public function setSerializer(SerializerInterface $serializer): void {
         if ($this->decorated instanceof SerializerAwareInterface) {
             $this->decorated->setSerializer($serializer);
         }
