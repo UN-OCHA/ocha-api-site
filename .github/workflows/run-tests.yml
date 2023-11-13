@@ -54,14 +54,12 @@ jobs:
         env:
           fail-fast: true
 
-      - name: Package Security
-        id: security
+      - name: Composer Audit
+        id: audit
         uses: cafuego/command-output@main
         with:
           run: |
-            curl -L -o ./bin/local-php-security-checker https://github.com/fabpot/local-php-security-checker/releases/download/v1.0.0/local-php-security-checker_1.0.0_linux_amd64
-            chmod +x ./bin/local-php-security-checker
-            ./bin/local-php-security-checker
+            composer audit
         env:
           fail-fast: true
 
@@ -170,7 +168,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `#### Composer Validate \`${{ steps.validate.outcome }}\`
-            #### PHP Security \`${{ steps.security.outcome }}\`
+            #### Composer Audit \`${{ steps.audit.outcome }}\`
             #### PHP Lint \`${{ steps.lint.outcome }}\`
             #### Docker Build \`${{ steps.build.outcome }}\`
             #### Environment Setup \`${{ steps.docker.outcome }}\`
@@ -183,9 +181,9 @@ jobs:
             \`\`\`${{ steps.versions.outputs.stdout }}\`\`\`
 
             </details>
-            <details><summary>PHP Security</summary>
+            <details><summary>Composer Audit</summary>
 
-            \`\`\`${{ steps.security.outputs.stdout }}\`\`\`
+            \`\`\`${{ steps.audit.outputs.stdout }}\`\`\`
 
             </details>
             <details><summary>Config Lint</summary>
