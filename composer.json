@@ -99,6 +99,9 @@
         "post-install-cmd": [
             "@auto-scripts"
         ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ],
         "changelog": "conventional-changelog",
         "release": "conventional-changelog",
         "release:patch": "conventional-changelog --patch",
