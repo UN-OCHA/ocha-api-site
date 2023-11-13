@@ -52,7 +52,7 @@ RUN  wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=
      ln -s /srv/www/public /srv/www/html && \
      mkdir -p /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions /etc/nginx/custom && \
      chown appuser:appuser /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions && \
-     curl -L -o /tmp/apm-agent-php_all.apk https://github.com/elastic/apm-agent-php/releases/download/v1.10.0/apm-agent-php_1.10.0_all.apk \
+     curl -L -o /tmp/apm-agent-php_all.apk https://github.com/elastic/apm-agent-php/releases/download/v1.10.0/apm-agent-php_1.10.0_all.apk && \
      apk add --allow-untrusted /tmp/apm-agent-php_all.apk && \
      rm -f /tmp/apm-agent-php_all.apk && \
      mv -f /tmp/99-elastic-apm-custom.ini /etc/php82/conf.d/99-elastic-apm-custom.ini
