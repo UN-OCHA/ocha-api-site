@@ -30,3 +30,5 @@ api_platform:
             max_age: 60
             shared_max_age: 60
             vary: ['Content-Type', 'Authorization', 'Origin']
+        extra_properties:
+            standard_put: true
