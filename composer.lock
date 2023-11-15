@@ -2065,7 +2065,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/attiks/version-bundle",
-                "reference": "9dc72218281484e8353f2fae894b3cb1711ffccd"
+                "reference": "3917e9fcee74f2f3baac317165e3fb9148584d6e"
             },
             "require": {
                 "doctrine/dbal": "^3.5",
@@ -2118,7 +2118,7 @@
                 "mysql",
                 "versioning"
             ],
-            "time": "2023-10-26T11:36:53+00:00"
+            "time": "2023-11-15T18:32:25+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -8293,16 +8293,16 @@
         },
         {
             "name": "hautelook/alice-bundle",
-            "version": "2.12.0",
+            "version": "2.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/AliceBundle.git",
-                "reference": "ebaf24ec0318583d8c022966687e2a4979bb9af8"
+                "reference": "841ac01d0d4e1ea3381374360cdcc5d6b9c904cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/AliceBundle/zipball/ebaf24ec0318583d8c022966687e2a4979bb9af8",
-                "reference": "ebaf24ec0318583d8c022966687e2a4979bb9af8",
+                "url": "https://api.github.com/repos/theofidry/AliceBundle/zipball/841ac01d0d4e1ea3381374360cdcc5d6b9c904cc",
+                "reference": "841ac01d0d4e1ea3381374360cdcc5d6b9c904cc",
                 "shasum": ""
             },
             "require": {
@@ -8360,9 +8360,9 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/AliceBundle/issues",
-                "source": "https://github.com/theofidry/AliceBundle/tree/2.12.0"
+                "source": "https://github.com/theofidry/AliceBundle/tree/2.12.1"
             },
-            "time": "2023-03-26T09:04:39+00:00"
+            "time": "2023-09-19T19:48:05+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -10969,5 +10969,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
