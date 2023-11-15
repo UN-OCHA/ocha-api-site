@@ -4,6 +4,7 @@ api_platform:
     version: 0.0.1
     show_webby: false
     name_converter: 'Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter'
+    keep_legacy_inflector: false
     formats:
         json:     ['application/json']
         jsonld:   ['application/ld+json']
@@ -32,3 +33,4 @@ api_platform:
             vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
             standard_put: true
+            skip_deprecated_exception_normalizers: true
