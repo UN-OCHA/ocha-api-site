@@ -23,7 +23,7 @@ final class KeyFiguresBatchProcessor implements ProcessorInterface
     /**
      * @param BatchCollection $data
      */
-    public function process($data, Operation $operation, array $uriVariables = [], array $context = []) : \App\Dto\BatchResponses
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []) : \App\Dto\BatchResponses|\App\Dto\BatchCollection
     {
         // Trust the responses.
         if ($data::class === 'App\\Dto\\BatchResponses') {

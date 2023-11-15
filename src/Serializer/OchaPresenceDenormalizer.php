@@ -48,4 +48,14 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
     {
         return \in_array($format, ['json', 'jsonld'], true) && is_a($type, OchaPresence::class, true) && !isset($context[__CLASS__]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            OchaPresence::class => true,
+        ];
+    }
 }

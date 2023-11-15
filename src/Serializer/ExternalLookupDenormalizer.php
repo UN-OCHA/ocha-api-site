@@ -52,4 +52,14 @@ class ExternalLookupDenormalizer implements DenormalizerInterface, DenormalizerA
     {
         return \in_array($format, ['json', 'jsonld'], true) && is_a($type, ExternalLookup::class, true) && !isset($context[__CLASS__]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            ExternalLookup::class => true,
+        ];
+    }
 }
