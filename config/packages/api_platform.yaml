@@ -1,7 +1,7 @@
 api_platform:
     title: 'OCHA API'
     description: 'The public OCHA API'
-    version: 0.0.1
+    version: 1.0.1
     show_webby: false
     name_converter: 'Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter'
     keep_legacy_inflector: false
