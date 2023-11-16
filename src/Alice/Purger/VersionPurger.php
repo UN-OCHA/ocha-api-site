@@ -89,10 +89,10 @@ class VersionPurger implements PurgerInterface, PurgerFactoryInterface
             $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0;');
         }
 
-        $connection->executeStatement('TRUNCATE TABLE test.country_version;');
-        $connection->executeStatement('TRUNCATE TABLE test.external_lookup_version;');
-        $connection->executeStatement('TRUNCATE TABLE test.ocha_presence_external_id_version;');
-        $connection->executeStatement('TRUNCATE TABLE test.ocha_presence_version;');
+        $connection->executeStatement('TRUNCATE TABLE country_version;');
+        $connection->executeStatement('TRUNCATE TABLE external_lookup_version;');
+        $connection->executeStatement('TRUNCATE TABLE ocha_presence_external_id_version;');
+        $connection->executeStatement('TRUNCATE TABLE ocha_presence_version;');
 
         $this->purger->purge();
 
