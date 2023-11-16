@@ -59,7 +59,7 @@ class ExternalLookupDenormalizer implements DenormalizerInterface, DenormalizerA
     public function getSupportedTypes(?string $format): array
     {
         return [
-            ExternalLookup::class => true,
+            ExternalLookup::class => false,
         ];
     }
 }

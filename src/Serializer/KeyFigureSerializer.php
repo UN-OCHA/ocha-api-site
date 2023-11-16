@@ -95,7 +95,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     public function getSupportedTypes(?string $format): array
     {
         return [
-            KeyFigures::class => true,
+            KeyFigures::class => false,
         ];
     }
 

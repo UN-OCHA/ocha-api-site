@@ -108,6 +108,7 @@ console make:command
 fin console doctrine:database:drop --env=test --force
 fin console doctrine:database:create --env=test --if-not-exists -n
 fin console doctrine:schema:create --env=test -n
+fin console netbrothers:version --env=test
 fin console hautelook:fixtures:load --env=test -n
 phpunit
 ```

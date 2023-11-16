@@ -61,7 +61,7 @@ class OchaPresenceExternalIdDenormalizer implements DenormalizerInterface, Denor
     public function getSupportedTypes(?string $format): array
     {
         return [
-            OchaPresenceExternalId::class => true,
+            OchaPresenceExternalId::class => false,
         ];
     }
 }

@@ -55,7 +55,7 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
     public function getSupportedTypes(?string $format): array
     {
         return [
-            OchaPresence::class => true,
+            OchaPresence::class => false,
         ];
     }
 }
