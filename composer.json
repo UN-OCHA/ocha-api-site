@@ -18,7 +18,7 @@
         "api-platform/core": "^3.2",
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
-        "doctrine/orm": "^2.13",
+        "doctrine/orm": "2.16.2",
         "nelmio/cors-bundle": "^2.2",
         "netbrothers-gmbh/version-bundle": "dev-short-index-names",
         "phpdocumentor/reflection-docblock": "^5.3",
