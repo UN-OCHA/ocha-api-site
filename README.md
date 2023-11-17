@@ -12,9 +12,9 @@
 - ~~batch endpoint~~
 - ~~extra fields as json blob~~
 - ~~add service name in header~~
-- test version
-- add post
-- add permissions for country
+- ~~test version~~
+- add plain post to KeyFigures?
+- add permissions for country?
 
 ## OPS
 
