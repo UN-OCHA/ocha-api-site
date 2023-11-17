@@ -5,7 +5,7 @@ networks:
 
 services:
   mysql:
-    image: public.ecr.aws/unocha/mysql:10.6
+    image: public.ecr.aws/unocha/mysql:10.11
     hostname: mysql-test
     container_name: ocha-api-mysql-test
     environment:
@@ -22,7 +22,7 @@ services:
     container_name: ocha-api-site-test
     environment:
       SYMFONY_PHPUNIT_DIR: './bin/.phpunit'
-      SYMFONY_DEPRECATIONS_HELPER: 9
+      SYMFONY_DEPRECATIONS_HELPER: 'max[self]=0'
       CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?'
       DATABASE_URL: 'mysql://ocha_api:ocha_api@mysql/ocha_api?charset=utf8'
       MESSENGER_TRANSPORT_DSN: "doctrine://default"

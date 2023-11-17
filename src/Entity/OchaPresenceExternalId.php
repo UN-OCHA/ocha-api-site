@@ -45,8 +45,8 @@ class OchaPresenceExternalId
     use VersionColumn;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name:"id", type:"integer", nullable:false)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'external_lookup_read'])]
     private ?int $id = null;
 

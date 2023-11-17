@@ -54,4 +54,14 @@ class OchaPresenceExternalIdDenormalizer implements DenormalizerInterface, Denor
     {
         return \in_array($format, ['json', 'jsonld'], true) && is_a($type, OchaPresenceExternalId::class, true) && !isset($context[__CLASS__]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            OchaPresenceExternalId::class => false,
+        ];
+    }
 }

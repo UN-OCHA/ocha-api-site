@@ -20,9 +20,8 @@ class KeyFiguresBatchController extends AbstractController {
     {
     }
 
-    public function __invoke(Request $request, BatchCollection $data, KeyFiguresRepository $repository, TokenStorageInterface $tokenStorage): BatchResponses
+    public function __invoke(Request $request, mixed $data, KeyFiguresRepository $repository, TokenStorageInterface $tokenStorage): BatchResponses
     {
-
         $operation = $request->attributes->get('_api_operation');
         $this->checkProviderAccess($operation, $tokenStorage);
 

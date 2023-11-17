@@ -2,4 +2,6 @@ when@dev: &dev
     hautelook_alice:
         fixtures_path: fixtures
 
+    fidry_alice_data_fixtures:
+        default_purge_mode: truncate
 when@test: *dev

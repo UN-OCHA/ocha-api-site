@@ -1,4 +1,4 @@
-FROM public.ecr.aws/unocha/php-k8s:8.1-stable as builder
+FROM public.ecr.aws/unocha/php-k8s:8.2-stable as builder
 ARG  BRANCH_ENVIRONMENT
 ENV  APP_ENV=PROD \
      PUBLIC_DIR=/srv/www/public \
@@ -8,7 +8,7 @@ WORKDIR /srv/www
 RUN composer install --no-scripts --prefer-dist --optimize-autoloader && \
     bin/console assets:install public
 
-FROM public.ecr.aws/unocha/php-k8s:8.1-stable
+FROM public.ecr.aws/unocha/php-k8s:8.2-stable
 
 ARG VCS_REF
 ARG VCS_URL
@@ -52,10 +52,10 @@ RUN  wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=
      ln -s /srv/www/public /srv/www/html && \
      mkdir -p /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions /etc/nginx/custom && \
      chown appuser:appuser /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions && \
-     curl -L -o /tmp/apm-agent-php_1.6.1_all.apk https://github.com/elastic/apm-agent-php/releases/download/v1.6.1/apm-agent-php_1.6.1_all.apk && \
-     apk add --allow-untrusted /tmp/apm-agent-php_1.6.1_all.apk && \
-     rm -f /tmp/apm-agent-php_1.6.1_all.apk && \
-     mv -f /tmp/99-elastic-apm-custom.ini /etc/php81/conf.d/99-elastic-apm-custom.ini
+     curl -L -o /tmp/apm-agent-php_all.apk https://github.com/elastic/apm-agent-php/releases/download/v1.10.0/apm-agent-php_1.10.0_all.apk && \
+     apk add --allow-untrusted /tmp/apm-agent-php_all.apk && \
+     rm -f /tmp/apm-agent-php_all.apk && \
+     mv -f /tmp/99-elastic-apm-custom.ini /etc/php82/conf.d/99-elastic-apm-custom.ini
 
 COPY --from=builder /srv/www/docker/etc/nginx/map_block_http_methods.conf /etc/nginx/map_block_http_methods.conf
 COPY --from=builder /srv/www/docker/etc/nginx/apps/drupal/drupal.conf /etc/nginx/apps/drupal/drupal.conf
