@@ -61,7 +61,7 @@ class ExternalLookupVersionRepository extends ServiceEntityRepository
         $rsm->addFieldResult('v', 'ts', 'ts');
         $rsm->addFieldResult('v', 'deleted', 'deleted');
 
-        $query = $this->getEntityManager()->createNativeQuery('SELECT * FROM external_lookup_version v WHERE v.id = ? ORDER BY v.ts DESC', $rsm);
+        $query = $this->getEntityManager()->createNativeQuery('SELECT * FROM external_lookup_version v WHERE v.id = ? ORDER BY v.ts DESC, v.version DESC', $rsm);
         $query->setParameter(1, $id);
 
         return $query->getArrayResult();
