@@ -120,6 +120,7 @@ jobs:
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:drop --force
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:create --if-not-exists -n
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:create -n
+            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console netbrothers:version --drop-version -n
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console netbrothers:version -n
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console hautelook:fixtures:load -n
             docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console cache:clear
