@@ -40,7 +40,7 @@ class OchaPresenceTest extends ApiTestCase
             'json' => $this->data,
         ]);
 
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals(201, $response->getStatusCode());
     }
 
     public function testCreateLdJson(): void
@@ -130,7 +130,7 @@ class OchaPresenceTest extends ApiTestCase
                 'API-KEY' => $this->token,
                 'APP-NAME' => 'test',
                 'accept' => 'application/json',
-                'Content-Type' => 'application/ld+json',
+                'Content-Type' => 'application/json',
             ],
             'json' => $new_data,
         ]);

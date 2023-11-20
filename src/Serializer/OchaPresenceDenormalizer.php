@@ -38,7 +38,8 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
             }, $data['ocha_presence_external_ids']);
         }
 
-        return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
+        // Force jsonld.
+        return $this->denormalizer->denormalize($data, $class, 'jsonld', $context + [__CLASS__ => true]);
     }
 
     /**
