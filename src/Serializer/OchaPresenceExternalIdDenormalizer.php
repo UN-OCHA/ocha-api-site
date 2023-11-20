@@ -44,7 +44,8 @@ class OchaPresenceExternalIdDenormalizer implements DenormalizerInterface, Denor
             $data['ocha_presence'] = $this->iriConverter->getIriFromResource(resource: OchaPresence::class, context: ['uri_variables' => ['id' => $data['ocha_presence']]]);
         }
 
-        return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
+        // Force jsonld.
+        return $this->denormalizer->denormalize($data, $class, 'jsonld', $context + [__CLASS__ => true]);
     }
 
     /**

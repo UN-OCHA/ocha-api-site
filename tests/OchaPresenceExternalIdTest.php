@@ -39,7 +39,7 @@ class OchaPresenceExternalIdTest extends ApiTestCase
             'json' => $this->data,
         ]);
 
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals(201, $response->getStatusCode());
     }
 
     public function testCreateLdJson(): void
