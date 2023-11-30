@@ -11,11 +11,11 @@ jobs:
     steps:
     - name: Update The Thing
       id: update-action
-      uses: UN-OCHA/actions/composer-update@main
+      uses: UN-OCHA/actions/composer-update@disable-scripts-part-2
       with:
         github_access_token: ${{ secrets.PAT }}
         patch_branch: 'develop'
-        patch_packages: 'symfony/*'
+        patch_packages: 'symfony/* api-platform/*'
         patch_maintainers: ${{ vars.DRUPAL_MAINTAINERS }}
         slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
         slack_channel_name: ${{ vars.SLACK_CHANNEL }}
