@@ -52,7 +52,7 @@ class OchaPresenceExternalId
 
     #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
+    #[Groups(['ochapresence_external_read', 'ochapresence_external_write'])]
     private ?OchaPresence $ochaPresence = null;
 
     #[ORM\ManyToOne()]
