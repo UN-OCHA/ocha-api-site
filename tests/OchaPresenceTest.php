@@ -43,6 +43,23 @@ class OchaPresenceTest extends ApiTestCase
         $this->assertEquals(201, $response->getStatusCode());
     }
 
+    public function testGetJson(): void
+    {
+        $client = static::createClient();
+        $client->disableReboot();
+
+        $response = $client->request('GET', $this->addPrefix('ocha_presences'), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
     public function testCreateLdJson(): void
     {
         $client = static::createClient();
