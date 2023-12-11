@@ -2,8 +2,6 @@
 
 namespace App\Dto;
 
-final class BatchCollection
-{
-    /** Should be var \App\Entity\KeyFigures[] */
-    public array $data = [];
+class BatchCollection {
+    public function __construct(public array $data = []) {}
 }

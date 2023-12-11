@@ -16,11 +16,11 @@ final class KeyFiguresPutStateProvider implements ProcessorInterface
     public function __construct(
         private ProcessorInterface $decorated,
         private TokenStorageInterface $tokenStorage,
-    )
+      )
     {
     }
 
-    public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []) : \App\Entity\KeyFigures
     {
         $this->checkProviderAccess($operation, $context);
 

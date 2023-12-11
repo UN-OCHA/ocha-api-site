@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use NetBrothers\VersionBundle\Traits\VersionColumn;
 
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
@@ -41,15 +42,17 @@ use ApiPlatform\Metadata\Put;
 #[ORM\Entity(repositoryClass: OchaPresenceExternalIdRepository::class)]
 class OchaPresenceExternalId
 {
+    use VersionColumn;
+
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name:"id", type:"integer", nullable:false)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read', 'external_lookup_read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'ochaPresenceExternalIds')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
+    #[Groups(['ochapresence_external_read', 'ochapresence_external_write'])]
     private ?OchaPresence $ochaPresence = null;
 
     #[ORM\ManyToOne()]

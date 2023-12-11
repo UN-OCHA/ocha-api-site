@@ -8,13 +8,17 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Repository\ExternalLookupRepository;
+use App\State\KeyFigures\ExternalLookupVersionStateProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use NetBrothers\VersionBundle\Traits\VersionColumn;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
@@ -26,6 +30,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiFilter(OrderFilter::class, properties: ['name' => 'ASC'])]
 #[Get()]
 #[GetCollection()]
+#[Get(
+    uriTemplate: '/external_lookups/{id}/versions',
+    output: ExternalLookupVersion::class,
+    provider: ExternalLookupVersionStateProvider::class,
+    openapi: new OpenApiOperation(
+      summary: 'Get a list of versions',
+      description: 'Get a list of versions',
+      responses: [
+          '200' => [
+              'description' => 'Array of data containing version information',
+          ],
+      ],
+    ),
+)]
 #[Post(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)")]
 #[Put(securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)")]
 #[Patch(
@@ -37,6 +55,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ExternalLookupRepository::class)]
 class ExternalLookup
 {
+    use VersionColumn;
+
     #[ORM\Id]
     #[ORM\Column]
     #[Groups(['external_lookup_read', 'external_lookup_write', 'ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]

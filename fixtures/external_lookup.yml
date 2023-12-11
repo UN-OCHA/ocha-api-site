@@ -6,8 +6,7 @@ App\Entity\ExternalLookup:
     iso3: 'afg'
     external_id: '1117'
     name: 'Afghanistan Humanitarian Response Plan 2023'
-    ocha_presence_external_ids: []
-  fts_1116::
+  fts_1116:
     id: 'fts_1116'
     provider: 'fts'
     year: '2023'
