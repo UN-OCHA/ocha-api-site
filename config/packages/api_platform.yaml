@@ -1,6 +1,6 @@
 api_platform:
     title: 'OCHA API'
-    description: 'The public OCHA API'
+    description: 'This is a beta API that OCHA is testing to pull together key figures to power some of its own websites (e.g. unocha.org). It will not contain detailed data from each of the sources. If you are interested detailed data, we suggest you use the respective sources API. Questions: email support@unocha.org'
     version: 1.0.1
     show_webby: false
     name_converter: 'Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter'
