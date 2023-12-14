@@ -171,16 +171,16 @@
         },
         {
             "name": "async-aws/core",
-            "version": "1.20.0",
+            "version": "1.20.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/async-aws/core.git",
-                "reference": "e7a42c5cd0af44c4f3df0c4d228fe574c8ae4b68"
+                "reference": "7e079d52ac27b8c5a2036df8daea567c9728ee11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/async-aws/core/zipball/e7a42c5cd0af44c4f3df0c4d228fe574c8ae4b68",
-                "reference": "e7a42c5cd0af44c4f3df0c4d228fe574c8ae4b68",
+                "url": "https://api.github.com/repos/async-aws/core/zipball/7e079d52ac27b8c5a2036df8daea567c9728ee11",
+                "reference": "7e079d52ac27b8c5a2036df8daea567c9728ee11",
                 "shasum": ""
             },
             "require": {
@@ -223,7 +223,7 @@
                 "sts"
             ],
             "support": {
-                "source": "https://github.com/async-aws/core/tree/1.20.0"
+                "source": "https://github.com/async-aws/core/tree/1.20.1"
             },
             "funding": [
                 {
@@ -235,20 +235,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-08-07T20:00:50+00:00"
+            "time": "2023-12-13T20:52:19+00:00"
         },
         {
             "name": "async-aws/ses",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/async-aws/ses.git",
-                "reference": "08986c131aa00321ff3c1fa3c0bccbeffa69a1da"
+                "reference": "3aed25813b21aeab96a60a658edf1e23531d2011"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/async-aws/ses/zipball/08986c131aa00321ff3c1fa3c0bccbeffa69a1da",
-                "reference": "08986c131aa00321ff3c1fa3c0bccbeffa69a1da",
+                "url": "https://api.github.com/repos/async-aws/ses/zipball/3aed25813b21aeab96a60a658edf1e23531d2011",
+                "reference": "3aed25813b21aeab96a60a658edf1e23531d2011",
                 "shasum": ""
             },
             "require": {
@@ -259,7 +259,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
@@ -280,7 +280,7 @@
                 "ses"
             ],
             "support": {
-                "source": "https://github.com/async-aws/ses/tree/1.6.0"
+                "source": "https://github.com/async-aws/ses/tree/1.7.0"
             },
             "funding": [
                 {
@@ -292,7 +292,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-08-07T20:00:50+00:00"
+            "time": "2023-12-13T20:52:19+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -10931,5 +10931,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
