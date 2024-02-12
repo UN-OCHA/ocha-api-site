@@ -12,7 +12,6 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use App\Controller\OchaPresenceReplaceExternalIdsController;
 use App\Dto\BatchResponses;
-use App\Dto\OchaPresence;
 use App\Repository\OchaPresenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
