@@ -106,4 +106,46 @@ class KeyFiguresSrc3BatchTest extends ApiTestCase
         $this->assertArrayHasKey(strtolower('src3_afg_2022_Indicator'), $body['successful']);
    }
 
+   public function testOnSource3WithoutValueAsUser3(): void
+   {
+        $record = [
+            'plan_id' => 1159,
+            'external_id' => 1159,
+            'updated' => '2023-11-28 14:52:57',
+            'name' => 'Top sectors',
+            'year' => '2024',
+            'code' => 'HCMR24',
+            'iso3' => 'cmr',
+            'country' => 'Cameroon',
+            'source' => 'FTS',
+            'url' => 'https://fts.unocha.org/appeals/1159/summary',
+            'description' => 'Cameroon Humanitarian Response Plan 2024 [1159]',
+            'total_funding' => 0,
+            'value_type' => 'list',
+            'archived' => 0,
+            'sectors' => [
+            ]
+        ];
+
+        $response = static::createClient()->request('POST', $this->addPrefix('source-3') . '/batch', [
+           'headers' => [
+               'API-KEY' => 'token4',
+               'APP-NAME' => 'test',
+               'accept' => 'application/json',
+           ],
+           'json' => [
+                'data' => [
+                    $record,
+                ],
+            ],
+       ]);
+
+       $this->assertEquals(201, $response->getStatusCode());
+
+       $body = json_decode($response->getContent(), TRUE);
+       $this->assertCount(1, $body['successful']);
+       $this->assertCount(0, $body['failed']);
+       $this->assertArrayHasKey(strtolower('src3_cmr_2024_1159_top-sectors'), $body['successful']);
+  }
+
 }

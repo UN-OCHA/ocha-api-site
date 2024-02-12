@@ -2,7 +2,8 @@ FROM public.ecr.aws/unocha/php-k8s:8.2-stable as builder
 ARG  BRANCH_ENVIRONMENT
 ENV  APP_ENV=PROD \
      PUBLIC_DIR=/srv/www/public \
-     COMPOSER_MEMORY_LIMIT=-1
+     COMPOSER_MEMORY_LIMIT=-1 \
+     COMPOSER_ALLOW_SUPERUSER=1
 COPY . /srv/www
 WORKDIR /srv/www
 RUN composer install --no-scripts --prefer-dist --optimize-autoloader && \
