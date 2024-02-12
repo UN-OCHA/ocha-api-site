@@ -545,7 +545,7 @@ class KeyFigures
         $this->country = $values['country'];
         $this->year = $values['year'];
         $this->name = $values['name'];
-        $this->value = $values['value'];
+        $this->value = $values['value'] ?? '0.00';
         $this->valueString = $values['value_string'] ?? NULL;
         $this->valueType = $values['value_type'] ?? 'numeric';
         $this->url = $values['url'] ?? '';
