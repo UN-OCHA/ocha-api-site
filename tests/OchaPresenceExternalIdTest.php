@@ -20,7 +20,6 @@ class OchaPresenceExternalIdTest extends ApiTestCase
         'year' => '2000',
         'external_ids' => [
             'fts_1116',
-            'fts_1117',
         ],
     ];
 
@@ -40,6 +39,24 @@ class OchaPresenceExternalIdTest extends ApiTestCase
         ]);
 
         $this->assertEquals(201, $response->getStatusCode());
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertCount(1, $body['external_ids']);
+
+        $this->data['external_ids'][] = 'fts_1117';
+        $response = $client->request('PUT', $this->addPrefix('ocha_presence_external_ids/1'), [
+            'headers' => [
+                'API-KEY' => $this->token,
+                'APP-NAME' => 'test',
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+            'json' => $this->data,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), TRUE);
+        $this->assertCount(2, $body['external_ids']);
+
     }
 
     public function testCreateLdJson(): void
