@@ -1,13 +1,11 @@
 # Variables. Yes.
 DOCKER=docker
-TAG=8.1-stable
 NODE_ENV=dev
 
 # The main build recipe.
 build:	clean
 	$(DOCKER) build \
 				--build-arg BRANCH_ENVIRONMENT=$(NODE_ENV) \
-				--build-arg TAG=$(TAG) \
 				--build-arg VCS_REF=`git rev-parse --short HEAD` \
 				--build-arg VCS_URL=`git config --get remote.origin.url | sed 's#git@github.com:#https://github.com/#'` \
 				--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \

@@ -3,6 +3,7 @@
 namespace App\Serializer;
 
 use App\Dto\ArchiveInput;
+use App\Dto\BatchCollection;
 use App\Entity\KeyFigures;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -88,6 +89,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         return $this->decorated->supportsDenormalization($data, $type, $format);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            KeyFigures::class => false,
+        ];
+    }
+
     public function denormalize($data, string $type, string $format = null, array $context = []) : mixed {
         // We need an operation.
         if (!isset($context['operation'])) {
@@ -136,7 +147,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         return $this->decorated->denormalize($data, $type, $format, $context);
     }
 
-    public function setSerializer(SerializerInterface $serializer) {
+    public function setSerializer(SerializerInterface $serializer): void {
         if ($this->decorated instanceof SerializerAwareInterface) {
             $this->decorated->setSerializer($serializer);
         }
@@ -167,7 +178,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
     protected function checkAndCleanData($data, $provider, $method) {
         // Force provider.
-        if ($provider) {
+        if ($provider && !empty($provider)) {
           $data['provider'] = $provider;
         }
 
@@ -194,7 +205,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
           }
         }
 
-        // SKip for PATCH.
+        // Skip for PATCH.
         if ($method != 'PATCH') {
           // Set Id if not set.
           if (!isset($data['id'])) {

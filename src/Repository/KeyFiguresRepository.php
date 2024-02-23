@@ -180,13 +180,22 @@ class KeyFiguresRepository extends ServiceEntityRepository
         $qb->andWhere($qb->expr()->eq('opei.ochaPresence', ':ocha_presence_id'))
             ->setParameter(':ocha_presence_id', $ocha_presence_id);
 
-        $qb->andWhere($qb->expr()->eq('opei.year', ':year'))
-            ->setParameter(':year', $year);
+        if (is_array($year)) {
+            $qb->andWhere($qb->expr()->in('opei.year', ':year'))
+                ->setParameter(':year', $year);
+        }
+        else {
+            $qb->andWhere($qb->expr()->eq('opei.year', ':year'))
+                ->setParameter(':year', $year);
+        }
 
         if (!empty($figure_ids)) {
             $qb->andWhere($qb->expr()->in('kf.figureId', ':figure_ids'))
                 ->setParameter(':figure_ids', $figure_ids);
         }
+
+        // Force sort by year descending.
+        $qb->orderBy('opei.year', 'DESC');
 
         return $qb->getQuery()
             ->getResult()

@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\KeyFigures;
+use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -59,7 +60,7 @@ class DatabaseOnFlushListener
 
             $query = $this->entityManager->createQueryBuilder()
                 ->select('u')
-                ->from('App:User', 'u')
+                ->from(User::class, 'u')
                 ->where('u.webhook is not null');
             $users = $query->getQuery()->getResult();
 

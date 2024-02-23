@@ -79,3 +79,9 @@ services:
     App\Filter\JsonFilter:
 
     Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter: ~
+
+    # Custom Alice purger for version tables
+    fidry_alice_data_fixtures.persistence.purger_factory.doctrine:
+        class: App\Alice\Purger\VersionPurger
+        arguments:
+            - '@doctrine.orm.entity_manager'

@@ -98,7 +98,31 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
           ),
         ),
-        // OCHA Presence years.
+        // OCHA Presences.
+        new GetCollection(
+            uriTemplate: '/key_figures/ocha-presences/{ocha_presence_id}',
+            uriVariables: [
+                'ocha_presence_id' => new Link(
+                    fromClass: OchaPresence::class,
+                    fromProperty: 'id'
+                )
+            ],
+            output: SimpleStringObject::class,
+            provider: KeyFiguresOchaPresenceFiguresStateProvider::class,
+            openapi: new OpenApiOperation(
+              summary: 'Get a list OCHA presences key figures',
+              description: 'Get a list of OCHA presences key figures',
+              tags: [
+                  'Key Figures',
+              ],
+              responses: [
+                  '200' => [
+                      'description' => 'Array of OCHA presences key figures',
+                  ],
+              ],
+            ),
+          ),
+          // OCHA Presence years.
         new GetCollection(
             uriTemplate: '/key_figures/ocha-presences/{ocha_presence_id}/years',
             uriVariables: [
@@ -521,7 +545,7 @@ class KeyFigures
         $this->country = $values['country'];
         $this->year = $values['year'];
         $this->name = $values['name'];
-        $this->value = $values['value'];
+        $this->value = $values['value'] ?? '0.00';
         $this->valueString = $values['value_string'] ?? NULL;
         $this->valueType = $values['value_type'] ?? 'numeric';
         $this->url = $values['url'] ?? '';

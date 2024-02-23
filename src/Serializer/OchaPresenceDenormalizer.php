@@ -38,7 +38,8 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
             }, $data['ocha_presence_external_ids']);
         }
 
-        return $this->denormalizer->denormalize($data, $class, $format, $context + [__CLASS__ => true]);
+        // Force jsonld.
+        return $this->denormalizer->denormalize($data, $class, 'jsonld', $context + [__CLASS__ => true]);
     }
 
     /**
@@ -47,5 +48,15 @@ class OchaPresenceDenormalizer implements DenormalizerInterface, DenormalizerAwa
     public function supportsDenormalization($data, $type, $format = null, array $context = []): bool
     {
         return \in_array($format, ['json', 'jsonld'], true) && is_a($type, OchaPresence::class, true) && !isset($context[__CLASS__]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            OchaPresence::class => false,
+        ];
     }
 }
