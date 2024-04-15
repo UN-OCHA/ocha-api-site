@@ -52,11 +52,7 @@ RUN  wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=
      rm -rf /srv/www/html && \
      ln -s /srv/www/public /srv/www/html && \
      mkdir -p /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions /etc/nginx/custom && \
-     chown appuser:appuser /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions && \
-     curl -L -o /tmp/apm-agent-php_all.apk https://github.com/elastic/apm-agent-php/releases/download/v1.13.0/apm-agent-php_1.13.0_x86_64.apk && \
-     apk add --allow-untrusted /tmp/apm-agent-php_all.apk && \
-     rm -f /tmp/apm-agent-php_all.apk && \
-     mv -f /tmp/99-elastic-apm-custom.ini /etc/php82/conf.d/99-elastic-apm-custom.ini
+     chown appuser:appuser /srv/www/var/cache /srv/www/var/log /srv/www/var/sessions
 
 COPY --from=builder /srv/www/docker/etc/nginx/map_block_http_methods.conf /etc/nginx/map_block_http_methods.conf
 COPY --from=builder /srv/www/docker/etc/nginx/apps/drupal/drupal.conf /etc/nginx/apps/drupal/drupal.conf
