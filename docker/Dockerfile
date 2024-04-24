@@ -46,7 +46,6 @@ COPY --from=builder /srv/www/vendor /srv/www/vendor
 COPY --from=builder /srv/www/composer.json /srv/www/composer.json
 COPY --from=builder /srv/www/composer.lock /srv/www/composer.lock
 COPY --from=builder /srv/www/docker/manifest.json /srv/www/public/build/manifest.json
-COPY --from=builder /srv/www/docker/99-elastic-apm-custom.ini /tmp/99-elastic-apm-custom.ini
 
 RUN  wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=/usr/local/bin && \
      rm -rf /srv/www/html && \
