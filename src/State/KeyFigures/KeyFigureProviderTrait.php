@@ -8,7 +8,10 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 trait KeyFigureProviderTrait {
 
     protected function getProvider(Operation $operation, array $context = []) {
-        $operation = $context['operation'];
+        if (isset($context['operation'])) {
+            $operation = $context['operation'];
+        }
+
         $properties = $operation->getExtraProperties() ?? [];
         return $properties['provider'] ?? NULL;
     }
