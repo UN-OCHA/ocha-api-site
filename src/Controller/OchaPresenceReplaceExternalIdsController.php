@@ -2,24 +2,16 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Metadata\Operation;
-use App\Dto\ArchiveInput;
 use App\Dto\BatchResponses;
 use App\Dto\OchaPresenceReplaceExternalIds;
 use App\Entity\OchaPresence;
 use App\Entity\OchaPresenceExternalId;
-use App\Entity\Provider;
 use App\Repository\ExternalLookupRepository;
-use App\Repository\KeyFiguresRepository;
 use App\Repository\OchaPresenceExternalIdRepository;
-use App\Repository\OchaPresenceRepository;
 use App\Repository\ProviderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class OchaPresenceReplaceExternalIdsController extends AbstractController {
