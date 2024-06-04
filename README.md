@@ -122,7 +122,6 @@ fin exec phpunit
 ```bash
 console app:add-provider fts "FTS" fts key_figures
 console app:add-provider idps "Internally displaced persons key figures" idps key_figures
-console app:add-provider rw_crisis "ReliefWeb Crisis Figures" rw-crisis key_figures
 console app:add-provider cbpf "Country-Based Pooled Funds" cbpf key_figures
 ```
 
@@ -174,19 +173,6 @@ console import:fts 2021
 - `/api/fts/countries`
 - `/api/fts/country/{iso3}`
 - `/api/fts/year/{year}`
-
-### ReliefWeb Crisis Figures
-
-#### Import data
-
-```bash
-console import:rw-crisis --all
-```
-
-#### API
-
-- `/api/relief_web_crisis_figures/countries`
-- `/api/relief_web_crisis_figures/country/{iso3}`
 
 ## Conventional changelog
 
