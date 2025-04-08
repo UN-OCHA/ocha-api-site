@@ -1,4 +1,4 @@
-FROM public.ecr.aws/unocha/php-k8s:8.2-stable as builder
+FROM public.ecr.aws/unocha/php-k8s:8.4-stable as builder
 ARG  BRANCH_ENVIRONMENT
 ENV  APP_ENV=PROD \
      PUBLIC_DIR=/srv/www/public \
@@ -9,7 +9,7 @@ WORKDIR /srv/www
 RUN composer install --no-scripts --prefer-dist --optimize-autoloader && \
     bin/console assets:install public
 
-FROM public.ecr.aws/unocha/php-k8s:8.2-stable
+FROM public.ecr.aws/unocha/php-k8s:8.4-stable
 
 ARG VCS_REF
 ARG VCS_URL
