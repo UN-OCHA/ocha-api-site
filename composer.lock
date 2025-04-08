@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fde436a3ec4668ab0b049377eda7c879",
+    "content-hash": "3af9a1a486a012a2a050c4ab626b1b47",
     "packages": [
         {
             "name": "api-platform/doctrine-common",
@@ -3012,17 +3012,23 @@
         },
         {
             "name": "netbrothers-gmbh/version-bundle",
-            "version": "dev-short-index-names",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/attiks/version-bundle",
-                "reference": "3917e9fcee74f2f3baac317165e3fb9148584d6e"
+                "url": "https://github.com/netbrothers-gmbh/version-bundle.git",
+                "reference": "d9af517cba045a1963c9ec9b9a4fc4e82f16c02f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/netbrothers-gmbh/version-bundle/zipball/d9af517cba045a1963c9ec9b9a4fc4e82f16c02f",
+                "reference": "d9af517cba045a1963c9ec9b9a4fc4e82f16c02f",
+                "shasum": ""
             },
             "require": {
-                "doctrine/dbal": "^3.5",
+                "doctrine/dbal": "^3.8",
                 "doctrine/orm": "*",
-                "php": ">=7.4",
-                "symfony/console": "*"
+                "php": ">=8.2",
+                "symfony/console": ">=7 <8"
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.9",
@@ -3037,16 +3043,7 @@
                     "NetBrothers\\VersionBundle\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "NetBrothers\\VersionBundle\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "static-analysis": [
-                    "[ $COMPOSER_DEV_MODE -eq 0 ] || phpstan"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3069,7 +3066,11 @@
                 "mysql",
                 "versioning"
             ],
-            "time": "2023-11-15T18:32:25+00:00"
+            "support": {
+                "issues": "https://github.com/netbrothers-gmbh/version-bundle/issues",
+                "source": "https://github.com/netbrothers-gmbh/version-bundle/tree/v3.0.0"
+            },
+            "time": "2024-05-29T13:34:05+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -13291,9 +13292,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "netbrothers-gmbh/version-bundle": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
