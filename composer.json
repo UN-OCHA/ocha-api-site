@@ -21,6 +21,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2",
+        "nelmio/alice": "^3",
         "nelmio/cors-bundle": "^2.2",
         "netbrothers-gmbh/version-bundle": "dev-short-index-names",
         "phpdocumentor/reflection-docblock": "*",
