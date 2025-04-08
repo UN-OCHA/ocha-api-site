@@ -2,7 +2,7 @@
 
 namespace App\Serializer;
 
-use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Country;
 use App\Entity\OchaPresence;
 use App\Entity\OchaPresenceExternalId;
