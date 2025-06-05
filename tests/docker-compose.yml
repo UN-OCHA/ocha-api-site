@@ -21,6 +21,8 @@ services:
     hostname: ocha-api-test
     container_name: ocha-api-site-test
     environment:
+      NGINX_LIMIT_BOTS: 64r/s
+      NGINX_BURST_BOTS: 256 nodelay
       SYMFONY_PHPUNIT_DIR: './bin/.phpunit'
       SYMFONY_DEPRECATIONS_HELPER: 'max[self]=0'
       CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?'
