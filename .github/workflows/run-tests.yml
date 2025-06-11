@@ -106,7 +106,7 @@ jobs:
         uses: cafuego/command-output@main
         with:
           run: |
-            docker-compose -f tests/docker-compose.yml up -d
+            docker compose -f tests/docker-compose.yml up -d
             sleep 4
             docker ps -a
         env:
@@ -117,13 +117,13 @@ jobs:
         uses: cafuego/command-output@main
         with:
           run: |
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:drop --force
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:create --if-not-exists -n
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:create -n
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console netbrothers:version --drop-version -n
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console netbrothers:version -n
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console hautelook:fixtures:load -n
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console cache:clear
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:drop --force
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:database:create --if-not-exists -n
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:create -n
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console netbrothers:version --drop-version -n
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console netbrothers:version -n
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console hautelook:fixtures:load -n
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console cache:clear
         env:
           fail-fast: true
 
@@ -132,11 +132,11 @@ jobs:
         uses: cafuego/command-output@main
         with:
           run: |
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:yaml config --parse-tags
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:twig templates --env=prod
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:xliff translations
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:container
-            docker-compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:yaml config --parse-tags
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:twig templates --env=prod
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:xliff translations
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:container
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
         env:
           fail-fast: true
 
@@ -145,12 +145,12 @@ jobs:
         uses: cafuego/command-output@main
         with:
           run: |
-            docker-compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/html/build/logs
-            docker-compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/html/build/logs
-            docker-compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/coverage
-            docker-compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/coverage
-            docker-compose -f tests/docker-compose.yml exec -u appuser -T -w /srv/www -e XDEBUG_MODE=coverage -e BROWSERTEST_OUTPUT_DIRECTORY=/srv/www/html/sites/default/files/browser_output -e DTT_BASE_URL=http://127.0.0.1 site ./bin/phpunit --coverage-clover /srv/www/html/build/logs/clover.xml --cache-result-file /tmp/phpunit-result-cache --debug
-            docker cp "$(docker-compose -f tests/docker-compose.yml ps -q site)":/srv/www/html/build/logs/clover.xml .
+            docker compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/html/build/logs
+            docker compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/html/build/logs
+            docker compose -f tests/docker-compose.yml exec -T site mkdir -p /srv/www/coverage
+            docker compose -f tests/docker-compose.yml exec -T site chmod -R 777 /srv/www/coverage
+            docker compose -f tests/docker-compose.yml exec -u appuser -T -w /srv/www -e XDEBUG_MODE=coverage -e BROWSERTEST_OUTPUT_DIRECTORY=/srv/www/html/sites/default/files/browser_output -e DTT_BASE_URL=http://127.0.0.1 site ./bin/phpunit --coverage-clover /srv/www/html/build/logs/clover.xml --cache-result-file /tmp/phpunit-result-cache --debug
+            docker cp "$(docker compose -f tests/docker-compose.yml ps -q site)":/srv/www/html/build/logs/clover.xml .
         env:
           fail-fast: true
 
