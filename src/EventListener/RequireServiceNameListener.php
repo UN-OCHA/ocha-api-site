@@ -25,7 +25,7 @@ class RequireServiceNameListener
 
         if ($request->headers->has('accept') && $request->headers->get('accept') == 'application/json' && !$request->headers->has('APP-NAME')) {
             if (strpos($request->getUri(), '/n8n/') === FALSE) {
-                throw new BadRequestException('appname header is mandatory.');
+                throw new BadRequestException('APP-NAME header is mandatory.');
             }
         }
 
