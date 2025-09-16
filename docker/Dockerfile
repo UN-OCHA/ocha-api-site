@@ -1,4 +1,4 @@
-FROM public.ecr.aws/unocha/php-k8s:8.2-develop as builder
+FROM public.ecr.aws/unocha/php-k8s:8.3-develop as builder
 ARG  BRANCH_ENVIRONMENT
 ENV  APP_ENV=PROD \
      PUBLIC_DIR=/srv/www/public \
@@ -9,7 +9,7 @@ WORKDIR /srv/www
 RUN composer install --no-scripts --prefer-dist --optimize-autoloader && \
     bin/console assets:install public
 
-FROM public.ecr.aws/unocha/php-k8s:8.2-develop
+FROM public.ecr.aws/unocha/php-k8s:8.3-develop
 
 ARG VCS_REF
 ARG VCS_URL
@@ -46,7 +46,6 @@ COPY --from=builder /srv/www/vendor /srv/www/vendor
 COPY --from=builder /srv/www/composer.json /srv/www/composer.json
 COPY --from=builder /srv/www/composer.lock /srv/www/composer.lock
 COPY --from=builder /srv/www/docker/manifest.json /srv/www/public/build/manifest.json
-COPY --from=builder /srv/www/docker/99-elastic-apm-custom.ini /tmp/99-elastic-apm-custom.ini
 
 RUN  wget https://get.symfony.com/cli/installer -O - | bash -s -- --install-dir=/usr/local/bin && \
      rm -rf /srv/www/html && \
