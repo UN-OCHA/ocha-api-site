@@ -30,7 +30,7 @@ class VersionPurger implements PurgerInterface, PurgerFactoryInterface
     private ?PurgeMode $purgeMode;
     private DoctrinePurgerInterface $purger;
 
-    public function __construct(ObjectManager $manager, PurgeMode $purgeMode = null)
+    public function __construct(ObjectManager $manager, ?PurgeMode $purgeMode = null)
     {
         $this->manager = $manager;
         $this->purgeMode = $purgeMode;
@@ -38,7 +38,7 @@ class VersionPurger implements PurgerInterface, PurgerFactoryInterface
         $this->purger = static::createPurger($manager, $purgeMode);
     }
 
-    public function create(PurgeMode $mode, PurgerInterface $purger = null): PurgerInterface
+    public function create(PurgeMode $mode, ?PurgerInterface $purger = null): PurgerInterface
     {
         if (null === $purger) {
             return new self($this->manager, $mode);
