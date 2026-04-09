@@ -76,7 +76,7 @@ final class JsonFilter extends AbstractFilter implements JsonFilterInterface
      * @param string|null $operationName
      * @return void
      */
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []) : void {
+    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []) : void {
         $jsonColumn = $this->getJsonColumn($property);
 
         // check - standard checks

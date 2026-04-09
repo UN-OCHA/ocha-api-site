@@ -99,7 +99,7 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
         ];
     }
 
-    public function denormalize($data, string $type, string $format = null, array $context = []) : mixed {
+    public function denormalize($data, string $type, ?string $format = null, array $context = []) : mixed {
         // We need an operation.
         if (!isset($context['operation'])) {
             return $this->decorated->denormalize($data, $type, $format, $context);
