@@ -3,7 +3,7 @@ networks:
 
 services:
   mysql:
-    image: public.ecr.aws/unocha/mysql:11.4
+    image: public.ecr.aws/unocha/mysql:11
     hostname: mysql-test
     container_name: ocha-api-mysql-test
     environment:
