@@ -19,6 +19,7 @@ services:
     hostname: ocha-api-test
     container_name: ocha-api-site-test
     environment:
+      APP_ENV: test
       NGINX_LIMIT_BOTS: 64r/s
       NGINX_BURST_BOTS: 256 nodelay
       SYMFONY_PHPUNIT_DIR: './bin/.phpunit'
