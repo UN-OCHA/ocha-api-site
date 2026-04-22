@@ -29,15 +29,15 @@ when@dev:
     doctrine:
         dbal:
             options:
-                !php/const:PDO::MYSQL_ATTR_SSL_CA: '/etc/pki/aws/global-bundle.pem'
-                !php/const:PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 1
+                !php/const PDO::MYSQL_ATTR_SSL_CA: '/etc/pki/aws/global-bundle.pem'
+                !php/const PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 1
 
 when@prod:
     doctrine:
         dbal:
             options:
-                !php/const:PDO::MYSQL_ATTR_SSL_CA: '/etc/pki/aws/global-bundle.pem'
-                !php/const:PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 1
+                !php/const PDO::MYSQL_ATTR_SSL_CA: '/etc/pki/aws/global-bundle.pem'
+                !php/const PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 1
 
         orm:
             auto_generate_proxy_classes: false
