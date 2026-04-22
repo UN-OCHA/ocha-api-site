@@ -139,7 +139,7 @@ jobs:
         with:
           run: |
             docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:yaml config --parse-tags
-            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:twig templates --env=prod
+            docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:twig templates --env=test
             docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:xliff translations
             docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console lint:container
             docker compose -f tests/docker-compose.yml exec -w /srv/www -T site ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
