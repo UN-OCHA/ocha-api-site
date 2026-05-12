@@ -17,7 +17,6 @@ nelmio_cors:
             allow_headers: ['User-Agent', 'Content-Type', 'API-KEY', 'APP-NAME']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
             max_age: 3600
-    paths:
         '^/':
             origin_regex: true
             allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
