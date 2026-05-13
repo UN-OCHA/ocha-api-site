@@ -3,7 +3,7 @@ networks:
 
 services:
   mysql:
-    image: public.ecr.aws/unocha/mysql:11.4
+    image: public.ecr.aws/unocha/mysql:11
     hostname: mysql-test
     container_name: ocha-api-mysql-test
     environment:
@@ -19,6 +19,7 @@ services:
     hostname: ocha-api-test
     container_name: ocha-api-site-test
     environment:
+      APP_ENV: test
       NGINX_LIMIT_BOTS: 64r/s
       NGINX_BURST_BOTS: 256 nodelay
       SYMFONY_PHPUNIT_DIR: './bin/.phpunit'
