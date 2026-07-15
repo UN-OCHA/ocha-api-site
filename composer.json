@@ -57,6 +57,29 @@
         "twig/twig": "^2.12|^3.0"
     },
     "config": {
+       "policy": {
+            "advisories": {
+                "audit": "fail",
+                "ignore-severity": {
+                    "low":    { "on-audit": true, "reason": "Do not alert on low severity issues." },
+                    "medium": { "on-audit": true, "reason": "Do not alert on medium severity issues." }
+                },
+                "ignore-id": {
+                    "PKSA-3ncz-km6v-5vjr": "OHA-71 - Allow builds to compelete for *other* updates.",
+                    "PKSA-gs8r-6kz6-pp56": "OHA-71 - Allow builds to compelete for *other* updates.",
+                    "PKSA-gnn4-pxdg-q76m": "OHA-71 - Allow builds to compelete for *other* updates.",
+                    "PKSA-q2bp-c9gn-wy37": "OHA-71 - Allow builds to compelete for *other* updates.",
+                    "PKSA-jms4-fggn-5mmn": "OHA-71 - Allow builds to compelete for *other* updates.",
+                    "PKSA-dsd6-6541-26zs": "OHA-71 - Allow builds to compelete for *other* updates."
+                }
+            },
+            "abandoned": {
+                "audit": "report"
+            },
+            "malware:": {
+                "block-scope": "all"
+            }
+        },
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
             "symfony/flex": true,
@@ -66,10 +89,7 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true,
-        "audit": {
-            "abandoned": "report"
-        }
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
