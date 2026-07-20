@@ -7,6 +7,7 @@ use App\Entity\KeyFigures;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class KeyFiguresProviderVoter extends Voter
@@ -32,11 +33,12 @@ class KeyFiguresProviderVoter extends Voter
 
     /**
      * @param string $attribute
-     * @param $subject
+     * @param mixed $subject
      * @param TokenInterface $token
+     * @param ?Vote $vote
      * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token, ?VOte $vote = null): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
