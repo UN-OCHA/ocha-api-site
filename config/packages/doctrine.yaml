@@ -7,11 +7,8 @@ doctrine:
         #server_version: '13'
 
     orm:
-        enable_lazy_ghost_objects: true
-        auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
-        report_fields_where_declared: true
         mappings:
             App:
                 is_bundle: false
@@ -40,7 +37,6 @@ when@prod:
                 !php/const PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 1
 
         orm:
-            auto_generate_proxy_classes: false
             query_cache_driver:
                 type: pool
                 pool: doctrine.system_cache_pool
@@ -59,7 +55,6 @@ when@prod:
 when@test:
     doctrine:
         orm:
-            auto_generate_proxy_classes: false
             query_cache_driver:
                 type: pool
                 pool: doctrine.system_cache_pool
