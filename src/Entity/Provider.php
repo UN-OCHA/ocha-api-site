@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Provider
 {
     #[ORM\Id]
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $id = null;
 

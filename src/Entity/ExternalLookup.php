@@ -58,7 +58,7 @@ class ExternalLookup
     use VersionColumn;
 
     #[ORM\Id]
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     #[Groups(['external_lookup_read', 'external_lookup_write', 'ochapresence_read', 'ochapresence_external_read', 'ochapresence_external_write'])]
     private ?string $id = null;
 
