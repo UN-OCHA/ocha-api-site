@@ -1,0 +1,17 @@
+{
+    "_hash": "17b7f100a20ccaaa1cc3d73a4718535a1e1d7338f486ad42387812a277c1d28b",
+    "patches": {
+        "netbrothers-gmbh/version-bundle": [
+            {
+                "package": "netbrothers-gmbh/version-bundle",
+                "description": "Shorter version suffix",
+                "url": "./PATCHES/netbrothers-gmbh-version-bundle-short-suffix.patch",
+                "sha256": "2691c2d7182f3b73449b7fbf595534fd897c7fcf0a3fdfa8b49aac6b15daba87",
+                "depth": 1,
+                "extra": {
+                    "provenance": "patches-file:patches.json"
+                }
+            }
+        ]
+    }
+}

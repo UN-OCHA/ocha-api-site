@@ -1,0 +1,7 @@
+{
+  "patches": {
+    "netbrothers-gmbh/version-bundle": {
+      "Shorter version suffix": "./PATCHES/netbrothers-gmbh-version-bundle-short-suffix.patch"
+    }
+  }
+}

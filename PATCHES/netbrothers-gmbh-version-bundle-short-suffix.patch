@@ -1,0 +1,20 @@
+--- version-bundle/src/Services/Sql/Definitions.php.orig	2026-08-25 14:33:09
++++ version-bundle/src/Services/Sql/Definitions.php	2026-08-25 14:36:13
+@@ -18,13 +18,13 @@
+ final class Definitions
+ {
+     /** @var string  setting version to int 1 before insert */
+-    public const string TRIGGER_NAME_BEFORE_INSERT_SET_VERSION = 'BEVOR_INSERT_SET_VERSION';
++    public const string TRIGGER_NAME_BEFORE_INSERT_SET_VERSION = 'NBVB_BI';
+     /** @var string  create first entry in table version */
+-    public const string TRIGGER_NAME_AFTER_INSERT_INSERT_VERSION = 'AFTER_INSERT_INSERT_VERSION';
++    public const string TRIGGER_NAME_AFTER_INSERT_INSERT_VERSION = 'NBVB_AI';
+     /** @var string increment column version before update */
+-    public const string TRIGGER_NAME_BEFORE_UPDATE_SET_VERSION = 'BEFORE_UPDATE_SET_VERSION';
++    public const string TRIGGER_NAME_BEFORE_UPDATE_SET_VERSION = 'NBVB_BU';
+     /** @var string insert in table version on update */
+-    public const string TRIGGER_NAME_AFTER_UPDATE_INSERT_VERSION = 'AFTER_UPDATE_INSERT_VERSION';
++    public const string TRIGGER_NAME_AFTER_UPDATE_INSERT_VERSION = 'NBVB_AU';
+     /** @var string postix for version table */
+     public const string VERSION_TABLE_NAME_POSTFIX = '_version';
+     /** @var string sql create version table */
