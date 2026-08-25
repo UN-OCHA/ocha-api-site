@@ -16,7 +16,7 @@
         "doctrine/doctrine-migrations-bundle": "^4",
         "doctrine/orm": "^3",
         "nelmio/cors-bundle": "^2",
-        "netbrothers-gmbh/version-bundle": "*",
+        "netbrothers-gmbh/version-bundle": "^4",
         "phpdocumentor/reflection-docblock": "^6",
         "phpstan/phpdoc-parser": "^2",
         "scienta/doctrine-json-functions": "^6",
@@ -61,13 +61,6 @@
                     "medium": { "on-audit": true, "reason": "Do not alert on medium severity issues." }
                 },
                 "ignore-id": {
-                    "PKSA-8kfs-m8zw-ggzs": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-3ncz-km6v-5vjr": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-gs8r-6kz6-pp56": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-gnn4-pxdg-q76m": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-q2bp-c9gn-wy37": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-jms4-fggn-5mmn": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-dsd6-6541-26zs": "OHA-71 - Allow builds to compelete for *other* updates."
                 }
             },
             "abandoned": {
