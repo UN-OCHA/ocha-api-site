@@ -23,3 +23,6 @@ buildlog.txt
 ###< unocha/docker ###
 
 /coverage
+
+# Local disposable smoke script (do not commit)
+/local/smoke-api.py
