@@ -207,8 +207,10 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
 
         // Skip for PATCH.
         if ($method != 'PATCH') {
-          // Set Id if not set.
-          if (!isset($data['id'])) {
+          // Auto-build id only for POST. On PUT the id comes from the URI /
+          // object_to_populate; inventing one triggers API Platform 4 IRI
+          // resolution errors (e.g. upsert to /source-3/1).
+          if ($method === 'POST' && !isset($data['id'])) {
               $data['id'] = $this->buildId($data);
           }
 

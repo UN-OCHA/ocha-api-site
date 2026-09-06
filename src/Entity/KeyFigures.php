@@ -169,8 +169,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
             uriTemplate: '/key_figures/{id}',
             processor: KeyFiguresPutStateProvider::class,
+            // With standard_put, PUT skips OBJECT_TO_POPULATE by default. PutListener
+            // upserts missing items by seeding request "data" with URI id — keep that.
             denormalizationContext: [
                 'groups' => ['write'],
+                'api_assign_object_to_populate' => true,
             ],
             openapi: new OpenApiOperation(
               summary: 'Create or update a key figure',
