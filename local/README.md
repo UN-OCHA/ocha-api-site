@@ -87,6 +87,14 @@ Examples from the project README:
 
 ## Tests
 
+Run the full CI-equivalent suite (build image, start test stack, install DB/fixtures, lint, PHPUnit):
+
+```bash
+./tests/test.sh
+```
+
+For a quick PHPUnit run against the already-running local stack:
+
 ```bash
 ./local/exec.sh -w /srv/www -u appuser site ./bin/console doctrine:database:drop --env=test --force
 ./local/exec.sh -w /srv/www -u appuser site ./bin/console doctrine:database:create --env=test --if-not-exists -n
