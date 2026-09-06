@@ -1,12 +1,12 @@
 {
-    "_hash": "17b7f100a20ccaaa1cc3d73a4718535a1e1d7338f486ad42387812a277c1d28b",
+    "_hash": "f80a6e3252b429f37acfa0e583b9f3cfcdd3ec53f29abeaf4fe312fcbc14f3a9",
     "patches": {
         "netbrothers-gmbh/version-bundle": [
             {
                 "package": "netbrothers-gmbh/version-bundle",
-                "description": "Shorter version suffix",
+                "description": "Short trigger names; restore ts/deleted columns and soft-delete trigger",
                 "url": "./PATCHES/netbrothers-gmbh-version-bundle-short-suffix.patch",
-                "sha256": "2691c2d7182f3b73449b7fbf595534fd897c7fcf0a3fdfa8b49aac6b15daba87",
+                "sha256": "ab89c43e986ace2c53416b7031dc8f717a57bd9e68b44aa1aa9c8bafaad7fd37",
                 "depth": 1,
                 "extra": {
                     "provenance": "patches-file:patches.json"
