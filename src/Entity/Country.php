@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Put;
 use App\Repository\CountryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,6 +13,7 @@ use NetBrothers\VersionBundle\Traits\VersionColumn;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource()]
+#[Put(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
 class Country
 {
