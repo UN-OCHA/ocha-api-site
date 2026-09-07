@@ -85,6 +85,24 @@ Examples from the project README:
 ./local/exec.sh -w /srv/www -u appuser site ./bin/console app:add-user admin admin@example.com admin --admin
 ```
 
+## API probes (read / write)
+
+After the local stack is up (and ideally a real dump is imported via `./local/import-db.sh`), exercise live API reads and disposable writes:
+
+```bash
+cp local/scripts/.env.api.example local/scripts/.env.api
+# Edit local/scripts/.env.api and set API_KEY (admin or provider-scoped token).
+
+python3 local/scripts/test-api.py read
+python3 local/scripts/test-api.py read --jsonld
+python3 local/scripts/test-api.py write
+python3 local/scripts/test-api.py write --only fts,cbpf
+python3 local/scripts/test-api.py write --no-batch --no-patch
+python3 local/scripts/test-api.py all
+```
+
+Credentials load from `local/scripts/.env.api` (gitignored). CLI flags and process env (`BASE_URL`, `API_KEY`, `APP_NAME`) override the file. Write mode samples existing rows when present, upserts disposable `write_test_*` records via PUT/PATCH/batch on **prefixed** provider routes (e.g. `/fts`, `/cbpf`) — matching n8n / production — then deletes them. It does not probe unprefixed `/key_figures` writes. Neither mode calls `/archive`.
+
 ## Tests
 
 Run the full CI-equivalent suite (build image, start test stack, install DB/fixtures, lint, PHPUnit):
