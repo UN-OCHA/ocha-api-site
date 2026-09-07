@@ -38,7 +38,7 @@ class KeyFiguresProviderVoter extends Voter
      * @param ?Vote $vote
      * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token, ?VOte $vote = null): bool
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {

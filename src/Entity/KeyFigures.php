@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use ApiPlatform\OpenApi\Model\Response as OpenApiResponse;
 use App\Controller\KeyFiguresArchiveController;
 use App\Controller\KeyFiguresBatchController;
 use App\Dto\ArchiveInput;
@@ -33,7 +34,7 @@ use App\State\KeyFigures\KeyFiguresPutStateProvider;
 use App\State\KeyFigures\KeyFiguresYearsStateProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: KeyFiguresRepository::class)]
@@ -56,9 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                   'Key Figures',
               ],
               responses: [
-                  '200' => [
-                      'description' => 'Array of years keyed by year',
-                  ],
+                  '200' => new OpenApiResponse(description: 'Array of years keyed by year'),
               ],
             ),
         ),
@@ -74,9 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                   'Key Figures',
               ],
               responses: [
-                  '200' => [
-                      'description' => 'Array of countries keyed by year',
-                  ],
+                  '200' => new OpenApiResponse(description: 'Array of countries keyed by year'),
               ],
             ),
         ),
@@ -92,9 +89,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'Key Figures',
             ],
             responses: [
-                '200' => [
-                    'description' => 'Array of OCHA presences',
-                ],
+                '200' => new OpenApiResponse(description: 'Array of OCHA presences'),
             ],
           ),
         ),
@@ -116,9 +111,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                   'Key Figures',
               ],
               responses: [
-                  '200' => [
-                      'description' => 'Array of OCHA presences key figures',
-                  ],
+                  '200' => new OpenApiResponse(description: 'Array of OCHA presences key figures'),
               ],
             ),
           ),
@@ -140,9 +133,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                   'Key Figures',
               ],
               responses: [
-                  '200' => [
-                      'description' => 'Array of years for an OCHA presences',
-                  ],
+                  '200' => new OpenApiResponse(description: 'Array of years for an OCHA presences'),
               ],
             ),
         ),
@@ -169,9 +160,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                   'Key Figures',
               ],
               responses: [
-                  '200' => [
-                      'description' => 'Array of figures for an OCHA presences',
-                  ],
+                  '200' => new OpenApiResponse(description: 'Array of figures for an OCHA presences'),
               ],
             ),
         ),
@@ -180,8 +169,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityPostDenormalize: "is_granted('ROLE_ADMIN') or is_granted('KEY_FIGURES_UPSERT', object)",
             uriTemplate: '/key_figures/{id}',
             processor: KeyFiguresPutStateProvider::class,
+            // With standard_put, PUT skips OBJECT_TO_POPULATE by default. PutListener
+            // upserts missing items by seeding request "data" with URI id — keep that.
             denormalizationContext: [
                 'groups' => ['write'],
+                'api_assign_object_to_populate' => true,
             ],
             openapi: new OpenApiOperation(
               summary: 'Create or update a key figure',

@@ -39,7 +39,6 @@
         "symfony/process": "^8",
         "symfony/property-access": "^8",
         "symfony/property-info": "^8",
-        "symfony/proxy-manager-bridge": "^6",
         "symfony/runtime": "^8",
         "symfony/security-bundle": "^8",
         "symfony/serializer": "^8",
@@ -124,7 +123,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "*"
+            "require": "8.1.*"
         }
     },
     "require-dev": {

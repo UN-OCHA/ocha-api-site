@@ -11,22 +11,22 @@ class ExternalLookupVersion
 {
 
     #[ORM\Id]
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     public string $id;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     public string $provider;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 4)]
     public string $year;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 3)]
     public string $iso3;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     public string $externalId;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     public string $name;
 
     #[ORM\Id]

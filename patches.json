@@ -1,7 +1,7 @@
 {
   "patches": {
     "netbrothers-gmbh/version-bundle": {
-      "Shorter version suffix": "./PATCHES/netbrothers-gmbh-version-bundle-short-suffix.patch"
+      "Short trigger names; restore ts/deleted columns and soft-delete trigger": "./PATCHES/netbrothers-gmbh-version-bundle-short-suffix.patch"
     }
   }
 }

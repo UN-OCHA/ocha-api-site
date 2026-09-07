@@ -13,13 +13,14 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use ApiPlatform\OpenApi\Model\Response as OpenApiResponse;
 use App\Repository\ExternalLookupRepository;
 use App\State\KeyFigures\ExternalLookupVersionStateProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use NetBrothers\VersionBundle\Traits\VersionColumn;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
@@ -38,9 +39,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
       summary: 'Get a list of versions',
       description: 'Get a list of versions',
       responses: [
-          '200' => [
-              'description' => 'Array of data containing version information',
-          ],
+          '200' => new OpenApiResponse(description: 'Array of data containing version information'),
       ],
     ),
 )]
@@ -74,7 +73,7 @@ class ExternalLookup
     #[Groups(['external_lookup_read', 'external_lookup_write'])]
     private ?string $iso3 = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     #[Groups(['external_lookup_read', 'external_lookup_write', 'ochapresence_read', 'ochapresence_external_read'])]
     private ?string $externalId = null;
 

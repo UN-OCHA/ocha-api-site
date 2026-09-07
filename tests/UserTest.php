@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
 class UserTest extends ApiTestCase
