@@ -10,7 +10,8 @@ Usage (from repo root):
   python3 local/scripts/test-api.py read
   python3 local/scripts/test-api.py read --jsonld
   python3 local/scripts/test-api.py write [--only fts,cbpf] [--no-batch] [--no-patch]
-  python3 local/scripts/test-api.py all
+  python3 local/scripts/test-api.py write --api-key YOUR_ADMIN_TOKEN
+  python3 local/scripts/test-api.py all --api-key YOUR_ADMIN_TOKEN
 
 Never calls /archive.
 """
@@ -29,24 +30,42 @@ from read import run_read  # noqa: E402
 from write import run_write  # noqa: E402
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Local OCHA API read/write probes.")
-    parser.add_argument(
+def _credentials_parser() -> argparse.ArgumentParser:
+    """Shared flags so they work after the subcommand (e.g. write --api-key …)."""
+    creds = argparse.ArgumentParser(add_help=False)
+    creds.add_argument(
         "--env-file",
         type=Path,
-        default=DEFAULT_ENV_FILE,
+        default=argparse.SUPPRESS,
         help="Env file with BASE_URL/API_KEY/APP_NAME",
     )
-    parser.add_argument("--base-url", default=None)
-    parser.add_argument("--api-key", default=None)
-    parser.add_argument("--app-name", default=None)
+    creds.add_argument("--base-url", default=argparse.SUPPRESS, help="Override BASE_URL")
+    creds.add_argument("--api-key", default=argparse.SUPPRESS, help="Override API_KEY")
+    creds.add_argument("--app-name", default=argparse.SUPPRESS, help="Override APP_NAME")
+    return creds
+
+
+def build_parser() -> argparse.ArgumentParser:
+    creds = _credentials_parser()
+    parser = argparse.ArgumentParser(
+        description="Local OCHA API read/write probes.",
+        parents=[creds],
+    )
 
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_read = sub.add_parser("read", help="GET discovery and collection smoke")
+    p_read = sub.add_parser(
+        "read",
+        parents=[creds],
+        help="GET discovery and collection smoke",
+    )
     p_read.add_argument("--jsonld", action="store_true", help="Also probe a JSON-LD subset")
 
-    p_write = sub.add_parser("write", help="Disposable PUT/PATCH/batch/DELETE per provider")
+    p_write = sub.add_parser(
+        "write",
+        parents=[creds],
+        help="Disposable PUT/PATCH/batch/DELETE per provider",
+    )
     p_write.add_argument(
         "--only",
         default="",
@@ -55,7 +74,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_write.add_argument("--no-batch", action="store_true")
     p_write.add_argument("--no-patch", action="store_true")
 
-    p_all = sub.add_parser("all", help="Run read then write")
+    p_all = sub.add_parser("all", parents=[creds], help="Run read then write")
     p_all.add_argument("--jsonld", action="store_true")
     p_all.add_argument("--only", default="")
     p_all.add_argument("--no-batch", action="store_true")
@@ -69,10 +88,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     base_url, api_key, app_name, env_file = resolve_credentials(
-        env_file=args.env_file,
-        base_url=args.base_url,
-        api_key=args.api_key,
-        app_name=args.app_name,
+        env_file=getattr(args, "env_file", DEFAULT_ENV_FILE),
+        base_url=getattr(args, "base_url", None),
+        api_key=getattr(args, "api_key", None),
+        app_name=getattr(args, "app_name", None),
     )
     if not api_key:
         print(

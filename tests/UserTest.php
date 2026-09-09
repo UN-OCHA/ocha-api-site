@@ -31,6 +31,10 @@ class UserTest extends ApiTestCase
         'can_read' => [],
         'can_write' => [],
       ]);
+
+      $body = json_decode($response->getContent(), TRUE);
+      $this->assertContains('ROLE_ADMIN', $body['roles']);
+      $this->assertContains('ROLE_USER', $body['roles']);
     }
 
     public function testNonExistingMeEndpoint(): void

@@ -90,13 +90,16 @@ final class KeyFigureSerializer implements NormalizerInterface, DenormalizerInte
     }
 
     /**
+     * Must expose the decorated item normalizer's types. Claiming only
+     * KeyFigures hides ApiPlatform\Serializer\ItemNormalizer for every other
+     * resource, so they fall through to ObjectNormalizer and embed relations
+     * (Country ↔ OchaPresence circular references).
+     *
      * {@inheritdoc}
      */
     public function getSupportedTypes(?string $format): array
     {
-        return [
-            KeyFigures::class => false,
-        ];
+        return $this->decorated->getSupportedTypes($format);
     }
 
     public function denormalize($data, string $type, ?string $format = null, array $context = []) : mixed {
