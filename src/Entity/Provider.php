@@ -5,14 +5,14 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProviderRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource()]
 #[ORM\Entity(repositoryClass: ProviderRepository::class)]
 class Provider
 {
     #[ORM\Id]
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     #[Groups(['ochapresence_read', 'ochapresence_external_read'])]
     private ?string $id = null;
 

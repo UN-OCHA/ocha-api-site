@@ -1,0 +1,76 @@
+--- version-bundle/src/Services/Sql/CreateTrigger.php	2026-02-02 20:25:24
++++ version-bundle/src/Services/Sql/CreateTrigger.php	2026-09-05 07:32:33
+@@ -66,6 +66,7 @@
+         $sql[] = $this->createTriggerAfterInsert($tableName);
+         $sql[] = $this->createTriggerBeforeUpdate($tableName);
+         $sql[] = $this->createTriggerAfterUpdate($tableName);
++        $sql[] = $this->createTriggerAfterDelete($tableName, $databaseName, $versionTableName);
+         return $sql;
+     }
+ 
+@@ -119,6 +120,15 @@
+         $createStatement = sprintf($this->fCreateSql, $triggerName);
+         $eventStatement = "AFTER UPDATE";
+         return sprintf($this->fTriggerSql, $createStatement, $eventStatement, $tableName, $this->triggerBody);
++    }
++
++    private function createTriggerAfterDelete(string $tableName, string $databaseName, string $versionTableName): string
++    {
++        $triggerName = Definitions::TRIGGER_NAME_AFTER_DELETE_MARK_DELETED;
++        $createStatement = sprintf($this->fCreateSql, $triggerName);
++        $eventStatement = "AFTER DELETE";
++        $triggerBody = sprintf("UPDATE `%s`.`%s` SET deleted = 1 WHERE id = OLD.id;", $databaseName, $versionTableName);
++        return sprintf($this->fTriggerSql, $createStatement, $eventStatement, $tableName, $triggerBody);
+     }
+ 
+     /**
+--- version-bundle/src/Services/Sql/Definitions.php	2026-02-02 20:25:24
++++ version-bundle/src/Services/Sql/Definitions.php	2026-09-05 07:32:33
+@@ -18,17 +18,20 @@
+ final class Definitions
+ {
+     /** @var string  setting version to int 1 before insert */
+-    public const string TRIGGER_NAME_BEFORE_INSERT_SET_VERSION = 'BEVOR_INSERT_SET_VERSION';
++    public const string TRIGGER_NAME_BEFORE_INSERT_SET_VERSION = 'NBVB_BI';
+     /** @var string  create first entry in table version */
+-    public const string TRIGGER_NAME_AFTER_INSERT_INSERT_VERSION = 'AFTER_INSERT_INSERT_VERSION';
++    public const string TRIGGER_NAME_AFTER_INSERT_INSERT_VERSION = 'NBVB_AI';
+     /** @var string increment column version before update */
+-    public const string TRIGGER_NAME_BEFORE_UPDATE_SET_VERSION = 'BEFORE_UPDATE_SET_VERSION';
++    public const string TRIGGER_NAME_BEFORE_UPDATE_SET_VERSION = 'NBVB_BU';
+     /** @var string insert in table version on update */
+-    public const string TRIGGER_NAME_AFTER_UPDATE_INSERT_VERSION = 'AFTER_UPDATE_INSERT_VERSION';
++    public const string TRIGGER_NAME_AFTER_UPDATE_INSERT_VERSION = 'NBVB_AU';
++    public const string TRIGGER_NAME_AFTER_DELETE_MARK_DELETED = 'NBVB_AD';
+     /** @var string postix for version table */
+     public const string VERSION_TABLE_NAME_POSTFIX = '_version';
+     /** @var string sql create version table */
+     public const string SQL_CREATE_TABLE = 'CREATE TABLE `%s`.`%s` AS SELECT * FROM `%s`.`%s`;';
++    public const string SQL_VERSION_TS = 'ALTER TABLE `%s`.`%s` ADD ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
++    public const string SQL_VERSION_DELETED = 'ALTER TABLE `%s`.`%s` ADD deleted BOOL DEFAULT 0';
+     /** @var string sql alter table add primary keys to version table */
+     public const string SQL_ADD_PK_TO_VERSION = 'ALTER TABLE `%s`.`%s` ADD PRIMARY KEY (`id`,`version`);';
+     /** @var string sql add constraint to version */
+--- version-bundle/src/Services/Sql/DropTrigger.php	2026-02-02 20:25:24
++++ version-bundle/src/Services/Sql/DropTrigger.php	2026-09-05 07:32:33
+@@ -31,6 +31,7 @@
+             sprintf($fDrop, Definitions::TRIGGER_NAME_AFTER_INSERT_INSERT_VERSION),
+             sprintf($fDrop, Definitions::TRIGGER_NAME_BEFORE_UPDATE_SET_VERSION),
+             sprintf($fDrop, Definitions::TRIGGER_NAME_AFTER_UPDATE_INSERT_VERSION),
++            sprintf($fDrop, Definitions::TRIGGER_NAME_AFTER_DELETE_MARK_DELETED),
+         ];
+     }
+ 
+--- version-bundle/src/Services/Sql/VersionTable.php	2026-02-02 20:25:24
++++ version-bundle/src/Services/Sql/VersionTable.php	2026-09-05 07:32:33
+@@ -29,8 +29,9 @@
+ 
+         return [
+             sprintf(Definitions::SQL_CREATE_TABLE, $databaseName, $versionTableName, $databaseName, $tableName),
++            sprintf(Definitions::SQL_VERSION_TS, $databaseName, $versionTableName),
++            sprintf(Definitions::SQL_VERSION_DELETED, $databaseName, $versionTableName),
+             sprintf(Definitions::SQL_ADD_PK_TO_VERSION, $databaseName, $versionTableName),
+-            sprintf(Definitions::SQL_ADD_CONSTRAINT, $databaseName, $versionTableName, $versionTableName, $tableName),
+         ];
+     }
+ 
