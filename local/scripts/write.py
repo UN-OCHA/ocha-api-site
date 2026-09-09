@@ -218,6 +218,65 @@ def resolve_targets(
     return unique
 
 
+def run_country_write(client: Client, report: Report) -> None:
+    """Disposable PUT/GET/DELETE for /countries (n8n Ref - countries).
+
+    Uses a random 3-letter id so re-runs do not collide with country_version
+    rows left after DELETE (version PK is id+version; delete only soft-flags).
+    """
+    # Avoid real ISO-3166 alpha-3 codes: prefix with 'x' + 2 hex chars.
+    smoke_id = "x" + uuid.uuid4().hex[:2]
+    path = f"/countries/{smoke_id}"
+    body = {
+        "id": smoke_id,
+        "name": f"WriteTest Country {smoke_id.upper()}",
+        "iso2": smoke_id[:2],
+        "iso3": smoke_id,
+        "code": "999",
+    }
+
+    print(f"--- countries (/countries) id={smoke_id} ---")
+
+    # Best-effort cleanup if a prior run left the live row (version table may remain).
+    client.check(
+        report,
+        "DELETE",
+        path,
+        expect={200, 204, 404},
+        soft_skip_on={403},
+        note="pre-clean",
+    )
+
+    code, _ = client.check(
+        report,
+        "PUT",
+        path,
+        expect={200, 201},
+        json_body=body,
+        soft_skip_on={403},
+        note="disposable create",
+    )
+    if code == 403:
+        return
+    if code not in (200, 201):
+        return
+
+    client.check(report, "GET", path, note="after put")
+
+    updated = dict(body)
+    updated["name"] = f"WriteTest Country {smoke_id.upper()} Updated"
+    client.check(
+        report,
+        "PUT",
+        path,
+        expect={200, 201},
+        json_body=updated,
+        note="disposable update",
+    )
+
+    client.check(report, "DELETE", path, expect={200, 204}, note="disposable delete")
+
+
 def run_write(
     client: Client,
     *,
@@ -275,6 +334,9 @@ def run_write(
     print(f"can_read (/me/providers): {', '.join(sorted(granted_ids)) or '(none)'}")
     print(f"can_write: {', '.join(sorted(can_write)) or '(none — using can_read)'}")
     print(f"Admin: {is_admin}")
+    print()
+
+    run_country_write(client, report)
     print()
 
     targets = resolve_targets(

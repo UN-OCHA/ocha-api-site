@@ -98,10 +98,11 @@ python3 local/scripts/test-api.py read --jsonld
 python3 local/scripts/test-api.py write
 python3 local/scripts/test-api.py write --only fts,cbpf
 python3 local/scripts/test-api.py write --no-batch --no-patch
+python3 local/scripts/test-api.py write --api-key YOUR_ADMIN_TOKEN
 python3 local/scripts/test-api.py all
 ```
 
-Credentials load from `local/scripts/.env.api` (gitignored). CLI flags and process env (`BASE_URL`, `API_KEY`, `APP_NAME`) override the file. Write mode samples existing rows when present, upserts disposable `write_test_*` records via PUT/PATCH/batch on **prefixed** provider routes (e.g. `/fts`, `/cbpf`) — matching n8n / production — then deletes them. It does not probe unprefixed `/key_figures` writes. Neither mode calls `/archive`.
+Credentials load from `local/scripts/.env.api` (gitignored). CLI flags (`--api-key`, `--base-url`, `--app-name`, `--env-file`) and process env (`BASE_URL`, `API_KEY`, `APP_NAME`) override the file. Use an admin or `ROLE_OCHA_PRESENCE` key for Country / OchaPresence writes; admin is detected from `roles` on `GET /me`. Write mode also probes disposable Country PUT/GET/DELETE (random id), then samples provider rows and upserts disposable `write_test_*` records via PUT/PATCH/batch on **prefixed** provider routes (e.g. `/fts`, `/cbpf`) — matching n8n / production — then deletes them. It does not probe unprefixed `/key_figures` writes. Neither mode calls `/archive`.
 
 ## Tests
 
