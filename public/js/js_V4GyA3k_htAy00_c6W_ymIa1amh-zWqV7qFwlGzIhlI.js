@@ -273,10 +273,15 @@ document.documentElement.className += ' js';
 (function (Drupal, drupalSettings, navigator, window) {
   'use strict';
 
+  // This Symfony site does not provide Drupal PWA settings; skip registration.
+  if (!drupalSettings || !drupalSettings.pwa || !drupalSettings.pwa.installPath) {
+    return;
+  }
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register(drupalSettings.pwa.installPath, {
-        scope: drupalSettings.path.baseUrl
+        scope: (drupalSettings.path && drupalSettings.path.baseUrl) || '/'
       }).then(function (registration) {
         console.log("Service Worker registered! Scope: ".concat(registration.scope));
       }).catch(function (err) {

@@ -4,14 +4,41 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\CountryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use NetBrothers\VersionBundle\Traits\VersionColumn;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ApiResource()]
+#[Get()]
+#[GetCollection()]
+#[Post(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Put(
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')",
+    allowCreate: true,
+    // Global standard_put replaces the entity on PUT. Without this flag the
+    // loaded Country is ignored and Doctrine INSERTs again (duplicate id).
+    // PutListener still handles create-when-missing by seeding request "data".
+    denormalizationContext: [
+        'api_assign_object_to_populate' => true,
+    ],
+)]
+#[Delete(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')")]
+#[Patch(
+    inputFormats: [
+        'jsonld' => ['application/merge-patch+json'],
+    ],
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_OCHA_PRESENCE')"
+)]
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
 class Country
 {
@@ -36,6 +63,9 @@ class Country
     #[ORM\Column(length: 10)]
     private ?string $code = null;
 
+    // Inverse side of OchaPresence::$countries; manage the relation from OchaPresence.
+    #[Ignore]
+    #[ApiProperty(readable: false, writable: false)]
     #[ORM\ManyToMany(targetEntity: OchaPresence::class, mappedBy: 'countries')]
     private Collection $ochaPresences;
 

@@ -5,56 +5,51 @@
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/attiks/version-bundle"
-        }
-    ],
     "require": {
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "api-platform/core": "^3",
-        "doctrine/doctrine-bundle": "^2.7",
-        "doctrine/doctrine-migrations-bundle": "^3.2",
-        "doctrine/orm": "^2",
-        "nelmio/cors-bundle": "^2.2",
-        "netbrothers-gmbh/version-bundle": "dev-short-index-names",
-        "phpdocumentor/reflection-docblock": "^5.3",
-        "phpstan/phpdoc-parser": "^1.11",
-        "scienta/doctrine-json-functions": "^5.2",
-        "symfony/amazon-mailer": "^6",
-        "symfony/apache-pack": "^1.0",
-        "symfony/asset": "^6",
-        "symfony/console": "^6",
-        "symfony/doctrine-messenger": "^6",
-        "symfony/dotenv": "^6",
-        "symfony/expression-language": "^6",
+        "api-platform/doctrine-orm": "^4.3",
+        "api-platform/symfony": "^3 || ^4",
+        "cweagans/composer-patches": "^2.0",
+        "doctrine/doctrine-bundle": "^3",
+        "doctrine/doctrine-migrations-bundle": "^4",
+        "doctrine/orm": "^3",
+        "nelmio/cors-bundle": "^2",
+        "netbrothers-gmbh/version-bundle": "^4",
+        "phpdocumentor/reflection-docblock": "^6",
+        "phpstan/phpdoc-parser": "^2",
+        "scienta/doctrine-json-functions": "^6",
+        "symfony/amazon-mailer": "^8",
+        "symfony/apache-pack": "^1",
+        "symfony/asset": "^8",
+        "symfony/console": "^8",
+        "symfony/doctrine-messenger": "^8",
+        "symfony/dotenv": "^8",
+        "symfony/expression-language": "^8",
         "symfony/flex": "^2",
-        "symfony/form": "^6",
-        "symfony/framework-bundle": "^6",
-        "symfony/http-client": "^6",
-        "symfony/intl": "^6",
-        "symfony/mailer": "^6",
-        "symfony/mime": "^6",
-        "symfony/monolog-bundle": "^3.10",
-        "symfony/notifier": "^6",
-        "symfony/process": "^6",
-        "symfony/property-access": "^6",
-        "symfony/property-info": "^6",
-        "symfony/proxy-manager-bridge": "^6",
-        "symfony/runtime": "^6",
-        "symfony/security-bundle": "^6",
-        "symfony/serializer": "^6",
-        "symfony/string": "^6",
-        "symfony/translation": "^6",
-        "symfony/twig-bundle": "^6",
-        "symfony/validator": "^6",
-        "symfony/web-link": "^6",
-        "symfony/yaml": "^6",
-        "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "symfony/form": "^8",
+        "symfony/framework-bundle": "^8",
+        "symfony/http-client": "^8",
+        "symfony/intl": "^8",
+        "symfony/mailer": "^8",
+        "symfony/mime": "^8",
+        "symfony/monolog-bundle": "^4",
+        "symfony/notifier": "^8",
+        "symfony/process": "^8",
+        "symfony/property-access": "^8",
+        "symfony/property-info": "^8",
+        "symfony/runtime": "^8",
+        "symfony/security-bundle": "^8",
+        "symfony/serializer": "^8",
+        "symfony/string": "^8",
+        "symfony/translation": "^8",
+        "symfony/twig-bundle": "^8",
+        "symfony/validator": "^8",
+        "symfony/web-link": "^8",
+        "symfony/yaml": "^8",
+        "twig/extra-bundle": "^3",
+        "twig/twig": "^3"
     },
     "config": {
        "policy": {
@@ -65,13 +60,6 @@
                     "medium": { "on-audit": true, "reason": "Do not alert on medium severity issues." }
                 },
                 "ignore-id": {
-                    "PKSA-8kfs-m8zw-ggzs": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-3ncz-km6v-5vjr": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-gs8r-6kz6-pp56": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-gnn4-pxdg-q76m": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-q2bp-c9gn-wy37": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-jms4-fggn-5mmn": "OHA-71 - Allow builds to compelete for *other* updates.",
-                    "PKSA-dsd6-6541-26zs": "OHA-71 - Allow builds to compelete for *other* updates."
                 }
             },
             "abandoned": {
@@ -84,7 +72,8 @@
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "cweagans/composer-patches": true
         },
         "optimize-autoloader": true,
         "preferred-install": {
@@ -134,7 +123,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "^6"
+            "require": "8.1.*"
         }
     },
     "require-dev": {
@@ -143,13 +132,13 @@
         "marcocesarato/php-conventional-changelog": "^1.16",
         "phpunit/php-code-coverage": "^9.2",
         "phpunit/phpunit": "^9.5",
-        "symfony/browser-kit": "^6",
-        "symfony/css-selector": "^6",
-        "symfony/debug-bundle": "^6",
+        "symfony/browser-kit": "*",
+        "symfony/css-selector": "*",
+        "symfony/debug-bundle": "*",
         "symfony/maker-bundle": "^1.47",
-        "symfony/phpunit-bridge": "^6",
-        "symfony/stopwatch": "^6",
-        "symfony/web-profiler-bundle": "^6"
+        "symfony/phpunit-bridge": "*",
+        "symfony/stopwatch": "*",
+        "symfony/web-profiler-bundle": "*"
     },
     "version": "1.2.0"
 }

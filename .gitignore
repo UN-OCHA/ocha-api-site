@@ -23,3 +23,7 @@ buildlog.txt
 ###< unocha/docker ###
 
 /coverage
+
+# Local API probe secrets
+/local/scripts/.env.api
+/local/scripts/__pycache__/

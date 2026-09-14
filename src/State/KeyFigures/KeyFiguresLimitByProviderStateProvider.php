@@ -9,15 +9,15 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryResultCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\State\Options;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGenerator;
-use ApiPlatform\Exception\RuntimeException;
 use ApiPlatform\Metadata\CollectionOperationInterface;
+use ApiPlatform\Metadata\Exception\RuntimeException;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\State\ProviderInterface;
 use App\State\KeyFigures\KeyFigureProviderTrait;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -37,6 +37,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
         private TokenStorageInterface $tokenStorage,
         private readonly iterable $collectionExtensions = [],
     ) {
+        $this->resourceMetadataCollectionFactory = $resourceMetadataCollectionFactory;
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
@@ -148,11 +149,16 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
             $joinProperties = $doctrineClassMetadata->getIdentifierFieldNames();
 
             if ($link->getFromProperty() && !$link->getToProperty()) {
+                // Property may not be a mapped Doctrine association (e.g. identifier self-link).
+                if (!$fromClassMetadata->hasAssociation($link->getFromProperty())) {
+                    continue;
+                }
+
                 $joinAlias = $queryNameGenerator->generateJoinAlias('m');
                 $associationMapping = $fromClassMetadata->getAssociationMapping($link->getFromProperty()); // @phpstan-ignore-line
                 $relationType = $associationMapping['type'];
 
-                if ($relationType & ClassMetadataInfo::TO_MANY) {
+                if ($relationType & ClassMetadata::TO_MANY) {
                     $nextAlias = $queryNameGenerator->generateJoinAlias($alias);
                     $whereClause = [];
                     foreach ($identifierProperties as $identifierProperty) {
@@ -169,7 +175,7 @@ final class KeyFiguresLimitByProviderStateProvider implements ProviderInterface
                 }
 
                 // A single-valued association path expression to an inverse side is not supported in DQL queries.
-                if ($relationType & ClassMetadataInfo::TO_ONE && !($associationMapping['isOwningSide'] ?? true)) {
+                if ($relationType & ClassMetadata::TO_ONE && !($associationMapping['isOwningSide'] ?? true)) {
                     $queryBuilder->innerJoin("$previousAlias.".$associationMapping['mappedBy'], $joinAlias);
                 } else {
                     $queryBuilder->join(
