@@ -1,0 +1,7 @@
+# Local MySQL: override hosted AWS RDS SSL options from doctrine.yaml when@dev.
+when@dev:
+    doctrine:
+        dbal:
+            options:
+                !php/const PDO::MYSQL_ATTR_SSL_CA: ''
+                !php/const PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 0

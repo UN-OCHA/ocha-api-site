@@ -1,0 +1,91 @@
+name: $PROJECT_NAME
+
+networks:
+  default:
+  proxy:
+    name: ${PROXY:-proxy}
+    external: TRUE
+
+volumes:
+  site-database:
+  site-database-log:
+  site-var:
+
+services:
+  mysql:
+    image: public.ecr.aws/unocha/mysql:11
+    hostname: $PROJECT_NAME-mysql
+    container_name: $PROJECT_NAME-mysql
+    environment:
+      MYSQL_DB:
+      MYSQL_USER:
+      MYSQL_PASS:
+    volumes:
+      - "site-database:/var/lib/mysql:rw"
+      - "site-database-log:/var/log/mysql:rw"
+    networks:
+      - default
+
+  site:
+    image: $IMAGE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+    hostname: $PROJECT_NAME-site
+    container_name: $PROJECT_NAME-site
+    depends_on:
+      - mysql
+    volumes:
+      # Mount local application code.
+      - ../.env:/srv/www/.env:ro
+      - "../bin:/srv/www/bin:rw"
+      - "../config:/srv/www/config:rw"
+      - "../migrations:/srv/www/migrations:rw"
+      - "../public:/srv/www/public:rw"
+      - "../src:/srv/www/src:rw"
+      - "../templates:/srv/www/templates:rw"
+      - "../translations:/srv/www/translations:rw"
+      - "../fixtures:/srv/www/fixtures:rw"
+      - "../n8n:/srv/www/n8n:rw"
+      # Mount composer files and patches.
+      - "../composer.json:/srv/www/composer.json:rw"
+      - "../composer.lock:/srv/www/composer.lock:rw"
+      - "../patches.json:/srv/www/patches.json:rw"
+      - "../patches.lock.json:/srv/www/patches.lock.json:rw"
+      - "../PATCHES:/srv/www/PATCHES:rw"
+      # Mount tests and phpunit config.
+      - "../tests:/srv/www/tests:rw"
+      - "../phpunit.xml.dist:/srv/www/phpunit.xml:ro"
+      # Persistent writable cache/log/session storage.
+      - "site-var:/srv/www/var:rw"
+      # Merge after doctrine.yaml: clear AWS RDS SSL options for local MySQL.
+      - "./shared/config/doctrine.yaml:/srv/www/config/packages/zz_doctrine_local.yaml:ro"
+      # Relax CSP for local (Symfony toolbar + inline page scripts).
+      - "./shared/config/headers.conf:/etc/nginx/custom/headers.conf:ro"
+      # Optional nginx custom configuration.
+      # - "../docker/etc/nginx/apps/drupal/drupal.conf:/etc/nginx/apps/drupal/drupal.conf"
+      # - "../docker/etc/nginx/custom:/etc/nginx/custom"
+    environment:
+      TERM: xterm
+      ENVIRONMENT: local
+      NGINX_SERVERNAME: $SITE_DOMAIN,$PROJECT_NAME-site
+      NGINX_OVERRIDE_PROTOCOL: HTTP,$SITE_DOMAIN,$PROJECT_NAME-site
+      PHP_ENVIRONMENT:
+      APP_ENV:
+      APP_SECRET:
+      DATABASE_URL:
+      MESSENGER_TRANSPORT_DSN:
+      CORS_ALLOW_ORIGIN:
+      # Rate limiting.
+      NGINX_LIMIT_HUMANS: 1024r/s
+      NGINX_BURST_HUMANS: 1024
+      NGINX_LIMIT_BOTS: 1024r/s
+      NGINX_BURST_BOTS: 1024
+      # Local proxy.
+      VIRTUAL_HOST: $SITE_DOMAIN
+      VIRTUAL_PORT: 80
+      VIRTUAL_NETWORK: ${PROXY:-proxy}
+      HTTPS_METHOD: noredirect
+    labels:
+      caddy: $SITE_DOMAIN
+      caddy.reverse_proxy: "{{upstreams}}"
+    networks:
+      - default
+      - proxy

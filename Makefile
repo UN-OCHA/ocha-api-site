@@ -1,6 +1,9 @@
 # Variables. Yes.
 DOCKER=docker
 NODE_ENV=dev
+IMAGE_REGISTRY=532768535361.dkr.ecr.us-east-1.amazonaws.com
+IMAGE_NAME=ocha-api-site
+IMAGE_TAG=local
 
 # The main build recipe.
 build:	clean
@@ -14,7 +17,7 @@ build:	clean
 				--build-arg GITHUB_SHA=`git rev-parse --short HEAD` \
 				--build-arg GITHUB_MESSAGE="`git  log -1 --pretty=%B --oneline`" \
 				--load \
-		. --file docker/Dockerfile --tag 532768535361.dkr.ecr.us-east-1.amazonaws.com/ocha-api-site:local \
+		. --file docker/Dockerfile --tag $(IMAGE_REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG) \
 		2>&1 | tee buildlog.txt
 
 clean:

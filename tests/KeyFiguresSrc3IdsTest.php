@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\KeyFigures;
 use App\Repository\KeyFiguresRepository;
 use App\Tests\TestTrait;

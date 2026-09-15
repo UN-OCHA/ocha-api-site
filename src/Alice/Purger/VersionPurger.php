@@ -83,11 +83,8 @@ class VersionPurger implements PurgerInterface, PurgerFactoryInterface
             && $this->purger->getObjectManager()->getConnection()->getDatabasePlatform() instanceof MySqlPlatform
         );
 
-        if ($disableFkChecks) {
-            $connection = $this->purger->getObjectManager()->getConnection();
-
-            $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0;');
-        }
+        $connection = $this->purger->getObjectManager()->getConnection();
+        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0;');
 
         $connection->executeStatement('TRUNCATE TABLE country_version;');
         $connection->executeStatement('TRUNCATE TABLE external_lookup_version;');
@@ -96,9 +93,7 @@ class VersionPurger implements PurgerInterface, PurgerFactoryInterface
 
         $this->purger->purge();
 
-        if ($disableFkChecks && isset($connection)) {
-            $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1;');
-        }
+        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1;');
     }
 
     private static function createPurger(ObjectManager $manager, ?PurgeMode $purgeMode): DoctrinePurgerInterface

@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\KeyFigures;
 use App\Tests\TestTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
@@ -90,7 +89,7 @@ class KeyFiguresSrc3ProviderTest extends ApiTestCase
       $this->assertEqualsIgnoringCase($id, $body->id);
       $this->assertEquals($body->provider, 'src3');
 
-      $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/' . $id, [
+      $response = $client->request('PUT', $this->addPrefix('source-3') . '/' . $id, [
         'headers' => [
             'API-KEY' => 'token1',
             'APP-NAME' => 'test',
@@ -104,7 +103,7 @@ class KeyFiguresSrc3ProviderTest extends ApiTestCase
       $this->assertEqualsIgnoringCase($id, $body->id);
       $this->assertEquals($body->provider, 'src3');
 
-      $response = static::createClient()->request('PUT', $this->addPrefix('source-3') . '/' . $id, [
+      $response = $client->request('PUT', $this->addPrefix('source-3') . '/' . $id, [
         'headers' => [
             'API-KEY' => 'token1',
             'APP-NAME' => 'test',
