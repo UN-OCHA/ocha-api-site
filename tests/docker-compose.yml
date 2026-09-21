@@ -29,6 +29,7 @@ services:
       MESSENGER_TRANSPORT_DSN: "doctrine://default"
       PHP_ENVIRONMENT: 'dev'
       PHP_XDEBUG: 'true'
+      PHP_APC_ENABLE: 0
     volumes:
       - "../.env:/srv/www/.env:ro"
       - "../.env.test:/srv/www/.env.test:ro"
