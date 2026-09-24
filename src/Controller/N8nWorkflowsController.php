@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\N8nWorkflowRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Common\Collections\Order;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -21,7 +22,7 @@ class N8nWorkflowsController extends AbstractController
     {
         $query = $this->repo->createQueryBuilder('w')
             ->select('w')
-            ->orderBy('w.name', 'ASC')
+            ->orderBy('w.name', Order::Ascending)
             ->setMaxResults($this->requestStack->getCurrentRequest()->query->get('rows') ?? 10);
 
         if ($this->requestStack->getCurrentRequest()->query->get('category')) {
