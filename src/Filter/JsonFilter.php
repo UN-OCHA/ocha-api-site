@@ -2,8 +2,9 @@
 
 namespace App\Filter;
 
-use ApiPlatform\Doctrine\Orm\Filter\AbstractFilter;
+use ApiPlatform\Doctrine\Orm\Filter\FilterInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\BackwardCompatibleFilterDescriptionTrait;
 use ApiPlatform\Metadata\Operation;
 use Closure;
 use Doctrine\DBAL\Types\Types as DBALType;
@@ -11,8 +12,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
-final class JsonFilter extends AbstractFilter implements JsonFilterInterface
+final class JsonFilter implements FilterInterface, JsonFilterInterface
 {
+
+    use BackwardCompatibleFilterDescriptionTrait;
+
     public const DOCTRINE_JSON_TYPES = [
         DBALType::JSON => true,
     ];
