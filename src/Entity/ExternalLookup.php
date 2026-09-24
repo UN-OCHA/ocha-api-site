@@ -18,6 +18,7 @@ use App\Repository\ExternalLookupRepository;
 use App\State\KeyFigures\ExternalLookupVersionStateProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
 use NetBrothers\VersionBundle\Traits\VersionColumn;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -28,7 +29,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     denormalizationContext: ['groups' => ['external_lookup_write']],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['provider' => 'exact', 'iso3' => 'exact', 'year' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['name' => 'ASC'])]
+#[ApiFilter(OrderFilter::class, properties: ['name' => Order::Ascending])]
 #[Get()]
 #[GetCollection()]
 #[Get(

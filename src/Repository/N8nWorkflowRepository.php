@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\N8nWorkflow;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+// use Doctrine\Common\Collections\Order;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,7 +48,7 @@ class N8nWorkflowRepository extends ServiceEntityRepository
 //        return $this->createQueryBuilder('n')
 //            ->andWhere('n.exampleField = :val')
 //            ->setParameter('val', $value)
-//            ->orderBy('n.id', 'ASC')
+//            ->orderBy('n.id', Order::Ascending)
 //            ->setMaxResults(10)
 //            ->getQuery()
 //            ->getResult()
