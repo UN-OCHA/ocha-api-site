@@ -9,7 +9,7 @@
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "api-platform/doctrine-orm": "^4.3",
+        "api-platform/doctrine-orm": "^4.3.0",
         "api-platform/symfony": "^3 || ^4",
         "cweagans/composer-patches": "^2.0",
         "doctrine/doctrine-bundle": "^3",
