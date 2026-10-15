@@ -30,6 +30,7 @@ ENV  GIT_REF=$GITHUB_REF
 ENV  GIT_MESSAGE=$GITHUB_MESSAGE
 ENV  LOG_URL=/var/log/php/app.log
 ENV  PHP_ERROR_LOG=/var/log/php/error.log
+ENV  PHP_APC_ENABLE=0
 
 LABEL info.humanitarianresponse.build.date=$BUILD_DATE \
      info.humanitarianresponse.build.vcs-url=$VCS_URL \
