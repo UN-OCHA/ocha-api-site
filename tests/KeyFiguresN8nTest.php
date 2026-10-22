@@ -18,6 +18,7 @@ class KeyFiguresN8nTest extends ApiTestCase
         'n8n/templates/collections/1',
         'n8n/templates/collections',
         'n8n/templates/workflows/1',
+        'n8n/templates/workflows',
         'n8n/workflows/templates/1',
         'n8n/templates/workflows',
       ];
