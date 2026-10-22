@@ -20,6 +20,7 @@ class N8nWorkflowsController extends AbstractController
 
     public function __invoke()
     {
+/*
         $query = $this->repo->createQueryBuilder('w')
             ->select('w')
             ->orderBy('w.name', Order::Ascending)
@@ -40,12 +41,14 @@ class N8nWorkflowsController extends AbstractController
         $rows = $this->requestStack->getCurrentRequest()->query->get('rows', 10);
         $skip = $rows * $this->requestStack->getCurrentRequest()->query->get('skip', 0);
 
-    	$query
-      	    ->setFirstResult($skip)
-      	    ->setMaxResults($rows);
+        $query
+          ->setFirstResult($skip)
+          ->setMaxResults($rows);
 
         return [
             'workflows' => $query->getQuery()->getResult(),
         ];
+ */
+         return ['workflows' => $this->repo->findAll()];
     }
 }
