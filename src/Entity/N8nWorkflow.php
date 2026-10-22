@@ -49,8 +49,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
             controller: N8nWorkflowsController::class,
             read: false,
             openapi: new OpenApiOperation(
-              summary: 'Get an n8n workflows',
-              description: 'Get an n8n workflows',
+              summary: 'Get all n8n workflows',
+              description: 'Get all n8n workflows',
               tags: [
                   'n8n',
               ],
