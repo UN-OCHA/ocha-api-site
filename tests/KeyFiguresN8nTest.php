@@ -28,7 +28,7 @@ class KeyFiguresN8nTest extends ApiTestCase
             ]
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode(), "Checking endpoint URL: " . $endpoint);
       }
     }
 
