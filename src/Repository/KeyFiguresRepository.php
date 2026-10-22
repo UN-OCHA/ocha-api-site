@@ -6,6 +6,7 @@ use App\Entity\ExternalLookup;
 use App\Entity\KeyFigures;
 use App\Entity\OchaPresence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Order;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -87,7 +88,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctYears($provider = NULL): array
     {
         $qb = $this->createQueryBuilder('f')
-            ->orderBy('f.year', 'DESC')
+            ->orderBy('f.year', Order::Descending)
             ->select('DISTINCT(f.year) as value, f.year as label');
 
         if (!empty($provider)) {
@@ -107,7 +108,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
     public function getDistinctCountries($provider = NULL): array
     {
         $qb = $this->createQueryBuilder('f')
-            ->orderBy('value', 'ASC')
+            ->orderBy('value', Order::Ascending)
             ->select('DISTINCT(LOWER(f.iso3)) as value, f.country as label');
 
         if (!empty($provider)) {
@@ -129,7 +130,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
             ->innerJoin(ExternalLookup::class, 'el', 'WITH', "el.externalId = kf.externalId")
             ->innerJoin('el.ochaPresenceExternalIds', 'opei')
             ->innerJoin(OchaPresence::class, 'op', 'WITH', 'op.id = opei.ochaPresence')
-            ->orderBy('op.name', 'ASC')
+            ->orderBy('op.name', Order::Ascending)
             ->select('DISTINCT(op.id) as value, op.name as label');
 
         if (!empty($provider)) {
@@ -195,7 +196,7 @@ class KeyFiguresRepository extends ServiceEntityRepository
         }
 
         // Force sort by year descending.
-        $qb->orderBy('opei.year', 'DESC');
+        $qb->orderBy('opei.year', Order::Descending);
 
         return $qb->getQuery()
             ->getResult()
