@@ -32,7 +32,6 @@ use App\State\KeyFigures\KeyFiguresOchaPresencesStateProvider;
 use App\State\KeyFigures\KeyFiguresOchaPresenceYearsStateProvider;
 use App\State\KeyFigures\KeyFiguresPutStateProvider;
 use App\State\KeyFigures\KeyFiguresYearsStateProvider;
-use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -285,7 +284,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(JsonFilter::class, properties: [
     "extra.*" =>  ["type" => "string", "strategy" => "exact"],
 ])]
-#[ApiFilter(OrderFilter::class, properties: ['iso3' => Order::Ascending, 'year' => Order::Descending, 'year' => Order::Ascending])]
+#[ApiFilter(OrderFilter::class, properties: ['iso3', 'year'])]
 class KeyFigures
 {
     #[ORM\Id]
