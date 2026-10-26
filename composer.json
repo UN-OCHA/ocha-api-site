@@ -25,7 +25,7 @@
         "cweagans/composer-patches": "^2.0",
         "doctrine/doctrine-bundle": "^3",
         "doctrine/doctrine-migrations-bundle": "^4",
-        "doctrine/orm": "^3",
+        "doctrine/orm": "~3.6.0",
         "nelmio/cors-bundle": "^2",
         "netbrothers-gmbh/version-bundle": "^4",
         "phpdocumentor/reflection-docblock": "^6",

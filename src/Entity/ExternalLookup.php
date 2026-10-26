@@ -28,7 +28,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     denormalizationContext: ['groups' => ['external_lookup_write']],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['provider' => 'exact', 'iso3' => 'exact', 'year' => 'exact'])]
-#[ApiFilter(OrderFilter::class, properties: ['name' => 'ASC'])]
+#[ApiFilter(OrderFilter::class, properties: ['name'])]
 #[Get()]
 #[GetCollection()]
 #[Get(

@@ -284,7 +284,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(JsonFilter::class, properties: [
     "extra.*" =>  ["type" => "string", "strategy" => "exact"],
 ])]
-#[ApiFilter(OrderFilter::class, properties: ['iso3' => 'ASC', 'year' => 'DESC', 'year' => 'ASC'])]
+#[ApiFilter(OrderFilter::class, properties: ['iso3', 'year'])]
 class KeyFigures
 {
     #[ORM\Id]

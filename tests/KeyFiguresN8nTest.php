@@ -18,8 +18,8 @@ class KeyFiguresN8nTest extends ApiTestCase
         'n8n/templates/collections/1',
         'n8n/templates/collections',
         'n8n/templates/workflows/1',
-        'n8n/workflows/templates/1',
         'n8n/templates/workflows',
+        'n8n/workflows/templates/1',
       ];
       foreach ($endpoints as $endpoint) {
         $response = static::createClient()->request('GET', $this->addPrefix($endpoint), [
@@ -28,7 +28,7 @@ class KeyFiguresN8nTest extends ApiTestCase
             ]
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode(), "Checking endpoint URL: " . $endpoint);
       }
     }
 
